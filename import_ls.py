@@ -11,7 +11,7 @@ from tinydb import TinyDB, Query
 
 window_size = (800, 350)
 
-def importMods(path, rem = False):
+def importAllMods(path, rem = False):
 	files = os.listdir(path)
 	all_mods = se.getSettings('all_mods_path')
 	for i in files:
@@ -26,9 +26,32 @@ def importMods(path, rem = False):
 		except FileNotFoundError:
 			pass
 
+def getMods(path):
+	mods = []
+	files = os.listdir(path)
+	for i in files:
+		if i.endswith('.zip'):
+			with zipfile.ZipFile(path + os.sep + i) as z:
+				try:
+					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				except FileNotFoundError:
+					pass
+				if moddesc:
+					mods.append(i)
+	return mods
+
+def importMods(path, mods):
+	all_mods = se.getSettings('all_mods_path')
+	for i in mods:
+		with zipfile.ZipFile(path + os.sep + i) as z:
+			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+			version = moddesc.find('version')
+			shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
+
 def guiImportMods():
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))], 
-					[sg.Input('', key = '-MOD_PATH-'), sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'))],
+					[sg.Input('', key = '-MOD_PATH-', enable_events=True), sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
+					[sg.Listbox('',  key = '-MODS-', size = (window_size[0]-10, 10), select_mode = 'extended')],
 					[	sg.Button(tr.getTrans('import'), key = '-IMPORT-'),
 						sg.Button(tr.getTrans('exit'), key = '-EXIT-')
 					]
@@ -41,9 +64,11 @@ def guiImportMods():
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-			importMods(values['-MOD_PATH-'])
+			importMods(values['-MOD_PATH-'], values['-MODS-'])
 			window['-MOD_PATH-'].update('')
-
+			window['-MODS-'].update(values = '')
+		elif event == '-MOD_PATH-':
+			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 	window.close()
 	return
 
@@ -99,11 +124,12 @@ def importSavegame(values, rem):
 		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'))
 		return False
 
-	print(mods)
 	modstoadd = {}
 	for i, val in enumerate(mods):
 		modstoadd[str(i)] = mods[i]
 
+	if len(maps) == 0:
+		maps.append('fs_internal')
 	TinyDB('games.json').insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
 
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
@@ -111,13 +137,16 @@ def importSavegame(values, rem):
 		shutil.move(values['-SG_PATH-'] + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
 	bak_path = se.getSettings('fs_game_data_path') + os.sep + 'savegameBackup'
 	sg_title = values['-SG_PATH-'].split(os.sep)[-1]
-	for i in os.listdir(bak_path):
-		if sg_title in i:
-			try:
-				os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup') 
-			except FileExistsError:
-				pass
-			shutil.move(bak_path + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
+	try:
+		os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup') 
+	except FileExistsError:
+		pass
+	try:
+		for i in os.listdir(bak_path):
+			if sg_title in i:
+				shutil.move(bak_path + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
+	except FileNotFoundError:
+		pass
 	return True
 
 def guiImportSG(path = '', rem = False):

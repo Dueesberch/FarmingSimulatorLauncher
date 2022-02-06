@@ -19,7 +19,10 @@ def saveSettings(values):
 		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path')
 		return False
 	else:
-		all_mods_path = values['-ALL_MODS_PATH-'] + os.sep + 'fsl_all_mods'
+		if 'fsl_all_mods' in values['-ALL_MODS_PATH-']:
+			all_mods_path = values['-ALL_MODS_PATH-']
+		else:
+			all_mods_path = values['-ALL_MODS_PATH-'] + os.sep + 'fsl_all_mods'
 		try:
 			os.makedirs(all_mods_path)
 		except FileExistsError:
@@ -55,15 +58,15 @@ def guiSettings(lang, init = False):
 				[sg.Input(gd, key = '-FS_GAME_DATA_PATH-', size = (100, 1)), sg.FolderBrowse(initial_folder = gd)],
 				[sg.Button(tr.getTrans('def_sg_fs19'), key = '-DEF_SG_FS19-'), sg.Button(tr.getTrans('def_sg_fs22'), key = '-DEF_SG_FS22-')],
 				[sg.Text(tr.getTrans('get_all_mods_path'), key = '-ALL_MODS_PATH_TEXT-')], 
-				[sg.Input(am, key = '-ALL_MODS_PATH-', size = (80, 1)), sg.FolderBrowse(initial_folder = am), sg.Button(tr.getTrans('import_mods'), key = '-IMPORT-')],
+				[sg.Input(am, key = '-ALL_MODS_PATH-', size = (80, 1)), sg.FolderBrowse(initial_folder = am)], #sg.Button(tr.getTrans('import_mods'), key = '-IMPORT-')],
 				[	sg.Button(tr.getTrans('save'), key = '-SAVE-'),
 					sg.Button(tr.getTrans('exit'), key = '-EXIT-')
 				]
 			]
 
 	window = sg.Window(tr.getTrans('settings'), layout, size = window_size, finalize = True)
-	if init:
-		window['-IMPORT-'].update(disabled = True)
+#	if init:
+#		window['-IMPORT-'].update(disabled = True)
 		
 	while True:
 		event, values = window.read()

@@ -17,7 +17,7 @@ def getMods(l = True):
 	global mods
 	global maps
 	files = os.listdir(se.getSettings('all_mods_path'))
-	maps = {} #TODO map nicht als mod zb felsbrunn etc
+	maps = {'Standard': 'fs_internal'}
 	mods = {}
 	for i in files:
 		if i.endswith('.zip'):
@@ -80,7 +80,7 @@ def saveSaveGame(values, update):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				m = moddesc.find('title/en')
 				f = f + m.text + '\n'
-		sg.popup_ok(tr.getTrans('found_dupes').format(f), title = tr.getTrans('dupes_title'))
+		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'))
 		return False
 	if update == -1:
 		try:
