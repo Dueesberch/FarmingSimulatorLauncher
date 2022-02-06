@@ -1,3 +1,5 @@
+import settings as se
+
 dictionary = {
     "en": {
         "new": "New",
@@ -22,17 +24,40 @@ dictionary = {
         "ssg_exists": "Savegame title already used. Please choose different one.",
         "ssg_folder_exists": "Savegame folder with that title exists. Please choose different one or remove.",
         "ssg_backup_folder_exists": "Savegame Backup folder with that title exists. Please choose different one or remove.",
+        "backup_folders_title": "Backup Folder",
+        "backup_folder_text": "Folder\n \"{}\" \nmoved to\n \"{}_fsl_bak\"\n",
+        "fsl_bak_exists": "_fsl_bak already exists. Please rename or remove",
         "ssg_title": "Title exists",
         "ssg_title_char": "Forbidden character",
         "ssg_wrong_char": "Colon (:) not allowed at title.",
         "ssg_title_title": "Forbidden title",
         "ssg_wrong_title": "Title savegame1 not allowed.",
+        "ssg_name_empty": "Titel must be set.",
+        "ssg_map_empty": "Map must be set.",
+        "ssg_title_empty": "Missing",
         "delete_title": "Remove",
         "delete": "Do you really want to remove selcted savegame? Savegame and backup folder will be removed.",
         "empty_fs_path": "Please set farming simulator executable.",
         "empty_fs_gd_path": "Please set farming simulator gaming data folder.",
         "empty_all_mods_path": "Please set all mods folder.",
-        "miss_path": "Path missing"
+        "miss_path": "Path missing",
+        "import": "Import",
+        "import_mods": "Import Mods",
+        "import_mods_init": "There are already mods in {}\nImport them?",
+        "import_sg_init": "There is {} in {}\nImport that?",
+        "get_mod_path": "Select mod folder to import",
+        "get_sg_path": "Select savegame folder to import",
+        "remove_title": "Remove folder",
+        "remove_src_folder": "Shall \"{}\" be removed?",
+        "found_dupes": "The following mods are seleceted in different versions\n\n{}\nOnly one version is able.",
+        "dupes_title": "Found duplicates",
+        "mod_not_found": "Mod {} not in {}\nStart anyway?",
+        "def_fs19": "Default FS19 path",
+        "def_fs22": "Default FS22 path",
+        "def_sg_fs19": "Default FS19 savegame folder path",
+        "def_sg_fs22": "Default FS22 savegame folder path",
+        "missing_mod": "Mod \"{}\" in version \"{}\" not found. Please import later.",
+        "missing_map": "Map \"{}\" in version \"{}\" not found. Please import later."
     },
     "de": {
         "new": "Neu",
@@ -57,22 +82,48 @@ dictionary = {
         "ssg_exists": "Savegame Title bereits verwendet. Bitte anderen vergeben.",
         "ssg_folder_exists": "Savegame Ordner mit dem Title existiert beriets. Bitte Ordner löschen oder anderen Titel vergeben.",
         "ssg_backup_folder_exists": "Savegame Backup Ordner mit dem Titel existiert bereits. Bitte Ordner löschen oder anderen Titel vergeben.",
+        "backup_folders_title": "Backup Ordner",
+        "backup_folder_text": "Ordner\n \"{}\" \nwird zu\n \"{}_fsl_bak\"\nverschoben.",
+        "fsl_bak_exists": "_fsl_bak existiert bereits. Bitte umbenennen oder entfernen",
         "ssg_title": "Titel vergeben",
         "ssg_title_char": "Zeichen nicht erlaubt",
         "ssg_wrong_char": "Doppelpunkt (:) nicht erlaubt im Titel.",
         "ssg_title_title": "Titel nicht erlaubt",
         "ssg_wrong_title": "Titel savegame1 ist nicht erlaubt.",
+        "ssg_name_empty": "Titel darf nicht leer sein.",
+        "ssg_map_empty": "Map muss gesetzt sein.",
+        "ssg_title_empty": "Fehlt",
         "delete_title": "Entfernen",
         "delete": "Savegame wirklich löschen? Savegame und Backup Ordner wird gelöscht.",
         "empty_fs_path": "Bitte Pfad zu farming simulator exe setzen.",
         "empty_fs_gd_path": "Bitte Pfad zu farming simulator game data Ordner setzen.",
         "empty_all_mods_path": "Bitte Pfad zum all mods Ordner setzen.",
-        "miss_path": "Path missing"
+        "miss_path": "Pfad fehlt",
+        "import": "Import",
+        "import_mods": "Import Mods",
+        "import_mods_init": "Es existieren bereits mods in {}\n Sollen diese importiert werden?",
+        "import_sg_init": "Es gibt bereits {} in {}\nSoll der Spielstand importiert werden?",
+        "get_mod_path": "Zu importierenden Mod Ordner auswählen",
+        "get_sg_path": "Zu importierenden Spielstandordner auswählen",
+        "remove_title": "Ordner löschen",
+        "remove_src_folder": "Soll \"{}\" gelöscht werden?",
+        "found_dupes": "Die folgenden Mods sind mit verschiedenen Versionen selektiert.\n\n{}\nNur eine Version kann hinzugefügt werden.",
+        "dupes_title": "Duplikate gefunden",
+        "mod_not_found": "Mod {} nicht in {}\nTrotzdem starten?",
+        "def_fs19": "Standard LS19 Pfad",
+        "def_fs22": "Standard LS22 Pfad",
+        "def_sg_fs19": "Standard LS19 Spielstände Pfad",
+        "def_sg_fs22": "Standard LS22 Spielstände Pfad",
+        "missing_mod": "Mod \"{}\" in version \"{}\" nicht gefunden. Bitte später importieren.",
+        "missing_map": "Map \"{}\" in Version \"{}\" nicht gefunden. Bitte später importieren."
     }
 }
 
-def getTrans(lang, string):
-    return dictionary[lang][string]
+def getTrans(string, lang = ''):
+    if lang == '':
+        return dictionary[se.getSettings('language')][string]
+    else:
+        return dictionary[lang][string]
 
 def getLangs():
     return list(dictionary.keys())
