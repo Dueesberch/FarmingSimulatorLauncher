@@ -43,6 +43,7 @@ dictionary = {
         "missing_map": "Map \"{}\" in version \"{}\" not found. Please import later.",
         "new_import": "Savegame\nNew / Import",
         "new": "New",
+        "new_release": "There is a new version of FarmingSimulatorLauncher.\nClick here to get the latest one.",
         "remove": "Remove",
         "restart_title": "Restart",
         "restart_requ": "Dashboard restart required after save settings to use new language.",
