@@ -1,10 +1,8 @@
 # In Progress
 
-# hilfe / anleitung in translations eintragen
+# FUTURE
 # tooltips hinzufügen zu feldern
-# mac support
 # pyinstaller
-# spielstandname in careerSavegame.xml vor spielstart
 # laden alter spielstände
 # teilen sg's
 # remove mods
@@ -12,7 +10,7 @@
 # LOW PRIO
 # bilder bei mod auswahl
 
-# Release
+# RELEASE v1.0.0
 # anleitung
 # link buymeacoffee
 # translation / beschriftung sauber
@@ -362,7 +360,7 @@ def main():
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window.UnHide()
 		elif event == '-DONATE-':
-			webbrowser.open('http://www.buymeacoffee.com')
+			webbrowser.open('https://www.buymeacoffee.com/FSLauncher')
 		elif event == '-RELEASE-':
 			webbrowser.open('https://github.com/Dueesberch/FarmingSimulatorLauncher/releases/latest')
 	window.close()
