@@ -1,5 +1,4 @@
 # In Progress
-# check new release
 
 # hilfe / anleitung in translations eintragen
 # tooltips hinzufügen zu feldern
@@ -12,7 +11,6 @@
 
 # LOW PRIO
 # bilder bei mod auswahl
-# check for new releases
 
 # Release
 # anleitung
@@ -22,6 +20,7 @@
 # mac version
 # auswahl LS22 / LS19
 # check if valid by md5 checksum of exe
+# ordner für setting.json / games.json fix
 
 import os
 import sys
@@ -151,7 +150,7 @@ def init():
 					except FileExistsError:
 						pass
 					shutil.copyfile(path + os.sep + i, fs_game_data_folder + 'mods_fsl_bak' + os.sep + i)
-			shutil.rmtree(fs_game_data_folder + 'mods')
+		shutil.rmtree(fs_game_data_folder + 'mods')
 
 	if os.path.exists(fs_game_data_folder + 'savegame1'):
 		if checksumdir.dirhash(fs_game_data_folder + 'savegame1') != TinyDB('settings.json').get(doc_id = 1)['sg_hash']:
@@ -162,15 +161,14 @@ def init():
 					return ret
 			else:
 				shutil.copytree(fs_game_data_folder + 'savegame1', fs_game_data_folder + 'savegame1_' + date)
-			shutil.rmtree(fs_game_data_folder + 'savegame1')
+		shutil.rmtree(fs_game_data_folder + 'savegame1')
 
 	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
-		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') == TinyDB('settings.json').get(doc_id = 1)['sgb_hash']:
-			shutil.rmtree(fs_game_data_folder + 'savegameBackup')
-		else:
+		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB('settings.json').get(doc_id = 1)['sgb_hash']:
 			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
 			sg.popup_ok(tr.getTrans('sgb_changed').format(date))
 			shutil.copyfile(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
+		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 	return True
 
 def getSaveGames():
@@ -210,7 +208,10 @@ def startSaveGame(name):
 				return False
 	savegame = db.get((q.name == name))['name']
 	if os.path.exists(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml'):
-		ET.parse(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml').find('settings/savegameName').text = savegame
+		tree = ET.parse(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml')
+		tree.find('settings/savegameName').text = savegame
+		with open(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml', 'wb') as f:
+			tree.write(f)
 	shutil.copytree(fs_game_data_folder + savegame, fs_game_data_folder + 'savegame1')
 	shutil.copytree(fs_game_data_folder + savegame + ' Backup', fs_game_data_folder + 'savegameBackup')
 	TinyDB('settings.json').update({'last_sg': name, 'sg_hash': '', 'sgb_hash': '', 'mods_hash': checksumdir.dirhash(fs_game_data_folder + 'mods')}, doc_ids = [1])
@@ -263,8 +264,11 @@ def whatToDo():
 def main():
 	new_rel = False
 	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
-	if response['tag_name'] > FSL_Version:
-		new_rel = True
+	try:
+		if response['tag_name'] > FSL_Version:
+			new_rel = True
+	except KeyError:
+		pass
 
 	if not checkFirstRun():
 		sys.exit()
@@ -281,13 +285,15 @@ def main():
 						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2)),
 						sg.Button(button_text = tr.getTrans('help'), key='-HELP-', size=(14, 2))
 						],
-						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (window_size[0]-10, 1), disabled = True)
+						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (window_size[0]-10, 2), disabled = True, button_color = 'gray')
 					]
 	layout = [	[sg.Combo(getSaveGames(), size = (window_size[0]-10,5), key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (window_size[0]-10,1))],
 				[sg.Text(size = (window_size[0]-10,1), key = '-DESC-')],
 				[button_layout],
-				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (window_size[0]-10, 2), visible = new_rel, button_color = 'green')],
+				[sg.Text(size = (window_size[0]-10,1))],
+				[sg.Text(size = (window_size[0]-10,1))],
+				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (window_size[0]-10, 2), visible = new_rel, button_color = ('black', 'lightgreen'))],
 				[sg.Button(tr.getTrans('buymeacoffee'), key = '-DONATE-', size = (window_size[0]-10, 1))]
 			]
 			
@@ -299,7 +305,7 @@ def main():
 		if event == sg.WIN_CLOSED or event == '-EXIT-':
 			break
 		elif event == '-COMBO-':
-			window['-START-'].update(disabled = False)
+			window['-START-'].update(disabled = False, button_color = ('black', 'green'))
 			window['-CHANGE-'].update(disabled = False)
 			window['-REMOVE-'].update(disabled = False)
 			data = db.search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
@@ -308,18 +314,19 @@ def main():
 			window.Hide()
 			if startSaveGame(values['-COMBO-'].split(':')[0].rstrip()):
 				break
+			window.UnHide()
 		elif event == '-CHANGE-':
 			window.Hide()
 			ng.guiNewSaveGame(values['-COMBO-'].split(' : ')[0].rstrip())
 			window['-COMBO-'].update(value = '', values = getSaveGames())
-			window['-START-'].update(disabled = True)
+			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
 			window['-REMOVE-'].update(disabled = True)
 			window.UnHide()
 		elif event == '-REMOVE-':
 			removeSaveGame(values['-COMBO-'])
 			window['-COMBO-'].update(value = '', values = getSaveGames())
-			window['-START-'].update(disabled = True)
+			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
 			window['-REMOVE-'].update(disabled = True)
 		elif event == '-NEW-':
@@ -329,7 +336,7 @@ def main():
 			else:
 				im.guiImportSG()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
-			window['-START-'].update(disabled = True)
+			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
 			window['-REMOVE-'].update(disabled = True)
 			window.UnHide()
@@ -358,6 +365,7 @@ def main():
 			webbrowser.open('http://www.buymeacoffee.com')
 		elif event == '-RELEASE-':
 			webbrowser.open('https://github.com/Dueesberch/FarmingSimulatorLauncher/releases/latest')
+	window.close()
 
 if __name__ == '__main__':
 	main()
