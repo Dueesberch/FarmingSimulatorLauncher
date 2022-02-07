@@ -36,19 +36,19 @@ import re
 import datetime
 import webbrowser
 import requests
-
 import xml.etree.ElementTree as ET
-
 import PySimpleGUI as sg
-
 import translation as tr
 import settings as se
 import newgame as ng
 import import_ls as im
+from tinydb import TinyDB, Query
+import json
+from packaging import version
+
+FSL_Version = 'v1.0.0'
 
 window_size = (800, 350)
-
-from tinydb import TinyDB, Query
 
 db = TinyDB('games.json')
 
@@ -261,9 +261,10 @@ def whatToDo():
 	return ret
 
 def main():
-	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases')
-	print(response.json()['assets'])
-	sys.exit()
+	new_rel = False
+	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
+	if response['tag_name'] > FSL_Version:
+		new_rel = True
 
 	if not checkFirstRun():
 		sys.exit()
@@ -286,6 +287,7 @@ def main():
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (window_size[0]-10,1))],
 				[sg.Text(size = (window_size[0]-10,1), key = '-DESC-')],
 				[button_layout],
+				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (window_size[0]-10, 2), visible = new_rel, button_color = 'green')],
 				[sg.Button(tr.getTrans('buymeacoffee'), key = '-DONATE-', size = (window_size[0]-10, 1))]
 			]
 			
@@ -354,6 +356,8 @@ def main():
 			window.UnHide()
 		elif event == '-DONATE-':
 			webbrowser.open('http://www.buymeacoffee.com')
+		elif event == '-RELEASE-':
+			webbrowser.open('https://github.com/Dueesberch/FarmingSimulatorLauncher/releases/latest')
 
 if __name__ == '__main__':
 	main()

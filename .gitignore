@@ -1,4 +1,2 @@
-__pycache__
-*.json
-*_bak
 build
+dist
