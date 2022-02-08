@@ -360,7 +360,7 @@ def main():
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window.UnHide()
 		elif event == '-DONATE-':
-			webbrowser.open('https://www.buymeacoffee.com/FSLauncher')
+			webbrowser.open('https://de.tipeee.com/farmingsimulatorlauncher')
 		elif event == '-RELEASE-':
 			webbrowser.open('https://github.com/Dueesberch/FarmingSimulatorLauncher/releases/latest')
 	window.close()
