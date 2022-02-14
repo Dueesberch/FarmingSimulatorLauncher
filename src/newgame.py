@@ -9,7 +9,6 @@ import settings as se
 
 import xml.etree.ElementTree as ET
 
-window_size = (800, 500)
 mods = {}
 maps = {}
 
@@ -116,20 +115,21 @@ def guiNewSaveGame(title = None):
 	global maps
 	global mods
 	maps_keys, mods_keys = getMods()
-	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (window_size[0]-10, 1))],
-				[sg.Input(key = '-TITLE-', size = (window_size[0]-10, 1))],
-				[sg.Text(tr.getTrans('description'), size = (window_size[0]-10, 1))],
-				[sg.Input(key = '-DESC-', size = (window_size[0]-10, 1))],
+	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
+				[sg.Input(key = '-TITLE-', size = (100, 1))],
+				[sg.Text(tr.getTrans('description'), size = (90, 1))],
+				[sg.Input(key = '-DESC-', size = (100, 1))],
 				[sg.Text('Map')],
-				[sg.Combo(maps_keys, key = '-MAP-', size = (window_size[0]-10, 1))],
+				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
-				[sg.Listbox(mods_keys, key = '-MODS-',size = (window_size[0]-10, 15), select_mode = 'extended')],
-				[	sg.Button(tr.getTrans('save'), key = '-SAVE-'),
-					sg.Button(tr.getTrans('exit'), key = '-EXIT-')
+				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended')],
+				[sg.Text('')],
+				[	sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1)),
+					sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 				]
 	]
 	
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, size = window_size, location = (50, 50))
+	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50))
 	window['-MODS-'].bind('<FocusIn>', 'click')
 
 	update_sg = -1

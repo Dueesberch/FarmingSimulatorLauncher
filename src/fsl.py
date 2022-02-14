@@ -44,8 +44,6 @@ from packaging import version
 
 FSL_Version = 'v1.0.0'
 
-window_size = (800, 320)
-
 fs_path = ''
 fs_game_data_folder = ''
 all_mods_folder = ''
@@ -243,7 +241,7 @@ def removeSaveGame(title):
 	return
 
 def whatToDo():
-	layout = 	[	[sg.Button(button_text = tr.getTrans('new'), key = '-NEW-'), sg.Button(button_text = tr.getTrans('import'), key = '-IMPORT-')]
+	layout = 	[	[sg.Button(button_text = tr.getTrans('new'), key = '-NEW-', size = (14, 2)), sg.Button(button_text = tr.getTrans('import'), key = '-IMPORT-', size = (14, 2))]
 				]
 	window = sg.Window('', layout, finalize = True, location = (50, 50))
 
@@ -261,7 +259,8 @@ def whatToDo():
 	return ret
 
 def main():
-	se.init()
+	if not se.init():
+		sys.exit()
 
 	if not checkFirstRun():
 		sys.exit()
@@ -288,19 +287,20 @@ def main():
 						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2)),
 						sg.Button(button_text = tr.getTrans('help'), key='-HELP-', size=(14, 2))
 						],
-						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (window_size[0]-10, 2), disabled = True, button_color = 'gray')
+						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
 					]
-	layout = [	[sg.Combo(getSaveGames(), size = (window_size[0]-10,5), key = '-COMBO-', enable_events = True)],
-				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (window_size[0]-10,1))],
-				[sg.Text(size = (window_size[0]-10,1), key = '-DESC-')],
+	layout = [	[sg.Text('LOREIPSUM', key = '-DESC_T-', size = (111,1))],
+				[sg.Combo(getSaveGames(), size = (125,5), key = '-COMBO-', enable_events = True)],
+				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (111,1))],
+				[sg.Text(size = (111,1), key = '-DESC-')],
 				[button_layout],
-				[sg.Text(size = (window_size[0]-10,1))],
-				[sg.Text(size = (window_size[0]-10,1))],
-				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (window_size[0]-10, 2), visible = new_rel, button_color = ('black', 'lightgreen'))],
-				[sg.Button(tr.getTrans('donate'), key = '-DONATE-', size = (window_size[0]-10, 1), button_color = ('black', 'yellow'))]
+				[sg.Text(size = (111,1))],
+				[sg.Text(size = (111,1))],
+				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (111, 2), visible = new_rel, button_color = ('black', 'lightgreen'))],
+				[sg.Button(tr.getTrans('donate'), key = '-DONATE-', size = (111, 1), button_color = ('black', 'yellow'))]
 			]
 			
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, size = window_size, location = (50, 50))
+	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
 
 	while True:
 		event, values = window.read()
@@ -346,7 +346,7 @@ def main():
 		elif event == '-SET-':
 			window.Hide()
 			se.guiSettings(lang)
-			window['-NEW-'].update(tr.getTrans('new'))
+			window['-NEW-'].update(tr.getTrans('new_import'))
 			window['-CHANGE-'].update(tr.getTrans('change'))
 			window['-REMOVE-'].update(tr.getTrans('remove'))
 			window['-SET-'].update(tr.getTrans('settings'))

@@ -6,8 +6,6 @@ import import_ls as im
 
 from tinydb import TinyDB, Query
 
-window_size = (800, 350)
-
 fsl_config_path = ''
 settings_json = ''
 games_json = ''
@@ -19,6 +17,8 @@ def init():
 	global games_json
 	global vers
 
+	ret = True
+
 	if platform.system() == 'Darwin':
 		fsl_config_path = os.path.expanduser('~') + '/Library/Application Support/FarmingSimulatorLauncher/'
 	elif platform.system() == 'Windows':
@@ -27,9 +27,11 @@ def init():
 		sg.popup_error('Unsuported operating system.')
 		return False
 
-	layout = [[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))]]
+	layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
+				[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
+			]
 
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50))
+	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
 
 	while True:
 		event, values = window.read()
@@ -43,13 +45,18 @@ def init():
 		elif event == '-LS22-':
 			vers = 'ls22'
 			break
+		elif event == '-EXIT-':
+			ret = False
+			break
 	window.close()
 
 	games_json = fsl_config_path + 'games_' + vers + '.json'
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
 
-	if not os.path.exists(fsl_config_path):
+	if not os.path.exists(fsl_config_path) and ret == True:
 		os.makedirs(fsl_config_path)
+	
+	return ret
 
 def saveSettings(values):
 	db = TinyDB(settings_json)
@@ -107,23 +114,23 @@ def guiSettings(lang, init = False):
 		def_fs_steam_text = tr.getTrans('def_fs22_steam')
 		def_sg_fs_text = tr.getTrans('def_sg_fs22')
 
-	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-'), sg.Combo(values = tr.getLangs(), size = (window_size[0]-10,5), default_value = lang, key = '-COMBO-', enable_events = True)],
+	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
+				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
-				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1)), sg.FileBrowse(initial_folder = fs)], 
-				[sg.Button(def_fs_text, key = '-DEF_FS-'), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-'), ],
+				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 
+				[sg.FileBrowse(initial_folder = fs, target = '-FS_PATH-'), sg.Button(def_fs_text, key = '-DEF_FS-', size = (30,1)), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-', size = (30,1)), ],
 				[sg.Text(tr.getTrans('get_fs_game_data_path'), key = '-FS_GAME_DATA_PATH_TEXT-')], 
-				[sg.Input(gd, key = '-FS_GAME_DATA_PATH-', size = (100, 1)), sg.FolderBrowse(initial_folder = gd)],
-				[sg.Button(def_sg_fs_text, key = '-DEF_SG_FS-')],
+				[sg.Input(gd, key = '-FS_GAME_DATA_PATH-', size = (100, 1))],
+				[sg.FolderBrowse(initial_folder = gd, target = '-FS_GAME_DATA_PATH-'), sg.Button(def_sg_fs_text, key = '-DEF_SG_FS-', size = (30,1))],
 				[sg.Text(tr.getTrans('get_all_mods_path'), key = '-ALL_MODS_PATH_TEXT-')], 
-				[sg.Input(am, key = '-ALL_MODS_PATH-', size = (80, 1)), sg.FolderBrowse(initial_folder = am)], #sg.Button(tr.getTrans('import_mods'), key = '-IMPORT-')],
-				[	sg.Button(tr.getTrans('save'), key = '-SAVE-'),
-					sg.Button(tr.getTrans('exit'), key = '-EXIT-')
+				[sg.Input(am, key = '-ALL_MODS_PATH-', size = (100, 1))],
+				[sg.FolderBrowse(initial_folder = am, target = '-ALL_MODS_PATH-')],
+				[	sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1)),
+					sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 				]
 			]
 
-	window = sg.Window(tr.getTrans('settings'), layout, size = window_size, finalize = True, location = (50, 50))
-#	if init:
-#		window['-IMPORT-'].update(disabled = True)
+	window = sg.Window(tr.getTrans('settings'), layout, finalize = True, location = (50, 50))
 		
 	while True:
 		event, values = window.read()

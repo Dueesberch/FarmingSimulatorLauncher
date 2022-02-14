@@ -9,7 +9,6 @@ import xml.etree.ElementTree as ET
 import shutil
 from tinydb import TinyDB, Query
 
-window_size = (800, 600)
 existing_mods = {}
 
 def importAllMods(path, rem = False):
@@ -64,18 +63,19 @@ def getAllMods():
 
 def guiImportMods():
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
-					[sg.Input('', key = '-MOD_PATH-', enable_events=True, size = (100, 1)), sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
+					[sg.Input('', key = '-MOD_PATH-', enable_events=True, size = (108, 1))],
+					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
 					[sg.Text('LOREIPSUM')],
 					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
-					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (108, 1))],
+					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
 					[sg.Text('LOREIPSUM')],
 					[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
-					[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (108, 1))],
-					[sg.Text('LOREIPSUM')],
-					[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (108, 1))]
+					[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (96, 1))],
+					[sg.Text('')],
+					[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
 				]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size, finalize = True, location = (50, 50))
+	window = sg.Window(tr.getTrans('import_mods'), layout, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()
@@ -176,28 +176,30 @@ def guiImportSG(path = '', rem = False):
 	if path == '':
 		path = se.getSettings('fs_game_data_path')
 
-		layout =    [	[sg.Text(tr.getTrans('sg_title'), size = (window_size[0]-10, 1))],
-						[sg.Input(key = '-TITLE-', size = (window_size[0]-10, 1))],
-						[sg.Text(tr.getTrans('description'), size = (window_size[0]-10, 1))],
-						[sg.Input(key = '-DESC-', size = (window_size[0]-10, 1))],
+		layout =    [	[sg.Text(tr.getTrans('sg_title'), size = (60, 1))],
+						[sg.Input(key = '-TITLE-', size = (92, 1))],
+						[sg.Text(tr.getTrans('description'), size = (60, 1))],
+						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[sg.Text(tr.getTrans('get_sg_path'))],
-						[sg.Input('', key = '-SG_PATH-'), sg.FolderBrowse(initial_folder = path)],
-						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-'),
-							sg.Button(tr.getTrans('exit'), key = '-EXIT-')
+						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
+						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-')],
+						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
+							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
 					]
 	else:
-		layout =	[	[sg.Text(tr.getTrans('sg_title'), size = (window_size[0]-10, 1))],
-						[sg.Input(key = '-TITLE-', size = (window_size[0]-10, 1))],
-						[sg.Text(tr.getTrans('description'), size = (window_size[0]-10, 1))],
-						[sg.Input(key = '-DESC-', size = (window_size[0]-10, 1))],
-						[sg.Input(path, key = '-SG_PATH-', size = (window_size[0]-10, 1), readonly = True)],
-						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-'),
-							sg.Button(tr.getTrans('exit'), key = '-EXIT-')
+		layout =	[	[sg.Text(tr.getTrans('sg_title'), size = (92, 1))],
+						[sg.Input(key = '-TITLE-', size = (92, 1))],
+						[sg.Text(tr.getTrans('description'), size = (92, 1))],
+						[sg.Input(key = '-DESC-', size = (92, 1))],
+						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
+						[sg.Text('')],
+						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
+							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
 					]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size, finalize = True, location = (50, 50))
+	window = sg.Window(tr.getTrans('import_mods'), layout, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()
