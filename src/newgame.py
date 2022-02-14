@@ -2,7 +2,7 @@ import zipfile
 import os
 from pathlib import Path
 
-import PySimpleGUI as sg
+import PySimpleGUIQt as sg
 from tinydb import TinyDB, Query
 import translation as tr
 import settings as se

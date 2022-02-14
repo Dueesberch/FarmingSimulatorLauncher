@@ -1,6 +1,6 @@
 import os
 import platform
-import PySimpleGUI as sg
+import PySimpleGUIQt as sg
 import translation as tr
 import import_ls as im
 
@@ -28,7 +28,7 @@ def init():
 		return False
 
 	layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
-				[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
+				[sg.Button('Exit', key = '-EXIT-', size = (28, 1))],
 			]
 
 	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')

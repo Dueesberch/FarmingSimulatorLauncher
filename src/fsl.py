@@ -33,7 +33,7 @@ import datetime
 import webbrowser
 import requests
 import xml.etree.ElementTree as ET
-import PySimpleGUI as sg
+import PySimpleGUIQt as sg
 import translation as tr
 import settings as se
 import newgame as ng
@@ -171,7 +171,7 @@ def init():
 def getSaveGames():
 	q = Query()
 	all = TinyDB(se.games_json).all()
-	l = []
+	l = ['']
 	for i in all:
 		n = i['name']
 		m = i['map']
@@ -287,13 +287,23 @@ def main():
 						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2)),
 						sg.Button(button_text = tr.getTrans('help'), key='-HELP-', size=(14, 2))
 						],
-						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
+						#sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
 					]
-	layout = [	[sg.Text('LOREIPSUM', key = '-DESC_T-', size = (111,1))],
-				[sg.Combo(getSaveGames(), size = (125,5), key = '-COMBO-', enable_events = True)],
+	layout = [	[sg.Text('LOREIPSUM', key = '-TITLE_T-', size = (111,1))],
+				[sg.Combo(getSaveGames(), size = (125,1), key = '-COMBO-', enable_events = True)],
+				#[sg.Combo([''], size = (125,1), key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (111,1))],
 				[sg.Text(size = (111,1), key = '-DESC-')],
-				[button_layout],
+				#[button_layout],
+				[sg.Button(button_text = tr.getTrans('new_import'), key='-NEW-', size=(14, 2)),
+				sg.Button(button_text = tr.getTrans('change'), key = '-CHANGE-', size = (14, 2), disabled = True),
+				sg.Button(button_text = tr.getTrans('remove'), key='-REMOVE-', size=(14, 2), disabled = True),
+				sg.Button(button_text = 'Mods', key='-MODS-', size=(14, 2)),
+				sg.Button(button_text = tr.getTrans('settings'), key='-SET-', size=(14, 2)),
+				sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2)),
+				sg.Button(button_text = tr.getTrans('help'), key='-HELP-', size=(14, 2))
+				],
+				[sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')],
 				[sg.Text(size = (111,1))],
 				[sg.Text(size = (111,1))],
 				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (111, 2), visible = new_rel, button_color = ('black', 'lightgreen'))],
@@ -354,6 +364,7 @@ def main():
 			window['-HELP-'].update(tr.getTrans('help'))
 			window['-START-'].update(tr.getTrans('start'))
 			window['-DESC_T-'].update(tr.getTrans('description'))
+			#window['-TITLE_T-'].update(tr.getTrans(''))
 			window['-DONATE-'].update(tr.getTrans('donate'))
 			window['-RELEASE-'].update(tr.getTrans('new_release'))
 			window.UnHide()
