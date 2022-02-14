@@ -10,12 +10,15 @@ fsl_config_path = ''
 settings_json = ''
 games_json = ''
 vers = ''
+def_vers = ''
 
 def init():
 	global settings_json
 	global fsl_config_path
 	global games_json
 	global vers
+	global def_vers
+	global fsl_settings_json
 
 	ret = True
 
@@ -26,29 +29,41 @@ def init():
 	else:
 		sg.popup_error('Unsuported operating system.')
 		return False
+		
+	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
 
-	layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
-				[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
-			]
+	if os.path.exists(fsl_settings_json):
+		def_vers = TinyDB(fsl_settings_json).get(doc_id = 1)['def_vers']
 
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
+	if def_vers == '':
+		layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
+					[sg.Checkbox('text', key = '-SET_DEF_LS-')],
+					[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
+				]
 
-	while True:
-		event, values = window.read()
-		#print(event, values)
-		if event == sg.WIN_CLOSED:
-			break
-		elif event == '-LS19-':
-			vers = 'ls19'
-			settings_json = fsl_config_path + 'settings_ls19.json'
-			break
-		elif event == '-LS22-':
-			vers = 'ls22'
-			break
-		elif event == '-EXIT-':
-			ret = False
-			break
-	window.close()
+		window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
+
+		while True:
+			event, values = window.read()
+			print(event, values)
+			if event == sg.WIN_CLOSED:
+				break
+			elif event == '-LS19-':
+				vers = 'ls19'
+				if values['-SET_DEF_LS-']:
+					def_vers = vers
+				break
+			elif event == '-LS22-':
+				vers = 'ls22'
+				if values['-SET_DEF_LS-']:
+					def_vers = vers
+				break
+			elif event == '-EXIT-':
+				ret = False
+				break
+		window.close()
+	else:
+		vers = def_vers
 
 	games_json = fsl_config_path + 'games_' + vers + '.json'
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
@@ -79,11 +94,22 @@ def saveSettings(values):
 			os.makedirs(all_mods_path)
 		except FileExistsError:
 			pass
-	db.update({'language': values['-COMBO-'], 'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path}, doc_ids = [1])
+	db.update({'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path}, doc_ids = [1])
+	TinyDB(fsl_settings_json).update({'language': values['-COMBO-']}, doc_ids = [1])
+	if values['-SET_DEF_LS-']:
+		TinyDB(fsl_settings_json).update({'def_vers': vers}, doc_ids = [1])
+	else:
+		TinyDB(fsl_settings_json).update({'def_vers': ''}, doc_ids = [1])
 	return True
 
 def getSettings(key):
 	db = TinyDB(settings_json)
+	q = Query()
+	settings = db.get(doc_id = 1)
+	return settings[key]
+	
+def getFslSettings(key):
+	db = TinyDB(fsl_settings_json)
 	q = Query()
 	settings = db.get(doc_id = 1)
 	return settings[key]
@@ -92,9 +118,10 @@ def checkInit(lang, init):
 	if init:
 		db = TinyDB(settings_json)
 		if platform.system() == 'Windows':
-			db.insert({'language': lang, 'fs_path': 'C:/Program Files (x86)', 'fs_game_data_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'all_mods_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
+			db.insert({'fs_path': 'C:/Program Files (x86)', 'fs_game_data_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'all_mods_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
 		elif platform.system() == 'Darwin':
-			db.insert({'language': lang, 'fs_path': '/Applications', 'fs_game_data_path': os.path.expanduser('~') + '/Library/Application Support/', 'all_mods_path': os.path.expanduser('~') + '/Library/Application Support/', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
+			db.insert({'fs_path': '/Applications', 'fs_game_data_path': os.path.expanduser('~') + '/Library/Application Support/', 'all_mods_path': os.path.expanduser('~') + '/Library/Application Support/', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
+		TinyDB(fsl_settings_json).insert({'language': lang, 'def_vers': ''})
 
 def guiSettings(lang, init = False):
 	io = True
@@ -103,7 +130,12 @@ def guiSettings(lang, init = False):
 	fs = getSettings('fs_path')
 	gd = getSettings('fs_game_data_path')
 	am = getSettings('all_mods_path')
-	lang = getSettings('language')
+	lang = getFslSettings('language')
+
+	if def_vers != '':
+		set_def_check = True
+	else:
+		set_def_check = False
 
 	if vers == 'ls19':
 		def_fs_text = tr.getTrans('def_fs19')
@@ -116,6 +148,7 @@ def guiSettings(lang, init = False):
 
 	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
 				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
+				[sg.Checkbox('text', key = '-SET_DEF_LS-', default = set_def_check)],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
 				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 
 				[sg.FileBrowse(initial_folder = fs, target = '-FS_PATH-'), sg.Button(def_fs_text, key = '-DEF_FS-', size = (30,1)), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-', size = (30,1)), ],

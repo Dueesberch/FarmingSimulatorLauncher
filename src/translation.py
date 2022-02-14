@@ -43,7 +43,7 @@ dictionary = {
         "mod_not_found": "Mod {} not in {}\nStart anyway?",
         "missing_mod": "Mod \"{}\" in version \"{}\" not found. Please import later.",
         "missing_map": "Map \"{}\" in version \"{}\" not found. Please import later.",
-        "new_import": "Savegame\nNew / Import",
+        "new_import": "New / Import",
         "new": "New",
         "new_release": "There is a new version of FarmingSimulatorLauncher.\nClick here to get the latest one.",
         "remove": "Remove",
@@ -208,7 +208,7 @@ dictionary = {
 
 def getTrans(string, lang = ''):
     if lang == '':
-        return dictionary[se.getSettings('language')][string]
+        return dictionary[se.getFslSettings('language')][string]
     else:
         return dictionary[lang][string]
 

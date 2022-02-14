@@ -61,7 +61,7 @@ def checkFirstRun():
 			mods_path = se.getSettings('fs_game_data_path') + os.sep + 'mods'
 			fs_game_data_path = se.getSettings('fs_game_data_path')
 			savegameBackup_path = se.getSettings('fs_game_data_path') + os.sep + 'savegameBackup'
-			lang = se.getSettings('language')
+			lang = se.getFslSettings('language')
 			try:
 				if len(os.listdir(mods_path)) > 0:
 					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50)) == 'Yes':
@@ -114,7 +114,7 @@ def init():
 	global fs_game_data_folder
 	global all_mods_folder
 	global fs_path
-	lang = se.getSettings('language')
+	lang = se.getFslSettings('language')
 	fs_path = se.getSettings('fs_path')
 	fs_game_data_folder = se.getSettings('fs_game_data_path') + os.sep
 	all_mods_folder = se.getSettings('all_mods_path') + os.sep
