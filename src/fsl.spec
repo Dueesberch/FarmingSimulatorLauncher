@@ -1,8 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+# python -m PyInstaller --distpath ../dist --workpath ../build .\fsl.spec
 
 block_cipher = None
-
 
 a = Analysis(['fsl.py'],
              pathex=[],
@@ -33,7 +32,8 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True,
+          console=False,
+          icon = 'logo.ico',
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,

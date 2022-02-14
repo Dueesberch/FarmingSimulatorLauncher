@@ -9,7 +9,8 @@ import xml.etree.ElementTree as ET
 import shutil
 from tinydb import TinyDB, Query
 
-window_size = (800, 350)
+window_size = (800, 600)
+existing_mods = {}
 
 def importAllMods(path, rem = False):
 	files = os.listdir(path)
@@ -20,7 +21,7 @@ def importAllMods(path, rem = False):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				version = moddesc.find('version')
 				shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
-	if rem == True or sg.popup_yes_no(tr.getTrans('remove_src_folder').format(path), title = tr.getTrans('remove_title')) == 'Yes':
+	if rem == True or sg.popup_yes_no(tr.getTrans('remove_src_folder').format(path), title = tr.getTrans('remove_title'), location = (50, 50)) == 'Yes':
 		try:
 			shutil.rmtree(path)
 		except FileNotFoundError:
@@ -48,16 +49,33 @@ def importMods(path, mods):
 			version = moddesc.find('version')
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
 
+def removeMods(mods):
+	all_mods = se.getSettings('all_mods_path')
+	for i, val in enumerate(mods):
+		os.remove(all_mods + os.sep + existing_mods[val])
+
+def getAllMods():
+	global existing_mods
+	m = ne.getMods(False)
+	existing_mods = m[0]
+	existing_mods.update(m[1])
+	del existing_mods['Standard']
+	return list(existing_mods.keys())
+
 def guiImportMods():
-	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))], 
-					[sg.Input('', key = '-MOD_PATH-', enable_events=True), sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
-					[sg.Listbox('',  key = '-MODS-', size = (window_size[0]-10, 10), select_mode = 'extended')],
-					[	sg.Button(tr.getTrans('import'), key = '-IMPORT-'),
-						sg.Button(tr.getTrans('exit'), key = '-EXIT-')
-					]
+	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
+					[sg.Input('', key = '-MOD_PATH-', enable_events=True, size = (100, 1)), sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
+					[sg.Text('LOREIPSUM')],
+					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
+					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (108, 1))],
+					[sg.Text('LOREIPSUM')],
+					[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
+					[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (108, 1))],
+					[sg.Text('LOREIPSUM')],
+					[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (108, 1))]
 				]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size)
+	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()
@@ -67,8 +85,12 @@ def guiImportMods():
 			importMods(values['-MOD_PATH-'], values['-MODS-'])
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
+			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-MOD_PATH-':
 			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
+		elif event == '-REMOVE-':
+			removeMods(values['-MODS_INST-'])
+			window['-MODS_INST-'].update(getAllMods())
 	window.close()
 	return
 
@@ -95,7 +117,7 @@ def importSavegame(values, rem):
 				maps.append(maps_tmp[0])
 			elif len(maps_tmp) == 0:
 				maps.append('fsl_' + vers + '!' + name)
-				sg.popup_ok(tr.getTrans('missing_map').format(i.attrib['title'], vers))
+				sg.popup_ok(tr.getTrans('missing_map').format(i.attrib['title'], vers), location = (50, 50))
 		else:
 			mods_tmp = []
 			for key, val in all_mods.items():
@@ -106,22 +128,22 @@ def importSavegame(values, rem):
 				print('select version')
 			elif len(mods_tmp) == 1:
 				mods.append(mods_tmp[0])
-			elif len(mods_tmp) == 0:
+			elif len(mods_tmp) == 0 and not name.startswith('pdlc'):
 				mods.append('fsl_' + vers + '!' + name)
-				sg.popup_ok(tr.getTrans('missing_mod').format(i.attrib['title'], vers))
+				sg.popup_ok(tr.getTrans('missing_mod').format(i.attrib['title'], vers), location = (50, 50))
 
 	
 	if ':' in values['-TITLE-']:
-		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'))
+		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50))
 		return False
 	if values['-TITLE-'] == 'savegame1':
-		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'))
+		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50))
 		return False
-	if TinyDB('games.json').get((Query().name == values['-TITLE-'])):
-		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'))
+	if TinyDB(se.games_json).get((Query().name == values['-TITLE-'])) or os.path.exists(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']):
+		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 		return False
 	if values['-TITLE-'] == '':
-		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'))
+		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 
 	modstoadd = {}
@@ -130,7 +152,7 @@ def importSavegame(values, rem):
 
 	if len(maps) == 0:
 		maps.append('fs_internal')
-	TinyDB('games.json').insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
+	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
 
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
 	for i in os.listdir(values['-SG_PATH-']):
@@ -175,7 +197,7 @@ def guiImportSG(path = '', rem = False):
 						]
 					]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size, finalize = True)
+	window = sg.Window(tr.getTrans('import_mods'), layout, size = window_size, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()

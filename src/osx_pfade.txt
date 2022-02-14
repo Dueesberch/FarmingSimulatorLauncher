@@ -1,0 +1,8 @@
+FS exe
+/Applications/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game
+
+game data
+~/Library/Application Support/FarmingSimulator2019
+
+Steam exe
+~/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game

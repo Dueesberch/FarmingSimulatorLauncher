@@ -25,11 +25,11 @@ def getMods(l = True):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				m = moddesc.find('maps/map/title/en')
 				if m != None:
-					key = m.text + ' - ' + i.split('!')[0][3:]
+					key = m.text + ' - ' + i.split('!')[0][4:]
 					maps[key] = i
 				else:
 					m = moddesc.find('title/en')
-					key = m.text + ' - ' + i.split('!')[0][3:]
+					key = m.text + ' - ' + i.split('!')[0][4:]
 					mods[key] = [i]
 	if l:
 		return list(sorted(maps.keys())), list(sorted(mods.keys()))
@@ -40,21 +40,21 @@ def getMods(l = True):
 def saveSaveGame(values, update):
 	global maps
 	global mods
-	db = TinyDB('games.json')
+	db = TinyDB(se.games_json)
 	if ':' in values['-TITLE-']:
-		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'))
+		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50))
 		return False
 	if values['-TITLE-'] == 'savegame1':
-		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'))
+		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50))
 		return False
 	if update == -1 and db.get((Query().name == values['-TITLE-'])):
-		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'))
+		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 		return False
 	if values['-TITLE-'] == '':
-		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'))
+		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 	if values['-MAP-'] == '':
-		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'))
+		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 	modstoadd = {}
 	check = {}
@@ -80,19 +80,19 @@ def saveSaveGame(values, update):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				m = moddesc.find('title/en')
 				f = f + m.text + '\n'
-		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'))
+		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50))
 		return False
 	if update == -1:
 		try:
 			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']
 			os.mkdir(p)
 		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'))
+			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
 		try:
 			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup'
 		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'))
+			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
 
 	for i, val in enumerate(values['-MODS-']):
@@ -102,10 +102,10 @@ def saveSaveGame(values, update):
 		db.insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 	else:
 		data = db.get(doc_id = update)
-		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] and TinyDB('games.json').get((Query().name == values['-TITLE-'])) == None:
+		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] and TinyDB(se.games_json).get((Query().name == values['-TITLE-'])) == None:
 			db.update({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		else:
-			sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'))
+			sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['name'], se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
@@ -134,7 +134,7 @@ def guiNewSaveGame(title = None):
 
 	update_sg = -1
 	if title != None:
-		data = TinyDB('games.json').search((Query().name == title))
+		data = TinyDB(se.games_json).search((Query().name == title))
 		window['-TITLE-'].update(title)
 		window['-DESC-'].update(data[0]['desc'])
 		for key, val in maps.items():
@@ -149,7 +149,7 @@ def guiNewSaveGame(title = None):
 					selected.append(key)
 					break
 		window.Element('-MODS-').SetValue(selected)
-		update_sg = TinyDB('games.json').get((Query().name == title)).doc_id
+		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
 
 	while True:
 		event, values = window.read()

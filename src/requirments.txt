@@ -1,0 +1,9 @@
+dirsync
+psutil
+zipfile
+checksumdir
+webbrowser
+requests
+PySimpleGUI
+tinydb
+packaging
