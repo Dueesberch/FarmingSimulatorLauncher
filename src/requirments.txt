@@ -4,6 +4,6 @@ zipfile
 checksumdir
 webbrowser
 requests
-PySimpleGUIQt
+PySimpleGUI
 tinydb
 packaging

@@ -1,4 +1,4 @@
-import PySimpleGUIQt as sg
+import PySimpleGUI as sg
 import settings as se
 import translation as tr
 import newgame as ne
