@@ -68,33 +68,33 @@ def checkFirstRun():
 			lang = se.getFslSettings('language')
 			try:
 				if len(os.listdir(mods_path)) > 0:
-					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50)) == 'Yes':
-						w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50))
+					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50), icon = 'logo.ico') == 'Yes':
+						w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50), icon = 'logo.ico')
 						im.importAllMods(mods_path, True)
 						w.close()
-						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50)) == 'Yes':
+						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50), icon = 'logo.ico') == 'Yes':
 							im.guiImportMods()
 						mods_imported = True
 					else:
-						sg.popup_ok(tr.getTrans('backup_folder_text').format(mods_path, mods_path), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
+						sg.popup_ok(tr.getTrans('backup_folder_text').format(mods_path, mods_path), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = 'logo.ico')
 						os.rename(mods_path, mods_path + '_fsl_bak')
 			except FileNotFoundError:
 				pass
 			except FileExistsError:
 				ret = False
-				sg.popup_error(mods_path + tr.getTrans('fsl_bak_exists'), location = (50, 50))
+				sg.popup_error(mods_path + tr.getTrans('fsl_bak_exists'), location = (50, 50), icon = 'logo.ico')
 			
 			if mods_imported:
 				f = "^savegame[0-99]$"
 				for folder in os.listdir(fs_game_data_path):
 					if re.search(f, folder):
 						if  os.path.exists(fs_game_data_path + os.sep + folder + os.sep + 'careerSavegame.xml'):
-							if sg.popup_yes_no(tr.getTrans('import_sg_init').format(folder, fs_game_data_path), title = 'import', location = (50, 50)) == 'Yes':
+							if sg.popup_yes_no(tr.getTrans('import_sg_init').format(folder, fs_game_data_path), title = 'import', location = (50, 50), icon = 'logo.ico') == 'Yes':
 								ret = im.guiImportSG(fs_game_data_path + os.sep + folder, True)
 								if ret:
 									shutil.rmtree(fs_game_data_path + os.sep + folder)
 								else:
-									sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
+									sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = 'logo.ico')
 									os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
 									if not os.path.exists(savegameBackup_path + '_fsl_bak'):
 										os.makedirs(savegameBackup_path + '_fsl_bak')
@@ -106,7 +106,7 @@ def checkFirstRun():
 										pass
 									ret = True
 							else:
-								sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
+								sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = 'logo.ico')
 								os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
 								if not os.path.exists(savegameBackup_path + '_fsl_bak'):
 									os.makedirs(savegameBackup_path + '_fsl_bak')
@@ -121,7 +121,7 @@ def checkFirstRun():
 			except FileNotFoundError:
 				pass
 		else:
-			sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50))
+			sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50), icon = 'logo.ico')
 		if ret == False:
 			try:
 				os.remove(se.settings_json)
@@ -163,7 +163,7 @@ def checkChanges():
 				if found == False:
 					mods[i] = version.text
 			for i in mods:
-				if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50)) == 'Yes':
+				if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), icon = 'logo.ico') == 'Yes':
 					shutil.copyfile(path + os.sep + i, se.getSettings('all_mods_path') + os.sep + 'fsl_' + version.text + '!' + i)
 				else:
 					try:
@@ -176,7 +176,7 @@ def checkChanges():
 	if os.path.exists(fs_game_data_folder + 'savegame1'):
 		if checksumdir.dirhash(fs_game_data_folder + 'savegame1') != TinyDB(se.settings_json).get(doc_id = 1)['sg_hash']:
 			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-			if sg.popup_yes_no(tr.getTrans('sg_changed').format(date), location = (50, 50)) == 'Yes':
+			if sg.popup_yes_no(tr.getTrans('sg_changed').format(date), location = (50, 50), icon = 'logo.ico') == 'Yes':
 				ret = im.guiImportSG(fs_game_data_folder + 'savegame1', True)
 				if ret == False:
 					return ret
@@ -187,7 +187,7 @@ def checkChanges():
 	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
 		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash']:
 			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50))
+			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50), icon = 'logo.ico')
 			shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
 		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 	return True
@@ -212,7 +212,7 @@ def getSaveGames():
 			if i['map'] == 'fs_internal':
 				l.append(n + ' : ' + tr.getTrans('def_map'))
 			else:
-				sg.popup_error(tr.getTrans('map_not_found').format(all_mods_folder + m), title = tr.getTrans('file_not_found'), location = (50, 50))
+				sg.popup_error(tr.getTrans('map_not_found').format(all_mods_folder + m), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
 			pass
 	return l
 
@@ -233,7 +233,7 @@ def startSaveGame(name):
 		try:
 			os.link(all_mods_folder + mods[i], fs_game_data_folder + 'mods' + os.sep + mods[i].split('!')[-1])
 		except FileNotFoundError:
-			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
+			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico') == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
 				return False
 	savegame = TinyDB(se.games_json).get((q.name == name))['name']
@@ -262,25 +262,6 @@ def startSaveGame(name):
 				break
 	return True
 	
-def whatToDo():
-	layout = 	[	[sg.Button(button_text = tr.getTrans('new'), key = '-NEW-', size = (14, 2)), sg.Button(button_text = tr.getTrans('import'), key = '-IMPORT-', size = (14, 2))]
-				]
-	window = sg.Window('', layout, finalize = True, location = (50, 50))
-
-	while True:
-		event, values = window.read()
-		if event == sg.WIN_CLOSED:
-			ret = 'exit'
-			break
-		if event == '-NEW-':
-			ret = 'new'
-			break
-		elif event == '-IMPORT-':
-			ret = 'import'
-			break
-	window.close()
-	return ret
-
 def main():
 	if not se.init():
 		sys.exit()
@@ -288,7 +269,7 @@ def main():
 	if not checkFirstRun():
 		sys.exit()
 	
-	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
+	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50), icon = 'logo.ico')
 
 	if not checkChanges():
 		sg.popup_ok(tr.getTrans('init_failed'), location = (50, 50))
@@ -302,13 +283,13 @@ def main():
 	except KeyError:
 		pass
 
-	button_layout = [	[sg.Button(button_text = tr.getTrans('new_import'), key='-NEW-', size=(14, 2)),
+	button_layout = [	[sg.Button(button_text = tr.getTrans('new'), key='-NEW-', size=(14, 2)),
+						sg.Button(button_text = tr.getTrans('import'), key='-IMPORT-', size=(14, 2)),
 						sg.Button(button_text = tr.getTrans('change'), key = '-CHANGE-', size = (14, 2), disabled = True),
 						sg.Button(button_text = tr.getTrans('remove'), key='-REMOVE-', size=(14, 2), disabled = True),
 						sg.Button(button_text = 'Mods', key='-MODS-', size=(14, 2)),
 						sg.Button(button_text = tr.getTrans('settings'), key='-SET-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('help'), key='-HELP-', size=(14, 2))
+						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2))
 						],
 						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
 					]
@@ -323,7 +304,7 @@ def main():
 				[sg.Button(tr.getTrans('donate'), key = '-DONATE-', size = (111, 1), button_color = ('black', 'yellow'))]
 			]
 			
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
+	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = 'logo.ico')
 
 	while True:
 		event, values = window.read()
@@ -362,11 +343,15 @@ def main():
 			window['-REMOVE-'].update(disabled = True)
 		elif event == '-NEW-':
 			window.Hide()
-			ret = whatToDo()
-			if ret == 'new':
-				ga.guiNewSaveGame()
-			elif ret == 'import':
-				im.guiImportSG()
+			ga.guiNewSaveGame()
+			window['-COMBO-'].update(value = '', values = getSaveGames())
+			window['-START-'].update(disabled = True, button_color = ('gray'))
+			window['-CHANGE-'].update(disabled = True)
+			window['-REMOVE-'].update(disabled = True)
+			window.UnHide()
+		elif event == '-IMPORT-':
+			window.Hide()
+			im.guiImportSG()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
@@ -375,22 +360,18 @@ def main():
 		elif event == '-SET-':
 			window.Hide()
 			se.guiSettings(lang)
-			window['-NEW-'].update(tr.getTrans('new_import'))
+			window['-NEW-'].update(tr.getTrans('new'))
+			window['-IMPORT-'].update(tr.getTrans('import'))
 			window['-CHANGE-'].update(tr.getTrans('change'))
 			window['-REMOVE-'].update(tr.getTrans('remove'))
 			window['-SET-'].update(tr.getTrans('settings'))
 			window['-EXIT-'].update(tr.getTrans('exit'))
-			window['-HELP-'].update(tr.getTrans('help'))
 			window['-START-'].update(tr.getTrans('start'))
 			window['-DESC_T-'].update(tr.getTrans('description'))
 			window['-TITLE_T-'].update(tr.getTrans('sg_title'))
 			window['-DONATE-'].update(tr.getTrans('donate'))
 			window['-RELEASE-'].update(tr.getTrans('new_release'))
 			window['-COMBO-'].update(value = '', values = getSaveGames())
-			window.UnHide()
-		elif event == '-HELP-':
-			window.Hide()
-			sg.popup_ok(tr.getTrans('help_text'), title = tr.getTrans('help'), location = (50, 50))
 			window.UnHide()
 		elif event == '-MODS-':
 			window.Hide()

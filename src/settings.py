@@ -27,21 +27,24 @@ def init():
 	elif platform.system() == 'Windows':
 		fsl_config_path = os.path.expanduser('~').replace('\\', '/') + '/AppData/Roaming/FarmingSimulatorLauncher/'
 	else:
-		sg.popup_error('Unsuported operating system.')
+		sg.popup_error('Unsuported operating system.', icon = 'logo.ico')
 		return False
 		
 	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
 
 	if os.path.exists(fsl_settings_json):
 		def_vers = TinyDB(fsl_settings_json).get(doc_id = 1)['def_vers']
+		lang = TinyDB(fsl_settings_json).get(doc_id = 1)['language']
+	else:
+		lang = 'en'
 
 	if def_vers == '':
 		layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
-					[sg.Checkbox(tr.getTrans('remember', 'en'), key = '-SET_DEF_LS-')],
+					[sg.Checkbox(tr.getTrans('remember', lang), key = '-SET_DEF_LS-')],
 					[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
 				]
 
-		window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = 'logo.png')
+		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = 'logo.ico')
 
 		while True:
 			event, values = window.read()
@@ -77,13 +80,13 @@ def saveSettings(values):
 	db = TinyDB(settings_json)
 	# TODO check fs_path / fs_game_data_pass exists
 	if values['-FS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-FS_GAME_DATA_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-ALL_MODS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
 		return False
 	else:
 		if 'fsl_all_mods_' + vers in values['-ALL_MODS_PATH-']:
@@ -164,7 +167,7 @@ def guiSettings(lang, init = False):
 				]
 			]
 
-	window = sg.Window(tr.getTrans('settings'), layout, finalize = True, location = (50, 50))
+	window = sg.Window(tr.getTrans('settings'), layout, finalize = True, location = (50, 50), icon = 'logo.ico')
 		
 	while True:
 		event, values = window.read()

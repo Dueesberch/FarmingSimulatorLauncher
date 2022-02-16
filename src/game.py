@@ -40,7 +40,7 @@ def getMods(l = True):
 def removeSaveGame(title):
 	q = Query()
 	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
-	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
+	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50), icon = 'logo.ico') == "Yes":
 		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
 		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip()):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip())
@@ -53,19 +53,19 @@ def saveSaveGame(values, update):
 	global mods
 	db = TinyDB(se.games_json)
 	if ':' in values['-TITLE-']:
-		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50))
+		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-TITLE-'] == 'savegame1':
-		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50))
+		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if update == -1 and db.get((Query().name == values['-TITLE-'])):
-		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
+		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-TITLE-'] == '':
-		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
+		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-MAP-'] == '':
-		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
+		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico')
 		return False
 	modstoadd = {}
 	check = {}
@@ -90,19 +90,19 @@ def saveSaveGame(values, update):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				m = moddesc.find('title/en')
 				f = f + m.text + '\n'
-		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50))
+		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if update == -1:
 		try:
 			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']
 			os.mkdir(p)
 		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
+			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 			return False
 		try:
 			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup'
 		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
+			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 			return False
 
 	for i, val in enumerate(values['-MODS-']):
@@ -161,7 +161,7 @@ def guiNewSaveGame(title = None):
 				[sg.Input(key = '-TITLE-', size = (100, 1))],
 				[sg.Text(tr.getTrans('description'), size = (90, 1))],
 				[sg.Input(key = '-DESC-', size = (100, 1))],
-				[sg.Text('Map')],
+				[sg.Text(tr.getTrans('map'))],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
 				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'))],
@@ -175,7 +175,7 @@ def guiNewSaveGame(title = None):
 				]
 	]
 	
-	window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50))
+	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), icon = 'logo.ico')
 	window['-MODS-'].bind('<FocusIn>', 'click')
 
 	update_sg = -1
