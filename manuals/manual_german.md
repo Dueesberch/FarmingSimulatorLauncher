@@ -1,4 +1,4 @@
-<img src="src/logo.png" width="40"/>
+<img src="../src/logo.png" width="40"/>
 
 # FarmingSimulatorLauncher
 
@@ -22,11 +22,11 @@ Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität g
 
 ## Allgemein
 Beim Start erscheint zuerst die Auswahl, welches LS Version benutzt werden soll.  
-<img src="images/select_version_german.png" width="400"/>  
+<img src="../images/select_version_german.png" width="400"/>  
 Sollte nur eine Version installiert sein oder von FSL verwaltet werden, kann der Haken bei "Immer die gewählte LS Version benutzen?" gesetzt werden, bevor die Version angeklickt wird. Dadurch erscheint der Auswahldialog nicht mehr.  
 Dies kann in den Einstellungen geändert werden.  
 Wenn der erste Start erfolgreich abgeschlossen ist öffnet sich das Hauptfenster.  
-<img src="images/main_german.png" width="800"/>  
+<img src="../images/main_german.png" width="800"/>  
 Im Dropdownmenü können die in FSL gespeicherten Savegames ausgewählt werden. Die Einträge setzen sich dabei aus dem Savegamenamen und der verwendeten Map zusammen. Wird eine Vanila Map benutzt wird als Mapname "LS Standard Map" verwendet.
 Unter Beschreibung wird die während des Anlegens des Savegames eingetragene Beschreibung angezeigt.
 ### Tasten
@@ -59,7 +59,7 @@ Sollten Ordner nicht gefunden werden, können diese später auch manuell importi
 ### Savegame anlegen
 Hierüber werden neue Savegames angelegt. Dabei wird aber nur ein FSL internes Savegame erzeugt, welches beim ersten Start im LS, bzw. beim ersten Speichern des Spiels im LS mit Daten gefüllt wird.  
   
-<img src="images/new_sg_german.png" width="800"/>  
+<img src="../images/new_sg_german.png" width="800"/>  
 
 Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden entsprechende Einträge in der FSL Konfiguration erzeugt und die passenden Ordner angelegt.  
 Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
@@ -81,7 +81,7 @@ Beim *Speichern* wird geprüft, ob der Titel in Ordnung ist und noch nicht benut
 ### Savegame importieren
 Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert werden.  
 
-<img src="images/import_sg_german.png" width="800"/>
+<img src="../images/import_sg_german.png" width="800"/>
   
 Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden entsprechende Einträge in der FSL Konfiguration erzeugt und die passenden Ordner angelegt.  
 Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
@@ -96,7 +96,7 @@ Beim *Importieren* wird geprüft, ob der Titel in Ordnung ist und noch nicht ben
 ### Savegame ändern
 Hierüber können bereits vorhanden FSL Savegames angepasst werden.
   
-<img src="images/change_sg_german.png" width="800"/>  
+<img src="../images/change_sg_german.png" width="800"/>  
   
 Der *FSL Savegame Titel* kann verändert werden, muss aber gesetzt sein.
 Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
@@ -124,7 +124,7 @@ Das ausgewählte Savegame steht in LS dann unter savegame1 zur Verfügung.
 ### Mods importieren oder löschen
 Hierüber werden die in FSL verfügbaren Mods vewrwaltet. Es können neue Mods importiert werden und bereits importierte wieder entfernt werden.
 
-<img src="images/import_mods_german.png" width="800"/>
+<img src="../images/import_mods_german.png" width="800"/>
 
 #### Import
 Über *Browse* wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
@@ -146,7 +146,7 @@ Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angekli
 ## FSL Einstellungen
 Hierüber werden die FSL Einstellungen verwaltet.
 
-<img src="images/settings_german.png" width="800"/>  
+<img src="../images/settings_german.png" width="800"/>  
 
 Bild steht stellvertretend für beide LS Versionen.
 
