@@ -11,6 +11,8 @@
 # laden alter spielstände
 # teilen sg's
 # remove mods chcek if mod is used
+# find unused mods
+# check ls version at mod import, list only valid versions
 
 # LOW PRIO
 # bilder bei mod auswahl
@@ -275,7 +277,7 @@ def main():
 		sg.popup_ok(tr.getTrans('init_failed'), location = (50, 50))
 		sys.exit()
 
-	new_rel = False
+	new_rel = True
 	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 	try:
 		if response['tag_name'] > FSL_Version:

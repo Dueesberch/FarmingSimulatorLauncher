@@ -186,6 +186,7 @@ def guiSettings(lang, init = False):
 			window['-ALL_MODS_PATH_TEXT-'].update(tr.getTrans('get_all_mods_path', values['-COMBO-']))
 			window['-SAVE-'].update(tr.getTrans('save', values['-COMBO-']))
 			window['-EXIT-'].update(tr.getTrans('exit', values['-COMBO-']))
+			window['-SET_DEF_LS-'].update(text = tr.getTrans('remember', values['-COMBO-']))
 			if vers == 'ls19':
 				window['-DEF_FS-'].update(tr.getTrans('def_fs19', values['-COMBO-']))
 				window['-DEF_SG_FS-'].update(tr.getTrans('def_sg_fs19', values['-COMBO-']))

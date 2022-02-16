@@ -186,8 +186,8 @@ def guiImportSG(path = '', rem = False):
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[sg.Text(tr.getTrans('get_sg_path'))],
 						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
-						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-')],
+						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
@@ -198,8 +198,8 @@ def guiImportSG(path = '', rem = False):
 						[sg.Input(sg_title, key = '-TITLE-', size = (92, 1))],
 						[sg.Text(tr.getTrans('description'), size = (92, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
-						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
+						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.Text('')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))

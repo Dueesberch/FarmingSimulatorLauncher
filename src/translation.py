@@ -5,7 +5,7 @@ dictionary = {
         "backup_folders_title": "Backup Folder",
         "backup_folder_text": "Folder\n \"{}\" \nmoved to\n \"{}_fsl_bak\"\n",
         "change": "Change",
-        "description": "Description:",
+        "description": "Description",
         "delete": "Do you really want to remove selcted savegame? Savegame and backup folder will be removed.",
         "dupes_found": "The following mods are seleceted in different versions\n\n{}\nOnly one version is able.",
         "dupes_title": "Found duplicates",
@@ -38,7 +38,7 @@ dictionary = {
         "import_sg_init": "There is {} in {}\nImport that?",
         "importable_mods": "Available mods to import",
         "existing_mods": "Already imported mods",
-        "map": "Map:",
+        "map": "Map",
         "map_not_found": "Map file \"{}\" not found",
         "miss_path": "Path missing",
         "mod_not_found": "Mod {} not in {}\nStart anyway?",
@@ -50,7 +50,7 @@ dictionary = {
         "remove": "Remove",
         "remove_title": "Remove folder",
         "remove_src_folder": "Shall \"{}\" be removed?",
-        "remember": "Remember FS version for future starts?",
+        "remember": "Use always the selected FS version?",
         "start": "Start",
         "settings": "Settings",
         "save": "Save",
@@ -77,7 +77,7 @@ dictionary = {
         "backup_folders_title": "Backup Ordner",
         "backup_folder_text": "Ordner\n \"{}\" \nverschoben nach\n \"{}_fsl_bak\"\n",
         "change": "Ändern",
-        "description": "Beschreibung:",
+        "description": "Beschreibung",
         "delete": "Möchtest du das ausgewählte Savegame wirklich löschen? Savegame and Backup Ordner werden gelöscht.",
         "dupes_found": "Die folgenden Mods wurden in unetrschiedlichen Versionen ausgewählt\n\n{}\nNur eine Version ist möglich.",
         "dupes_title": "Duplicate gefunden",
@@ -99,7 +99,7 @@ dictionary = {
         "fsl_init": "Starte FSL. Bitte warten.",
         "get_fs_game_data_path": "Landwirtschaftssimulator Savegames Ordner auswählen.",
         "get_all_mods_path": "Pfad für Alle-Mods-Ordner auswählen.",
-        "get_fs_path": "Pfad zu FarmingSiulator exe auswählen",
+        "get_fs_path": "Pfad zu Farmingsimulator exe auswählen",
         "get_mod_path": "Mod Ordner auswählen aus dem importiert werden soll",
         "get_sg_path": "Savegame Ordner auswählen, dass importiert werden soll",
         "init_failed": "FSL konnte nicht gestartet werden. Bitte Problembehebung in der Anleitung benutzen.",
@@ -110,7 +110,7 @@ dictionary = {
         "import_sg_init": "Savegame {} in {} gefunden\nImportieren?",
         "importable_mods": "Zum Import",
         "existing_mods": "Bereits importierte Mods",
-        "map": "Karte:",
+        "map": "Karte",
         "map_not_found": "Datei für Karte \"{}\" nicht gefunden",
         "miss_path": "Pfad fehlt",
         "mod_not_found": "Mod {} nicht in {}\nTrotzdem starten?",
@@ -134,7 +134,7 @@ dictionary = {
         "ssg_backup_folder_exists": "Savegame Backup Ordner mit dem Titel existiert bereits. Bitte einen anderen Titel verwenden, den Ordner umbenennen oder löschen.",
         "ssg_title": "Titel bereits verwendet",
         "ssg_title_char": "Zeichen",
-        "ssg_wrong_char": "Doppelpunkt (:) nicht erlaubt im Titel.",
+        "ssg_wrong_char": "Doppelpunkt (:) ist nicht erlaubt im Titel.",
         "ssg_title_title": "Title",
         "ssg_wrong_title": "Titel savegame1 kann nicht verwendet werden.",
         "ssg_name_empty": "Titel darf nicht leer sein.",
@@ -144,7 +144,8 @@ dictionary = {
         "sgb_changed": "SavegameBackup Ordner geändert. Wird nach \"savegameBackup_{}\" verschoben.",
         "tt_gaLbMods": "klick: einen Eintrag auswählen, andere abwählen | strg + klick: mehrere Einträge auswählen | shift + klick: alle Einträge zwischen ersten und letzen Ausgewählten markieren | strg + klick auf markierten EIntrag entfernt Selektion",
         "wait_for_import": "Importiere. Bitte warten"
-    }}
+    }
+}
 
 def getTrans(string, lang = ''):
     if lang == '':

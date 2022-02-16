@@ -185,6 +185,7 @@ def guiNewSaveGame(title = None):
 		window['-SEL_MOD-'].update(visible = True)
 		window['-REM_MOD-'].update(visible = True)
 		window['-MISS-'].update(values = addMissingMods(title), visible = True)
+		window['-MAP-'].update(disabled = True)
 		markMods(window, title)
 
 	while True:
