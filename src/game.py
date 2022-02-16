@@ -1,9 +1,11 @@
 import zipfile
 import os
+import shutil
 from pathlib import Path
 
 import PySimpleGUI as sg
 from tinydb import TinyDB, Query
+from tinydb.operations import delete
 import translation as tr
 import settings as se
 
@@ -29,12 +31,22 @@ def getMods(l = True):
 				else:
 					m = moddesc.find('title/en')
 					key = m.text + ' - ' + i.split('!')[0][4:]
-					mods[key] = [i]
+					mods[key] = i
 	if l:
 		return list(sorted(maps.keys())), list(sorted(mods.keys()))
 	else:
 		return maps, mods
 
+def removeSaveGame(title):
+	q = Query()
+	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
+	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
+		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
+		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip()):
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip())
+		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + ' Backup'):
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + ' Backup')
+	return
 
 def saveSaveGame(values, update):
 	global maps
@@ -59,7 +71,7 @@ def saveSaveGame(values, update):
 	check = {}
 	dupes = []
 	for i, val in enumerate(values['-MODS-']):
-		check[mods[val][0]] = mods[val][0].split('!')[1]
+		check[mods[val]] = mods[val].split('!')[1]
 	seen = set()
 	for x in list(check.values()):
 		if x in seen:
@@ -69,7 +81,6 @@ def saveSaveGame(values, update):
 	for j, v in enumerate(dupes):
 		for i in check:
 			if check[i] == v:
-				print('found')
 				dupes[j] = i
 				break
 	if dupes != []:
@@ -95,21 +106,52 @@ def saveSaveGame(values, update):
 			return False
 
 	for i, val in enumerate(values['-MODS-']):
-		modstoadd[str(i)] = mods[val][0]
+		modstoadd[str(i)] = mods[val]
 
 	if update == -1:
 		db.insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 	else:
 		data = db.get(doc_id = update)
-		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] and TinyDB(se.games_json).get((Query().name == values['-TITLE-'])) == None:
-			db.update({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
-		else:
-			sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
-			return False
+		db.update({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['name'], se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['name'] + ' Backup', se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
 	return True
+
+def addMissingMods(title):
+	dataset = TinyDB(se.games_json).get((Query().name == title))['mods']
+	mods = list(getMods(False)[1].values())
+	missing = []
+	for key, value in dataset.items():
+		if not value in mods:
+			missing.append(value)
+	return missing
+
+def markMods(window, title):
+		data = TinyDB(se.games_json).search((Query().name == title))
+		window['-TITLE-'].update(title)
+		window['-DESC-'].update(data[0]['desc'])
+		for key, val in maps.items():
+			if val == data[0]['map']:
+				sg_map = key
+				break
+		window['-MAP-'].update(sg_map)
+		selected = []
+		for i in data[0]['mods']:
+			for key, val in mods.items():
+				if val == data[0]['mods'][i]:
+					selected.append(key)
+					break
+		window.Element('-MODS-').SetValue(selected)
+		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
+
+def remMissingMods(values):
+	dataset = TinyDB(se.games_json).get((Query().name == values['-TITLE-']))
+	sg_mods = dict(dataset['mods'])
+	for key, value in dataset['mods'].items():
+		if value in values['-MISS-']:
+			del(sg_mods[key])
+	TinyDB(se.games_json).update({'mods': sg_mods}, doc_ids = [dataset.doc_id])
 
 def guiNewSaveGame(title = None):
 	global maps
@@ -122,7 +164,11 @@ def guiNewSaveGame(title = None):
 				[sg.Text('Map')],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
-				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended')],
+				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'))],
+				[sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (87, 1), visible = False)],
+				[sg.Text(tr.getTrans('missing'), key = '-MISS_TITLE-', visible = False)],
+				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
+				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
 				[sg.Text('')],
 				[	sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1)),
 					sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
@@ -134,22 +180,12 @@ def guiNewSaveGame(title = None):
 
 	update_sg = -1
 	if title != None:
-		data = TinyDB(se.games_json).search((Query().name == title))
-		window['-TITLE-'].update(title)
-		window['-DESC-'].update(data[0]['desc'])
-		for key, val in maps.items():
-			if val == data[0]['map']:
-				sg_map = key
-				break
-		window['-MAP-'].update(sg_map)
-		selected = []
-		for i in data[0]['mods']:
-			for key, val in mods.items():
-				if val[0] == data[0]['mods'][i]:
-					selected.append(key)
-					break
-		window.Element('-MODS-').SetValue(selected)
 		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
+		window['-MISS_TITLE-'].update(visible = True)
+		window['-SEL_MOD-'].update(visible = True)
+		window['-REM_MOD-'].update(visible = True)
+		window['-MISS-'].update(values = addMissingMods(title), visible = True)
+		markMods(window, title)
 
 	while True:
 		event, values = window.read()
@@ -162,6 +198,11 @@ def guiNewSaveGame(title = None):
 		elif event == '-MODS-click':
 			#handlePicture(values['-MODS-'])
 			window['-SAVE-'].SetFocus(True)
+		elif event == '-SEL_MOD-':
+			markMods(window, title)
+		elif event == '-REM_MOD-':
+			remMissingMods(values)
+			window['-MISS-'].update(addMissingMods(title))
 		
 	window.close()
 

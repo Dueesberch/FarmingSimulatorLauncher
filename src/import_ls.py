@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import settings as se
 import translation as tr
-import newgame as ne
+import game as ga
 
 import os
 import zipfile
@@ -55,7 +55,7 @@ def removeMods(mods):
 
 def getAllMods():
 	global existing_mods
-	m = ne.getMods(False)
+	m = ga.getMods(False)
 	existing_mods = m[0]
 	existing_mods.update(m[1])
 	del existing_mods['Standard']
@@ -65,24 +65,27 @@ def guiImportMods():
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
 					[sg.Input('', key = '-MOD_PATH-', enable_events=True, size = (108, 1))],
 					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
-					[sg.Text('LOREIPSUM')],
+					[sg.Text(tr.getTrans('importable_mods'))],
 					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
 					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
-					[sg.Text('LOREIPSUM')],
+					[sg.Text(tr.getTrans('existing_mods'))],
 					[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
 					[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (96, 1))],
 					[sg.Text('')],
 					[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
 				]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, finalize = True, location = (50, 50))
+	window = sg.Window(tr.getTrans('import'), layout, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-			importMods(values['-MOD_PATH-'], values['-MODS-'])
+			if len(values['-MODS-']) == len(getMods(values['-MOD_PATH-'])):
+				importAllMods(values['-MOD_PATH-'])
+			else:
+				importMods(values['-MOD_PATH-'], values['-MODS-'])
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
@@ -95,7 +98,7 @@ def guiImportMods():
 	return
 
 def importSavegame(values, rem):
-	all_maps, all_mods = ne.getMods(False)
+	all_maps, all_mods = ga.getMods(False)
 	map_title = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').find('settings/mapTitle').text
 	modFromXML = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').findall('mod')
 	mods = []
@@ -128,7 +131,7 @@ def importSavegame(values, rem):
 				print('select version')
 			elif len(mods_tmp) == 1:
 				mods.append(mods_tmp[0])
-			elif len(mods_tmp) == 0 and not name.startswith('pdlc'):
+			elif len(mods_tmp) == 0 and not name.startswith('pdlc') and values['-IGN_MISS-']:
 				mods.append('fsl_' + vers + '!' + name)
 				sg.popup_ok(tr.getTrans('missing_mod').format(i.attrib['title'], vers), location = (50, 50))
 
@@ -169,6 +172,7 @@ def importSavegame(values, rem):
 				shutil.move(bak_path + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
 	except FileNotFoundError:
 		pass
+	shutil.rmtree(values['-SG_PATH-'])
 	return True
 
 def guiImportSG(path = '', rem = False):
@@ -182,16 +186,19 @@ def guiImportSG(path = '', rem = False):
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[sg.Text(tr.getTrans('get_sg_path'))],
 						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
+						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
 					]
 	else:
+		sg_title = 'SG' + path.split('savegame')[1]
 		layout =	[	[sg.Text(tr.getTrans('sg_title'), size = (92, 1))],
-						[sg.Input(key = '-TITLE-', size = (92, 1))],
+						[sg.Input(sg_title, key = '-TITLE-', size = (92, 1))],
 						[sg.Text(tr.getTrans('description'), size = (92, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
+						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
 						[sg.Text('')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
@@ -199,7 +206,7 @@ def guiImportSG(path = '', rem = False):
 						]
 					]
 
-	window = sg.Window(tr.getTrans('import_mods'), layout, finalize = True, location = (50, 50))
+	window = sg.Window(tr.getTrans('import'), layout, finalize = True, location = (50, 50))
 
 	while True:
 		event, values = window.read()
@@ -207,7 +214,9 @@ def guiImportSG(path = '', rem = False):
 			ret = False
 			break
 		elif event == "-IMPORT-":
+			w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50))
 			if importSavegame(values, rem):
 				break
+			w.close()
 	window.close()
 	return ret

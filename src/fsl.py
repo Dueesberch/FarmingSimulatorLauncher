@@ -1,3 +1,6 @@
+""" main python file
+
+"""
 # In Progress
 # mac version
 # steam version
@@ -36,7 +39,7 @@ import xml.etree.ElementTree as ET
 import PySimpleGUI as sg
 import translation as tr
 import settings as se
-import newgame as ng
+import game as ga
 import import_ls as im
 from tinydb import TinyDB, Query
 import json
@@ -50,9 +53,10 @@ all_mods_folder = ''
 
 lang = ''
 
-# call inital settings
-# Backup mods and savegame1 folder 
 def checkFirstRun():
+	""" check if fsl is called first time
+	check if savegame1 and / or mods folder where changed after last usage
+	"""
 	ret = True
 	if not os.path.exists(se.settings_json):
 		ret = se.guiSettings('en', True)
@@ -65,7 +69,11 @@ def checkFirstRun():
 			try:
 				if len(os.listdir(mods_path)) > 0:
 					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50)) == 'Yes':
+						w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50))
 						im.importAllMods(mods_path, True)
+						w.close()
+						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50)) == 'Yes':
+							im.guiImportMods()
 						mods_imported = True
 					else:
 						sg.popup_ok(tr.getTrans('backup_folder_text').format(mods_path, mods_path), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
@@ -85,6 +93,18 @@ def checkFirstRun():
 								ret = im.guiImportSG(fs_game_data_path + os.sep + folder, True)
 								if ret:
 									shutil.rmtree(fs_game_data_path + os.sep + folder)
+								else:
+									sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
+									os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
+									if not os.path.exists(savegameBackup_path + '_fsl_bak'):
+										os.makedirs(savegameBackup_path + '_fsl_bak')
+									try:
+										for backup_file in os.listdir(savegameBackup_path):
+											if re.search(folder, backup_file):
+												shutil.move(savegameBackup_path + os.sep + backup_file, savegameBackup_path + '_fsl_bak' + os.sep + backup_file)
+									except FileNotFoundError:
+										pass
+									ret = True
 							else:
 								sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
 								os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
@@ -109,7 +129,11 @@ def checkFirstRun():
 				pass
 	return ret
 
-def init():
+def checkChanges():
+	""" check if game data changed
+	check if savegame1 and / or mods folder where changed after last usage
+	if so, import is tried or backup if not possible
+	"""
 	global lang
 	global fs_game_data_folder
 	global all_mods_folder
@@ -169,6 +193,9 @@ def init():
 	return True
 
 def getSaveGames():
+	""" get stored save games
+	read the according games_lsxx.json and extract maps
+	"""
 	q = Query()
 	all = TinyDB(se.games_json).all()
 	l = ['']
@@ -190,6 +217,12 @@ def getSaveGames():
 	return l
 
 def startSaveGame(name):
+	""" start selcted savegame
+	link required mods into mods folder
+	copy fsl savegame and fsl savgeme backup folder to savegam1 and savegameBackup folder
+	start FS
+	keep fsl folder in sync
+	"""
 	os.makedirs(fs_game_data_folder + 'mods' + os.sep)
 	q = Query()
 	sg_map = TinyDB(se.games_json).get((q.name == name))['map']
@@ -229,17 +262,6 @@ def startSaveGame(name):
 				break
 	return True
 	
-def removeSaveGame(title):
-	q = Query()
-	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
-	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
-		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
-		if os.path.exists(fs_game_data_folder + title.split(' : ')[0].rstrip()):
-			shutil.rmtree(fs_game_data_folder + title.split(' : ')[0].rstrip())
-		if os.path.exists(fs_game_data_folder + title.split(' : ')[0].rstrip() + ' Backup'):
-			shutil.rmtree(fs_game_data_folder + title.split(' : ')[0].rstrip() + ' Backup')
-	return
-
 def whatToDo():
 	layout = 	[	[sg.Button(button_text = tr.getTrans('new'), key = '-NEW-', size = (14, 2)), sg.Button(button_text = tr.getTrans('import'), key = '-IMPORT-', size = (14, 2))]
 				]
@@ -248,6 +270,7 @@ def whatToDo():
 	while True:
 		event, values = window.read()
 		if event == sg.WIN_CLOSED:
+			ret = 'exit'
 			break
 		if event == '-NEW-':
 			ret = 'new'
@@ -267,7 +290,7 @@ def main():
 	
 	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
-	if not init():
+	if not checkChanges():
 		sg.popup_ok(tr.getTrans('init_failed'), location = (50, 50))
 		sys.exit()
 
@@ -289,7 +312,7 @@ def main():
 						],
 						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
 					]
-	layout = [	[sg.Text('LOREIPSUM', key = '-TITLE_T-', size = (111,1))],
+	layout = [	[sg.Text(tr.getTrans('sg_title'), key = '-TITLE_T-', size = (111,1))],
 				[sg.Combo(getSaveGames(), size = (125,5), key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (111,1))],
 				[sg.Text(size = (111,1), key = '-DESC-')],
@@ -307,12 +330,17 @@ def main():
 		#print(event, values)
 		if event == sg.WIN_CLOSED or event == '-EXIT-':
 			break
-		elif event == '-COMBO-':
+		elif event == '-COMBO-' and values['-COMBO-'] != '':
 			window['-START-'].update(disabled = False, button_color = ('black', 'green'))
 			window['-CHANGE-'].update(disabled = False)
 			window['-REMOVE-'].update(disabled = False)
 			data = TinyDB(se.games_json).search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
 			window['-DESC-'].update(value = data[0]['desc'])
+		elif event == '-COMBO-' and values['-COMBO-'] == '':
+			window['-START-'].update(disabled = True, button_color = ('gray'))
+			window['-CHANGE-'].update(disabled = True)
+			window['-REMOVE-'].update(disabled = True)
+			window['-DESC-'].update(value = '')
 		elif event == '-START-':
 			window.Hide()
 			if startSaveGame(values['-COMBO-'].split(':')[0].rstrip()):
@@ -320,23 +348,24 @@ def main():
 			window.UnHide()
 		elif event == '-CHANGE-':
 			window.Hide()
-			ng.guiNewSaveGame(values['-COMBO-'].split(' : ')[0].rstrip())
+			ga.guiNewSaveGame(values['-COMBO-'].split(' : ')[0].rstrip())
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
 			window['-REMOVE-'].update(disabled = True)
 			window.UnHide()
 		elif event == '-REMOVE-':
-			removeSaveGame(values['-COMBO-'])
+			ga.removeSaveGame(values['-COMBO-'])
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window['-START-'].update(disabled = True, button_color = ('gray'))
 			window['-CHANGE-'].update(disabled = True)
 			window['-REMOVE-'].update(disabled = True)
 		elif event == '-NEW-':
 			window.Hide()
-			if whatToDo() == 'new':
-				ng.guiNewSaveGame()
-			else:
+			ret = whatToDo()
+			if ret == 'new':
+				ga.guiNewSaveGame()
+			elif ret == 'import':
 				im.guiImportSG()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window['-START-'].update(disabled = True, button_color = ('gray'))
@@ -354,9 +383,10 @@ def main():
 			window['-HELP-'].update(tr.getTrans('help'))
 			window['-START-'].update(tr.getTrans('start'))
 			window['-DESC_T-'].update(tr.getTrans('description'))
-			#window['-TITLE_T-'].update(tr.getTrans(''))
+			window['-TITLE_T-'].update(tr.getTrans('sg_title'))
 			window['-DONATE-'].update(tr.getTrans('donate'))
 			window['-RELEASE-'].update(tr.getTrans('new_release'))
+			window['-COMBO-'].update(value = '', values = getSaveGames())
 			window.UnHide()
 		elif event == '-HELP-':
 			window.Hide()

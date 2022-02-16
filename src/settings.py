@@ -37,15 +37,15 @@ def init():
 
 	if def_vers == '':
 		layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
-					[sg.Checkbox('text', key = '-SET_DEF_LS-')],
+					[sg.Checkbox(tr.getTrans('remember', 'en'), key = '-SET_DEF_LS-')],
 					[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
 				]
 
-		window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c')
+		window = sg.Window('Farming Simulator SaveGames', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = 'logo.png')
 
 		while True:
 			event, values = window.read()
-			print(event, values)
+			#print(event, values)
 			if event == sg.WIN_CLOSED:
 				break
 			elif event == '-LS19-':
@@ -121,7 +121,8 @@ def checkInit(lang, init):
 			db.insert({'fs_path': 'C:/Program Files (x86)', 'fs_game_data_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'all_mods_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
 		elif platform.system() == 'Darwin':
 			db.insert({'fs_path': '/Applications', 'fs_game_data_path': os.path.expanduser('~') + '/Library/Application Support/', 'all_mods_path': os.path.expanduser('~') + '/Library/Application Support/', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
-		TinyDB(fsl_settings_json).insert({'language': lang, 'def_vers': ''})
+		if not os.path.exists(fsl_settings_json):
+			TinyDB(fsl_settings_json).insert({'language': lang, 'def_vers': ''})
 
 def guiSettings(lang, init = False):
 	io = True
@@ -148,7 +149,7 @@ def guiSettings(lang, init = False):
 
 	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
 				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
-				[sg.Checkbox('text', key = '-SET_DEF_LS-', default = set_def_check)],
+				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = set_def_check)],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
 				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 
 				[sg.FileBrowse(initial_folder = fs, target = '-FS_PATH-'), sg.Button(def_fs_text, key = '-DEF_FS-', size = (30,1)), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-', size = (30,1)), ],
