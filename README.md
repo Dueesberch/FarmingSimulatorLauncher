@@ -45,4 +45,4 @@ Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLaunch
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
   
-# Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://paypal.me/ChristianD653)  
+## Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://paypal.me/ChristianD653)  
