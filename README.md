@@ -26,11 +26,12 @@ Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität g
 * Windows 10, Steam Installation, LS19 - 
 * Windows 10, lokale Installation, LS22 - 
 * Windows 10, Steam Installation, LS22 - <span style="color:blue">ungetestet</span>
-* MacOS, lokale Installation, LS19 - 
-* MacOS, Steam Installation, LS19 - 
-* MacOS, lokale Installation, LS22 - <span style="color:blue">ungetestet</span>
-* MacOS, lokale Installation, LS22 - <span style="color:blue">ungetestet</span>
+* MacOS Catalina, lokale Installation, LS19 - 
+* MacOS Catalina, Steam Installation, LS19 - 
+* MacOS Catalina, lokale Installation, LS22 - <span style="color:blue">ungetestet</span>
+* MacOS Catalina, lokale Installation, LS22 - <span style="color:blue">ungetestet</span>
 
+Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *bug* auswählen.
 ## Geplante Erweiterungen
 
 * Tooltips zu Feldern hinzufügen
@@ -40,3 +41,8 @@ Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität g
 * Unbenutzte Mods finden
 * Beim Import von Mods prüfen ob diese zur gewählten Version passen
 * Beim anlegen einen neuen Savegames den savegame Ordner mit default Dateien erstellen
+* Verwalten von Ordnern wie modsettings etc.
+
+Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
+  
+# Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://paypal.me/ChristianD653)  

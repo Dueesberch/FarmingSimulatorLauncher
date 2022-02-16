@@ -21,7 +21,7 @@ Bitte sichert eure Savegames / Mods vor dem ersten Start von FSL.
 Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf, da MacOS der GUI-Entwicklung nicht viele Möglichkeiten bietet.
 
 ## Allgemein
-Beim Start erscheint zuerst die Auswahl, welches LS Version benutzt werden soll.  
+Beim Start erscheint zuerst die Auswahl, welche LS Version benutzt werden soll.  
 <img src="../images/select_version_german.png" width="400"/>  
 Sollte nur eine Version installiert sein oder von FSL verwaltet werden, kann der Haken bei "Immer die gewählte LS Version benutzen?" gesetzt werden, bevor die Version angeklickt wird. Dadurch erscheint der Auswahldialog nicht mehr.  
 Dies kann in den Einstellungen geändert werden.  
@@ -152,13 +152,13 @@ Bild steht stellvertretend für beide LS Versionen.
 
 Über *Sprache wählen* kann die FSL Sprache ausgewählt werden. Im Dropdownmenü werden alle verfügbaren Sprachen aufgelistet.  
 Wird der Haken bei *Immer die gewählte LS Version benutzen* gesetzt, wird die Abfrage zum Programmstart übersprungen.  
-Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe angezeigt.
+Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.
 Über *Browse* kann die Datei gesucht werden.  
-*Standard LS19 Pfad* setzt 'C:\Program Files (x86)\Farming Simulator 2019/Farmingsimulator19.exe' ein. Für den LS22 ist die Taste mit *Standard LS22 Pfad* beschriftet.  
-*Standard LS19 Steam Pfad* setzt 'TODO' ein. Für den LS22 ist die Taste mit *Standard LS22 Steam Pfad* beschriftet und der Pfad wird analog gesetzt.  
+*Standard LS19 Pfad* setzt 'C:\Program Files (x86)\Farming Simulator 2019/Farmingsimulator19.exe' unter Windows bzw. '/Applications/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game' unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Pfad* beschriftet.  
+*Standard LS19 Steam Pfad* setzt 'TODO' unter Windows bzw. '~/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game' ein. Für den LS22 ist die Taste mit *Standard LS22 Steam Pfad* beschriftet und der Pfad wird analog gesetzt.  
 Unter *Landwirtschaftssimulator Savgames Ordner auswählen* wird der Pfad zu den LS Savegames angezeigt.  
 Über *Browse* kann der Pfad gesucht werden.  
-*Standard LS19 Savegames Ordner Pfad* setzt den Pfad auf 'C:/Users/USERNAME/Documents/My Games/FarmingSimulator2019' gesetzt. Für den LS22 ist die Taste mit *Standard LS22 Savegames Ordner Pfad* beschriftet und der Pfad wird analog gesetzt.  
+*Standard LS19 Savegames Ordner Pfad* setzt den Pfad auf 'C:/Users/USERNAME/Documents/My Games/FarmingSimulator2019' für Windows bzw. '~/Library/Application Support/FarmingSimulator2019' für MacOS gesetzt. Für den LS22 ist die Taste mit *Standard LS22 Savegames Ordner Pfad* beschriftet und der Pfad wird analog gesetzt.  
 Der bei *Pfad für Alle-Mods-Ordner auswählen* gesetzte Pfad wird von FSL benutzt um einen all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden.  
 Tipp: Wir haben für unsere Mods einen Cloudserver, welcher im Explorer eingebunden ist. Alle Spieler haben diesen Ordner als Alle-Mods-Ordner gesetzt, wodurch die Möglichkeit besteht, dass der Admin neue Mods einfügt oder auch entfernt und alle immer mit der selben Modbasis arbeiten. Das Herunterladen und Einfügen bei jedem einzelnen entfällt. Aktuell werden aber die FSL Savegames noch nicht geteilt. Somit muss ein neuer Mod zumindest noch für das Savegame ausgewählt werden. Das Teilen von FSL Savegame Konfigurationen ist geplant.
 *Speichern* übernimmt die Einstellungen.
