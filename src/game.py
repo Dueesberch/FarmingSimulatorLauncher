@@ -17,7 +17,10 @@ maps = {}
 def getMods(l = True):
 	global mods
 	global maps
-	files = os.listdir(se.getSettings('all_mods_path'))
+	try:
+		files = os.listdir(se.getSettings('all_mods_path'))
+	except FileNotFoundError:
+		pass
 	maps = {'Standard': 'fs_internal'}
 	mods = {}
 	for i in files:
@@ -124,7 +127,9 @@ def addMissingMods(title):
 	missing = []
 	for key, value in dataset.items():
 		if not value in mods:
-			missing.append(value)
+			f = value.split('!')[1]
+			v = value.split('!')[0][4:]
+			missing.append(f + ' : ' + v)
 	return missing
 
 def markMods(window, title):
@@ -148,8 +153,11 @@ def markMods(window, title):
 def remMissingMods(values):
 	dataset = TinyDB(se.games_json).get((Query().name == values['-TITLE-']))
 	sg_mods = dict(dataset['mods'])
+	miss_mods = []
+	for i in values['-MISS-']:
+		miss_mods.append('fsl_' + i.split(':')[1].strip() + '!' + i.split(':')[0].rstrip())
 	for key, value in dataset['mods'].items():
-		if value in values['-MISS-']:
+		if value in miss_mods:
 			del(sg_mods[key])
 	TinyDB(se.games_json).update({'mods': sg_mods}, doc_ids = [dataset.doc_id])
 
@@ -165,14 +173,14 @@ def guiNewSaveGame(title = None):
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
 				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'))],
-				[sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (87, 1), visible = False)],
+				[	sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (20, 1), visible = False),
+					sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1))
+				],
 				[sg.Text(tr.getTrans('missing'), key = '-MISS_TITLE-', visible = False)],
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
 				[sg.Text('')],
-				[	sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1)),
-					sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
-				]
+				[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
 	]
 	
 	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), icon = 'logo.ico')

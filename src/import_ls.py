@@ -102,6 +102,7 @@ def importSavegame(values, rem):
 	map_title = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').find('settings/mapTitle').text
 	modFromXML = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').findall('mod')
 	mods = []
+	missing_mods = False
 	maps = []
 	for i in modFromXML:
 		name = i.attrib['modName'] + '.zip'
@@ -120,21 +121,20 @@ def importSavegame(values, rem):
 				maps.append(maps_tmp[0])
 			elif len(maps_tmp) == 0:
 				maps.append('fsl_' + vers + '!' + name)
-				sg.popup_ok(tr.getTrans('missing_map').format(i.attrib['title'], vers), location = (50, 50), icon = 'logo.ico')
+				sg.popup_ok(tr.getTrans('missing_map').format(i.attrib['title'], vers), title = tr.getTrans('missing'), location = (50, 50), icon = 'logo.ico')
 		else:
 			mods_tmp = []
 			for key, val in all_mods.items():
-				if vers + '!' + name in val[0]:
+				if vers + '!' + name in val:
 					mods_tmp.append('fsl_' + vers + '!' + name)
 			if len(mods_tmp) > 1:
 				#TODO select version
 				print('select version')
 			elif len(mods_tmp) == 1:
 				mods.append(mods_tmp[0])
-			elif len(mods_tmp) == 0 and not name.startswith('pdlc') and values['-IGN_MISS-']:
+			elif len(mods_tmp) == 0 and not name.startswith('pdlc'):
 				mods.append('fsl_' + vers + '!' + name)
-				sg.popup_ok(tr.getTrans('missing_mod').format(i.attrib['title'], vers), location = (50, 50), icon = 'logo.ico')
-
+				missing_mods = True
 	
 	if ':' in values['-TITLE-']:
 		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50), icon = 'logo.ico')
@@ -169,13 +169,25 @@ def importSavegame(values, rem):
 	try:
 		for i in os.listdir(bak_path):
 			if sg_title in i:
-				shutil.move(bak_path + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
+				src = bak_path + os.sep + i
+				if os.path.isdir(src):
+					dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
+					shutil.copytree(src, dest)
+					shutil.rmtree(src)
+				else:
+					dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
+					shutil.copyfile(src, dest)
+					os.remove(src)
+		if len(os.listdir(bak_path)) == 0:
+			shutil.rmtree(bak_path)
 	except FileNotFoundError:
 		pass
 	shutil.rmtree(values['-SG_PATH-'])
+	if missing_mods:
+		sg.popup_ok(tr.getTrans('missing_mod'), title = tr.getTrans('missing'), location = (50, 50), icon = 'logo.ico')
 	return True
 
-def guiImportSG(path = '', rem = False):
+def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
 	if path == '':
 		path = se.getSettings('fs_game_data_path')
@@ -187,7 +199,7 @@ def guiImportSG(path = '', rem = False):
 						[sg.Text(tr.getTrans('get_sg_path'))],
 						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
 						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-')],
-						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
+						#[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
@@ -199,7 +211,7 @@ def guiImportSG(path = '', rem = False):
 						[sg.Text(tr.getTrans('description'), size = (92, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
-						[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
+						#[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.Text('')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))

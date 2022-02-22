@@ -32,8 +32,8 @@ Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität g
 * MacOS Catalina, lokale Installation, LS22 - <span style="color:blue">ungetestet</span>
 
 Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *bug* auswählen.
-## Geplante Erweiterungen
 
+## Geplante Erweiterungen (Backlog)
 * Tooltips zu Feldern hinzufügen
 * Laden alter Spielstände
 * Savegames teilen
@@ -42,7 +42,16 @@ Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLaunch
 * Beim Import von Mods prüfen ob diese zur gewählten Version passen
 * Beim anlegen einen neuen Savegames den savegame Ordner mit default Dateien erstellen
 * Verwalten von Ordnern wie modsettings etc.
+* Mods (Qelldatei) nach import löschen anstatt gesamten Ordner
+* Auswahl des Backup Ordners beim import von Savegames
+* Beim Start prüfen, ob mods in Alle-Mods hinzugefügt wurden und ggf anpassen
+* Savegames auch anzeigen, bei denen das Mapfile fehlt > Start soll nicht möglich sein
+* Mods updates verwalten
+* Einstellung immer Mod mit höchster Version benutzen
+* Einstellung LS Vorspann abschalten
+* Einstellung savegame direkt starten in LS
+* Mods in careerSavegame.xml entsprechend der Konfuguration setzen
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
   
-## Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://paypal.me/ChristianD653)  
+## Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://www.paypal.com/donate/?hosted_button_id=ZR4EGNDAVD4Q4)  

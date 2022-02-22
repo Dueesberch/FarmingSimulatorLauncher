@@ -78,12 +78,17 @@ def init():
 
 def saveSettings(values):
 	db = TinyDB(settings_json)
-	# TODO check fs_path / fs_game_data_pass exists
 	if values['-FS_PATH-'] == '':
 		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
 		return False
+	if not os.path.exists(values['-FS_PATH-']):
+		sg.popup_error(tr.getTrans('exe_not_found').format(values['-FS_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50), icon = 'logo.ico')
+		return False
 	if values['-FS_GAME_DATA_PATH-'] == '':
 		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
+		return False
+	if not os.path.exists(values['-FS_GAME_DATA_PATH-']):
+		sg.popup_error(tr.getTrans('not_found_folder').format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50), icon = 'logo.ico')
 		return False
 	if values['-ALL_MODS_PATH-'] == '':
 		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50), icon = 'logo.ico')
@@ -209,12 +214,12 @@ def guiSettings(lang, init = False):
 				window['-FS_PATH-'].update('/Applications/Farming Simulator 2022.app/Contents/MacOS/FarmingSimulator2022Game')
 		elif event == '-DEF_FS_STEAM-' and vers == 'ls19':
 			if platform.system() == 'Windows':
-				window['-FS_PATH-'].update('') # TODO add path
+				window['-FS_PATH-'].update('C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 19/FarmingSimulator2019.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game')
 		elif event == '-DEF_FS_STEAM-'  and vers == 'ls22':
 			if platform.system() == 'Windows':
-				window['-FS_PATH-'].update('') # TODO add path
+				window['-FS_PATH-'].update('C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 22/Farmingsimulator2022.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2022.app/Contents/MacOS/FarmingSimulator2022Game')
 		elif event == '-DEF_SG_FS-' and vers == 'ls19':
