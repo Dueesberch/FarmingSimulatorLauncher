@@ -8,6 +8,7 @@ from tinydb import TinyDB, Query
 from tinydb.operations import delete
 import translation as tr
 import settings as se
+import logging as log
 
 import xml.etree.ElementTree as ET
 
@@ -99,6 +100,7 @@ def saveSaveGame(values, update):
 		try:
 			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']
 			os.mkdir(p)
+			os.mkdir(p + ' Backup')
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 			return False

@@ -8,6 +8,8 @@ import zipfile
 import xml.etree.ElementTree as ET
 import shutil
 from tinydb import TinyDB, Query
+import logging as log
+import pysed
 
 existing_mods = {}
 
@@ -63,8 +65,8 @@ def getAllMods():
 
 def guiImportMods():
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
-					[sg.Input('', key = '-MOD_PATH-', enable_events=True, size = (108, 1))],
-					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-')],
+					[sg.Input('', key = '-MOD_PATH-', size = (108, 1))],
+					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (14,1)), sg.Button(tr.getTrans('get_mods'), key = '-GET-', size = (77, 1))],
 					[sg.Text(tr.getTrans('importable_mods'))],
 					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
 					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
@@ -79,6 +81,7 @@ def guiImportMods():
 
 	while True:
 		event, values = window.read()
+		#print(event, values)
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
@@ -89,15 +92,18 @@ def guiImportMods():
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
-		elif event == '-MOD_PATH-':
-			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 		elif event == '-REMOVE-':
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
+		elif event == '-GET-':
+			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 	window.close()
 	return
 
-def importSavegame(values, rem):
+def importSavegame(values):
+	if not os.path.exists(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml'):
+		sg.popup_ok(tr.getTrans('no_savegame_files'), title = tr.getTrans('missing'), location = (50, 50), icon = 'logo.ico')
+		return False
 	all_maps, all_mods = ga.getMods(False)
 	map_title = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').find('settings/mapTitle').text
 	modFromXML = ET.parse(values['-SG_PATH-'] + os.sep + 'careerSavegame.xml').findall('mod')
@@ -142,11 +148,11 @@ def importSavegame(values, rem):
 	if values['-TITLE-'] == 'savegame1':
 		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50), icon = 'logo.ico')
 		return False
-	if TinyDB(se.games_json).get((Query().name == values['-TITLE-'])) or os.path.exists(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']):
-		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
-		return False
 	if values['-TITLE-'] == '':
 		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico')
+		return False
+	if TinyDB(se.games_json).get((Query().name == values['-TITLE-'])) or os.path.exists(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']):
+		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 		return False
 
 	modstoadd = {}
@@ -160,46 +166,76 @@ def importSavegame(values, rem):
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
 	for i in os.listdir(values['-SG_PATH-']):
 		shutil.move(values['-SG_PATH-'] + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
-	bak_path = se.getSettings('fs_game_data_path') + os.sep + 'savegameBackup'
-	sg_title = values['-SG_PATH-'].split(os.sep)[-1]
+	#TODO bak_path nicht standard
 	try:
 		os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup') 
 	except FileExistsError:
 		pass
-	try:
-		for i in os.listdir(bak_path):
-			if sg_title in i:
-				src = bak_path + os.sep + i
-				if os.path.isdir(src):
-					dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
-					shutil.copytree(src, dest)
-					shutil.rmtree(src)
-				else:
-					dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
-					shutil.copyfile(src, dest)
-					os.remove(src)
-		if len(os.listdir(bak_path)) == 0:
-			shutil.rmtree(bak_path)
-	except FileNotFoundError:
-		pass
+	if not '-SGB_PATH-' in values:
+		bak_path = se.getSettings('fs_game_data_path') + os.sep + 'savegameBackup'
+		sg_title = values['-SG_PATH-'].split(os.sep)[-1]
+		try:
+			for i in os.listdir(bak_path):
+				if sg_title in i:
+					src = bak_path + os.sep + i
+					if os.path.isdir(src):
+						dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
+						shutil.copytree(src, dest)
+						shutil.rmtree(src)
+					else:
+						dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
+						shutil.copyfile(src, dest)
+						pysed.replace(sg_title, 'savegame1', dest)
+						os.remove(src)
+			if len(os.listdir(bak_path)) == 0:
+				shutil.rmtree(bak_path)
+		except FileNotFoundError:
+			pass
+	else:
+		print(values['-SGB-'])
+		for i in values['-SGB-']:
+			src = values['-SGB_PATH-'] + os.sep + i
+			print(src)
+			if os.path.isdir(src):
+				dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
+				shutil.copytree(src, dest)
+				shutil.rmtree(src)
+			else:
+				dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
+				shutil.copyfile(src, dest)
+				pysed.replace(i.split('_')[0], 'savegame1', dest)
+				os.remove(src)
+		if len(os.listdir(values['-SGB_PATH-'])) == 0:
+			shutil.rmtree(values['-SGB_PATH-'])
 	shutil.rmtree(values['-SG_PATH-'])
 	if missing_mods:
 		sg.popup_ok(tr.getTrans('missing_mod'), title = tr.getTrans('missing'), location = (50, 50), icon = 'logo.ico')
 	return True
+
+def getBackupFolder(path):
+	l = []
+	if path != '':
+		for i in os.listdir(path):
+			l.append(i)
+	return l
 
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
 	if path == '':
 		path = se.getSettings('fs_game_data_path')
 
-		layout =    [	[sg.Text(tr.getTrans('sg_title'), size = (60, 1))],
+		layout =    [	[sg.Text(tr.getTrans('get_sg_path'))],
+						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
+						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-', key = '-SG_SELECT-')],
+						[sg.Text(tr.getTrans('get_sgb_path'))],
+						[sg.Input('', key = '-SGB_PATH-', size = (92, 1), enable_events = True)],
+						[sg.FolderBrowse(initial_folder = path, target = '-SGB_PATH-')],
+						[sg.Text(tr.getTrans('sgb_title'), size = (60, 1))],
+						[sg.Listbox('',  key = '-SGB-', size = (92, 10), select_mode = 'extended')],
+						[sg.Text(tr.getTrans('sg_title'), size = (60, 1))],
 						[sg.Input(key = '-TITLE-', size = (92, 1))],
 						[sg.Text(tr.getTrans('description'), size = (60, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
-						[sg.Text(tr.getTrans('get_sg_path'))],
-						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
-						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-')],
-						#[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 						]
@@ -211,7 +247,6 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 						[sg.Text(tr.getTrans('description'), size = (92, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
-						#[sg.Checkbox(tr.getTrans('ignore_missing_mods'), key = '-IGN_MISS-', default = True)],
 						[sg.Text('')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
 							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
@@ -222,12 +257,15 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 
 	while True:
 		event, values = window.read()
+		#print(event, values)
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			ret = False
 			break
+		elif event == '-SGB_PATH-':
+			window['-SGB-'].update(values = getBackupFolder(values['-SGB_PATH-']))
 		elif event == "-IMPORT-":
 			w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50), icon = 'logo.ico')
-			if importSavegame(values, rem):
+			if importSavegame(values):
 				break
 			w.close()
 	window.close()

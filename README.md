@@ -37,15 +37,15 @@ Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLaunch
 * Tooltips zu Feldern hinzufügen
 * Laden alter Spielstände
 * Savegames teilen
-* Prüfen ob ein Mod von einem Savegame benutzt wird beim löschen
+* Prüfen ob ein Mod von einem Savegame benutzt wird beim Löschen
 * Unbenutzte Mods finden
 * Beim Import von Mods prüfen ob diese zur gewählten Version passen
-* Beim anlegen einen neuen Savegames den savegame Ordner mit default Dateien erstellen
+* Beim Anlegen eines neuen Savegames den savegame Ordner mit default Dateien erstellen
 * Verwalten von Ordnern wie modsettings etc.
 * Mods (Qelldatei) nach import löschen anstatt gesamten Ordner
 * Auswahl des Backup Ordners beim import von Savegames
 * Beim Start prüfen, ob mods in Alle-Mods hinzugefügt wurden und ggf anpassen
-* Savegames auch anzeigen, bei denen das Mapfile fehlt > Start soll nicht möglich sein
+* Savegames auch anzeigen, bei denen das Mapfile fehlt > Start soll trotzdem nicht möglich sein
 * Mods updates verwalten
 * Einstellung immer Mod mit höchster Version benutzen
 * Einstellung LS Vorspann abschalten

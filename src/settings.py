@@ -3,6 +3,7 @@ import platform
 import PySimpleGUI as sg
 import translation as tr
 import import_ls as im
+import logging as log
 
 from tinydb import TinyDB, Query
 
@@ -11,6 +12,7 @@ settings_json = ''
 games_json = ''
 vers = ''
 def_vers = ''
+logger = None
 
 def init():
 	global settings_json
@@ -19,23 +21,32 @@ def init():
 	global vers
 	global def_vers
 	global fsl_settings_json
+	global logger
 
 	ret = True
-
+	logger = log.getLogger('fsl')
+	logger.debug('-------------------------------------------------------------------------')
 	if platform.system() == 'Darwin':
+		logger.debug('settings:init:OS Darwin')
 		fsl_config_path = os.path.expanduser('~') + '/Library/Application Support/FarmingSimulatorLauncher/'
 	elif platform.system() == 'Windows':
+		logger.debug('settings:init:OS Windows')
 		fsl_config_path = os.path.expanduser('~').replace('\\', '/') + '/AppData/Roaming/FarmingSimulatorLauncher/'
 	else:
+		logger.debug('settings:init:unsupported OS')
 		sg.popup_error('Unsuported operating system.', icon = 'logo.ico')
 		return False
 		
 	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
+	logger.debug('settings:init:' + fsl_settings_json)
 
 	if os.path.exists(fsl_settings_json):
 		def_vers = TinyDB(fsl_settings_json).get(doc_id = 1)['def_vers']
+		logger.debug('settings:init:dev_vers "' + def_vers + '"')
 		lang = TinyDB(fsl_settings_json).get(doc_id = 1)['language']
+		logger.debug('settings:init:lang ' + lang)
 	else:
+		logger.debug('settings:init:fsl settings json does not exists')
 		lang = 'en'
 
 	if def_vers == '':
@@ -45,6 +56,7 @@ def init():
 				]
 
 		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = 'logo.ico')
+		logger.debug('settings:init:version dialog opened')
 
 		while True:
 			event, values = window.read()
@@ -66,12 +78,23 @@ def init():
 				break
 		window.close()
 	else:
+		logger.debug('settings:init:set def vers for global use')
 		vers = def_vers
-
+	
+	logger.debug('settings:init:vers ' + vers)
 	games_json = fsl_config_path + 'games_' + vers + '.json'
+	logger.debug('settings:init:games_json ' + games_json)
+	if os.path.exists(games_json):
+		with open(games_json, 'r') as f:
+			logger.debug('setting:init:games_json ' + f.readline())
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
+	logger.debug('settings:init:settings_json ' + settings_json)
+	if os.path.exists(settings_json):
+		with open(settings_json, 'r') as f:
+			logger.debug('setting:init: ' + f.readline())
 
 	if not os.path.exists(fsl_config_path) and ret == True:
+		logger.debug('settings:init:create fsl config folder')
 		os.makedirs(fsl_config_path)
 	
 	return ret
@@ -102,6 +125,7 @@ def saveSettings(values):
 			os.makedirs(all_mods_path)
 		except FileExistsError:
 			pass
+	logger.debug('settings:saveSattings: fs_path: ' + values['-FS_PATH-'] + ' ;fs_game_data_path:' + values['-FS_GAME_DATA_PATH-'] + ' ;all_mods_path:' + all_mods_path + ' ;set_def_vers: ' + str(values['-SET_DEF_LS-']))
 	db.update({'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path}, doc_ids = [1])
 	TinyDB(fsl_settings_json).update({'language': values['-COMBO-']}, doc_ids = [1])
 	if values['-SET_DEF_LS-']:
@@ -124,6 +148,7 @@ def getFslSettings(key):
 
 def checkInit(lang, init):
 	if init:
+		logger.debug('settings:checkInit: create default settings')
 		db = TinyDB(settings_json)
 		if platform.system() == 'Windows':
 			db.insert({'fs_path': 'C:/Program Files (x86)', 'fs_game_data_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'all_mods_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': ''})
