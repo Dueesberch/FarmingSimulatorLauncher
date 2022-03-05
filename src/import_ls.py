@@ -166,7 +166,6 @@ def importSavegame(values):
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
 	for i in os.listdir(values['-SG_PATH-']):
 		shutil.move(values['-SG_PATH-'] + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
-	#TODO bak_path nicht standard
 	try:
 		os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup') 
 	except FileExistsError:
@@ -192,10 +191,8 @@ def importSavegame(values):
 		except FileNotFoundError:
 			pass
 	else:
-		print(values['-SGB-'])
 		for i in values['-SGB-']:
 			src = values['-SGB_PATH-'] + os.sep + i
-			print(src)
 			if os.path.isdir(src):
 				dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
 				shutil.copytree(src, dest)

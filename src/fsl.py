@@ -282,10 +282,10 @@ def startSaveGame(name):
 	shutil.copytree(fs_game_data_folder + savegame + ' Backup', fs_game_data_folder + 'savegameBackup')
 	TinyDB(se.settings_json).update({'last_sg': name, 'sg_hash': '', 'sgb_hash': '', 'mods_hash': checksumdir.dirhash(fs_game_data_folder + 'mods')}, doc_ids = [1])
 	fs_path = se.getSettings('fs_path')
-	subprocess.run(fs_path, shell = True)
+	subprocess.run("\"" + fs_path + "\"", shell = True)
 	p_name = (str(fs_path.split('/')[-1].split('.')[0])).lower()
 	#TODO steam und mac version unterscheiden
-	p_name_child = (str(fs_path.split('/')[-1].split('.')[0]) + 'Game.exe').lower()
+	p_name_child = (str(fs_path.split('/')[-1].split('.')[0]) + 'Game').lower()
 	loop = True
 	steam_check = True
 	# TODO check if it is necessary to sync, instead of retry copy after ls closed
@@ -313,7 +313,7 @@ def startSaveGame(name):
 				loop = True
 				steam_check = False
 				break
-			if 'steam.exe' in (p.info['name']).lower() and steam_check:
+			if 'steam' in (p.info['name']).lower() and steam_check:
 				loop = True
 				break
 	return True
