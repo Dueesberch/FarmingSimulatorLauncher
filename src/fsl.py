@@ -64,7 +64,7 @@ def checkFirstRun():
 						w.close()
 						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50), icon = 'logo.ico') == 'Yes':
 							logger.debug('fsl:checkFirstRun: import from additional mods folder')
-							im.guiImportMods()
+							im.guiImportMods(False)
 						mods_imported = True
 					else:
 						logger.debug('fsl:checkFirstRun: mods folder found > go to backup')
@@ -144,10 +144,12 @@ def checkChanges():
 			path = fs_game_data_folder + 'mods'
 			for i in os.listdir(path):
 				if i.endswith('.zip'):
+					print(i)
 					with zipfile.ZipFile(path + os.sep + i) as z:
 						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 						version = moddesc.find('version')
 						k = 'fsl_' + version.text + '!' + i
+						print(k)
 						if k not in all_mods:
 							logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
 							mods[i] = version.text
@@ -156,7 +158,8 @@ def checkChanges():
 			for i in mods:
 				if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod'), icon = 'logo.ico') == 'Yes':
 					logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
-					shutil.copyfile(path + os.sep + i, se.getSettings('all_mods_path') + os.sep + 'fsl_' + mods[i] + '!' + i)
+					im.importMods(path, [i], True)
+					#shutil.copyfile(path + os.sep + i, se.getSettings('all_mods_path') + os.sep + 'fsl_' + mods[i] + '!' + i)
 				else:
 					try:
 						os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
@@ -284,14 +287,12 @@ def startSaveGame(name):
 	fs_path = se.getSettings('fs_path')
 	subprocess.run("\"" + fs_path + "\"", shell = True)
 	p_name = (str(fs_path.split('/')[-1].split('.')[0])).lower()
-	#TODO steam und mac version unterscheiden
-	p_name_child = (str(fs_path.split('/')[-1].split('.')[0]) + 'Game').lower()
 	loop = True
 	steam_check = True
 	# TODO check if it is necessary to sync, instead of retry copy after ls closed
 	while loop:
 		time.sleep(3)
-		for i in range(3):	# try 3 times to create sync
+		for i in range(3):	# try 3 times to sync
 			try:
 				TinyDB(se.settings_json).update({'sg_hash': checksumdir.dirhash(fs_game_data_folder + 'savegame1')}, doc_ids = [1])
 				sync(fs_game_data_folder + 'savegame1', fs_game_data_folder + savegame, 'sync')
@@ -309,13 +310,12 @@ def startSaveGame(name):
 				pass
 		loop = False
 		for p in psutil.process_iter(attrs=['name']):
-			if p_name_child in (p.info['name']).lower():
+			if p_name in (p.info['name']).lower():
 				loop = True
 				steam_check = False
 				break
 			if 'steam' in (p.info['name']).lower() and steam_check:
 				loop = True
-				break
 	return True
 
 def disableButtons(window):

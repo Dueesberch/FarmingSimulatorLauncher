@@ -8,6 +8,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 import shutil
 from tinydb import TinyDB, Query
+from tinydb.operations import delete
 import logging as log
 import pysed
 
@@ -37,18 +38,84 @@ def getMods(path):
 				try:
 					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 				except FileNotFoundError:
+					moddesc = None
+					pass
+				except KeyError:
+					moddesc = None
 					pass
 				if moddesc:
 					mods.append(i)
 	return mods
 
-def importMods(path, mods):
+
+def getSaveGames():
+	""" get stored save games
+	read the according games_lsxx.json and extract maps
+	"""
+	all_mods_folder = se.getSettings('all_mods_path') + os.sep
+	q = Query()
+	all = TinyDB(se.games_json).all()
+	l = []
+	for i in all:
+		n = i['name']
+		m = i['map']
+		try:
+			with zipfile.ZipFile(all_mods_folder + m) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				m = moddesc.find('maps/map/title/en')
+				if m != None:
+					l.append(n + ' : ' + m.text)
+		except FileNotFoundError:
+			if i['map'] == 'fs_internal':
+				l.append(n + ' : ' + tr.getTrans('def_map'))
+			else:
+				sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
+			pass
+	return l
+
+def updateSGS(sgs, mod):
+	name = mod.split('!')[1]
+	for sg in sgs:
+		add = True
+		dataset = TinyDB(se.games_json).get((Query().name == sg.split(' : ')[0]))
+		mods = dataset['mods']
+		for i in mods.items():
+			if name in i[1]:
+				add = False
+				mods.update({i[0]: mod})
+				break
+		if add:
+			mods.update({str(len(mods)): mod})
+		TinyDB(se.games_json).update({"mods": mods}, doc_ids = [dataset.doc_id])
+		# TODO map update
+	return
+
+def importMods(path, mods, updateSGs):
 	all_mods = se.getSettings('all_mods_path')
 	for i in mods:
 		with zipfile.ZipFile(path + os.sep + i) as z:
 			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
 			version = moddesc.find('version')
-			shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
+			new_name = 'fsl_' + version.text + '!' + i
+			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
+			if moddesc.find('maps/map/title/en') != None:
+				break
+			else:
+				if updateSGs:
+					layout = [	[sg.Text(tr.getTrans('select_sgs').format(i))],
+								[sg.Listbox(getSaveGames(),  key = '-SGS-', size = (108, 10), select_mode = 'extended')],
+								[sg.Button('Ok', key = '-OK-', size = (14, 1))]
+					]
+					window = sg.Window(tr.getTrans('import'), layout, finalize = True, location = (50, 50), icon = 'logo.ico', disable_close = True)
+
+					while True:
+						event, values = window.read()
+						#print(event, values)
+						if event == '-OK-':
+							if len(values['-SGS-']) > 0:
+								updateSGS(values['-SGS-'], new_name)
+							window.close()
+							break
 
 def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')
@@ -63,7 +130,7 @@ def getAllMods():
 	del existing_mods['Standard']
 	return list(existing_mods.keys())
 
-def guiImportMods():
+def guiImportMods(updateSGs = True):
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
 					[sg.Input('', key = '-MOD_PATH-', size = (108, 1))],
 					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (14,1)), sg.Button(tr.getTrans('get_mods'), key = '-GET-', size = (77, 1))],
@@ -85,10 +152,14 @@ def guiImportMods():
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-			if len(values['-MODS-']) == len(getMods(values['-MOD_PATH-'])):
-				importAllMods(values['-MOD_PATH-'])
-			else:
-				importMods(values['-MOD_PATH-'], values['-MODS-'])
+#			if len(values['-MODS-']) == len(getMods(values['-MOD_PATH-'])):
+#				print('call importAllMods')
+#				importAllMods(values['-MOD_PATH-'], updateSGs)
+#			else:
+#				print('call importMods')
+			window.Hide()
+			importMods(values['-MOD_PATH-'], values['-MODS-'], updateSGs)
+			window.UnHide()
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
