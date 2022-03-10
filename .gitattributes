@@ -3,4 +3,4 @@ src export-ignore
 .gitattributes export-ignore
 README.md export-ignore
 images export-ignore
-manuals export-ignore
+*.md export-ignore
