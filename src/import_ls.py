@@ -20,7 +20,7 @@ def importAllMods(path, rem = False):
 	for i in files:
 		if i.endswith('.zip'):
 			with zipfile.ZipFile(path + os.sep + i) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				version = moddesc.find('version')
 				shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
 	if rem == True or sg.popup_yes_no(tr.getTrans('remove_src_folder').format(path), title = tr.getTrans('remove_title'), location = (50, 50), icon = 'logo.ico') == 'Yes':
@@ -31,20 +31,23 @@ def importAllMods(path, rem = False):
 
 def getMods(path):
 	mods = []
-	files = os.listdir(path)
-	for i in files:
-		if i.endswith('.zip'):
-			with zipfile.ZipFile(path + os.sep + i) as z:
-				try:
-					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
-				except FileNotFoundError:
-					moddesc = None
-					pass
-				except KeyError:
-					moddesc = None
-					pass
-				if moddesc:
-					mods.append(i)
+	try:
+		files = os.listdir(path)
+		for i in files:
+			if i.endswith('.zip'):
+				with zipfile.ZipFile(path + os.sep + i) as z:
+					try:
+						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					except FileNotFoundError:
+						moddesc = None
+						pass
+					except KeyError:
+						moddesc = None
+						pass
+					if moddesc:
+						mods.append(i)
+	except FileNotFoundError:
+		pass
 	return mods
 
 
@@ -61,7 +64,7 @@ def getSaveGames():
 		m = i['map']
 		try:
 			with zipfile.ZipFile(all_mods_folder + m) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				m = moddesc.find('maps/map/title/en')
 				if m != None:
 					l.append(n + ' : ' + m.text)
@@ -94,7 +97,7 @@ def importMods(path, mods, updateSGs):
 	all_mods = se.getSettings('all_mods_path')
 	for i in mods:
 		with zipfile.ZipFile(path + os.sep + i) as z:
-			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 			version = moddesc.find('version')
 			new_name = 'fsl_' + version.text + '!' + i
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
@@ -132,8 +135,8 @@ def getAllMods():
 
 def guiImportMods(updateSGs = True):
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
-					[sg.Input('', key = '-MOD_PATH-', size = (108, 1))],
-					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (14,1)), sg.Button(tr.getTrans('get_mods'), key = '-GET-', size = (77, 1))],
+					[sg.Input('', key = '-MOD_PATH-', size = (110, 1), enable_events = True)],
+					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (96,1))],
 					[sg.Text(tr.getTrans('importable_mods'))],
 					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
 					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
@@ -152,11 +155,6 @@ def guiImportMods(updateSGs = True):
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-#			if len(values['-MODS-']) == len(getMods(values['-MOD_PATH-'])):
-#				print('call importAllMods')
-#				importAllMods(values['-MOD_PATH-'], updateSGs)
-#			else:
-#				print('call importMods')
 			window.Hide()
 			importMods(values['-MOD_PATH-'], values['-MODS-'], updateSGs)
 			window.UnHide()
@@ -166,7 +164,7 @@ def guiImportMods(updateSGs = True):
 		elif event == '-REMOVE-':
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
-		elif event == '-GET-':
+		elif event == '-MOD_PATH-':
 			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 	window.close()
 	return
@@ -305,7 +303,7 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 						[sg.Text(tr.getTrans('description'), size = (60, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
-							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
+							sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))
 						]
 					]
 	else:
@@ -317,7 +315,7 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 						[sg.Input(path, key = '-SG_PATH-', size = (92, 1), readonly = True)],
 						[sg.Text('')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
-							sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
+							sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))
 						]
 					]
 

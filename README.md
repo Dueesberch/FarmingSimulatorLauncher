@@ -43,12 +43,12 @@ Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLaunch
 * Beim Anlegen eines neuen Savegames den savegame Ordner mit default Dateien erstellen
 * Verwalten von Ordnern wie modsettings etc.
 * Mods (Qelldatei) nach import Moddatei löschen anstatt gesamten Ordner
-* Auswahl des Backup Ordners beim import von Savegames
-* Savegames auch anzeigen, bei denen das Mapfile fehlt > Start soll trotzdem nicht möglich sein
-* Mods updates verwalten
+* Mod Updates verwalten
 * Einstellung LS Vorspann abschalten
 * Einstellung savegame direkt starten in LS
 * Mods in careerSavegame.xml entsprechend der Konfuguration setzen
+* Karte updaten
+* Savegame kopieren
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
   

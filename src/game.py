@@ -27,7 +27,7 @@ def getMods(l = True):
 	for i in files:
 		if i.endswith('.zip'):
 			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + i) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				m = moddesc.find('maps/map/title/en')
 				if m != None:
 					key = m.text + ' - ' + i.split('!')[0][4:]
@@ -91,7 +91,7 @@ def saveSaveGame(values, update):
 		f = ''
 		for i in dupes:
 			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + i) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				m = moddesc.find('title/en')
 				f = f + m.text + '\n'
 		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50), icon = 'logo.ico')
@@ -138,11 +138,13 @@ def markMods(window, title):
 		data = TinyDB(se.games_json).search((Query().name == title))
 		window['-TITLE-'].update(title)
 		window['-DESC-'].update(data[0]['desc'])
+		if data[0]['map'] != 'fs_internal':
+			window['-MAP-'].update(tr.getTrans('map_not_found').format(data[0]['map'].split('!')[1], data[0]['map'].split('!')[0].split('_')[1]))
 		for key, val in maps.items():
 			if val == data[0]['map']:
-				sg_map = key
+				window['-MAP-'].update(key)
 				break
-		window['-MAP-'].update(sg_map)
+		#window['-MAP-'].update(sg_map)
 		selected = []
 		for i in data[0]['mods']:
 			for key, val in mods.items():
@@ -182,7 +184,7 @@ def guiNewSaveGame(title = None):
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
 				[sg.Text('')],
-				[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
+				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
 	]
 	
 	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), icon = 'logo.ico')

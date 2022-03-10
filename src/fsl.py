@@ -6,10 +6,10 @@
 # steam version
 
 # RELEASE v1.0.0
-# anleitung
-# translation / beschriftung sauber
-# translation deutsch, englisch, französisch
-# bei anlegen von datein / Ordnern immmer prüfen ob schon vorhanden
+# Anleitung englisch, französisch
+# translation.py / beschriftung sauber
+# Übersetzung deutsch, englisch, französisch
+# bei anlegen von dateien / Ordnern immmer prüfen ob schon vorhanden
 
 import os
 import sys
@@ -146,7 +146,7 @@ def checkChanges():
 				if i.endswith('.zip'):
 					print(i)
 					with zipfile.ZipFile(path + os.sep + i) as z:
-						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
+						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 						version = moddesc.find('version')
 						k = 'fsl_' + version.text + '!' + i
 						print(k)
@@ -159,7 +159,6 @@ def checkChanges():
 				if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod'), icon = 'logo.ico') == 'Yes':
 					logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
 					im.importMods(path, [i], True)
-					#shutil.copyfile(path + os.sep + i, se.getSettings('all_mods_path') + os.sep + 'fsl_' + mods[i] + '!' + i)
 				else:
 					try:
 						os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
@@ -241,15 +240,16 @@ def getSaveGames():
 		m = i['map']
 		try:
 			with zipfile.ZipFile(all_mods_folder + m) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8'))
-				m = moddesc.find('maps/map/title/en')
-				if m != None:
-					l.append(n + ' : ' + m.text)
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				t = moddesc.find('maps/map/title/en')
+				if t != None:
+					l.append(n + ' : ' + t.text)
 		except FileNotFoundError:
 			if i['map'] == 'fs_internal':
 				l.append(n + ' : ' + tr.getTrans('def_map'))
 			else:
-				sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
+				l.append(n + ' : ' + tr.getTrans('ghostmap'))
+				#sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
 			pass
 	return l
 
@@ -382,7 +382,8 @@ def main():
 		if event == sg.WIN_CLOSED or event == '-EXIT-':
 			break
 		elif event == '-COMBO-' and values['-COMBO-'] != '':
-			window['-START-'].update(disabled = False, button_color = ('black', 'green'))
+			if values['-COMBO-'].split(':')[1].lstrip() != tr.getTrans('ghostmap'):
+				window['-START-'].update(disabled = False, button_color = ('black', 'green'))
 			window['-CHANGE-'].update(disabled = False)
 			window['-REMOVE-'].update(disabled = False)
 			data = TinyDB(se.games_json).search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
