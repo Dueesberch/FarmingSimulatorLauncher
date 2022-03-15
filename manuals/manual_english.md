@@ -2,61 +2,61 @@
 
 # FarmingSimulatorLauncher
 
-Der FarmingSimulatorLauncher (FSL) soll das Verwalten der verschiedenen Spielstände und Mods vereinfachen.  
+The goal of the FarmingSimulatorLauncher (FSL) is to simplify the savegame and mod management.  
   
-Zur Verwaltung der Mods legt FSL einen eigenen Ordner an, in dem alle Mods, inkl. Mod-Maps, gespeichert werden.  
-Es ist Möglich, von einem Mod oder einer Map mehrere Versionen in FSL zu importieren und in unterschiedlichen Savegames unterschiedliche Versionen zu nutzen.  
-<span style="color:red">!!! Es ist aber weiterhin nicht möglich in einem Savegame unterschiedliche Versionen des selben Mods zu verwenden. !!!</span>  
-FSL erzeugt für jedes Savegame einen eigenen Ordner und einen dazugehörigen Backup Ordner. Somit gibt es, im Unterschied zum Landwirtschaftssimulator mehrere Backupordner.  
+Therfore FSL is creating a special folder to store all mods including mod maps.  
+It is possible to import different version of the same mod or map and use that different versions in diffenent savegames.  
+<span style="color:red">!!! But it is still not possible to use different versions of one mod at the same savegame. !!!</span>  
+For every savegame FSL is creating an own folder and also an own backup folder. So there wil be planty backup folders.  
 
-Er funktioniert sowohl mit dem LS19 als auch mit dem LS22 und es kann die Giants oder Steam Version genutzt werden. FSL läuft auf Windows PC's und MacOS.  
+FSL is working with FS19 and FS22 and can be used with Giants or Steam installation. It is running on Windows PC's and MacOS.  
 
-Beim Start eines Savegames, aus FSL heraus, wird das savegame1 angelegt und alle benötigten Mods in den LS-Modsordner verlinkt. Somit sind für LS nur die benötigten Mods sichtbar und es werden zum Beispiel nicht alle Skript Mods geladen.  
-Nach dem Spielstart läuft FSL im Hintergrund weiter und syncronisiert die Savegame- und Backup-Ordner kontinuierlich.  
-  
-Ich habe versucht FSL, bzw. das Savegame- / Modhandling so stabil und sicher wie möglich zu machen.  
-Am sichersten ist es, um zu spielen, Savegames zu verwalten und Mods hinzuzufügen, immer FSL zu nutzen. Sollte es trotzdem mal vorkommen, dass LS ohne FSL benutzt / gespielt wird, sollte FSL dies beim nächsten Start erkennen und versuchen die Änderungen zu importieren oder zu sichern.
+When Farming Simulator is started by FSL, FSL is creating the savegame1 and links all required mods into the FS mods folder. So only the required mods are visible for FS and not all existing script mods will be loaded by FS.  
+FSL is running in background after game start and is syncing the savegame and backup folder continuously.  
 
-<span style="color:red">**Ich übernehme ausdrücklich keine Gewähr für verloren gegangene / kaputte Savegame und / oder Mods.**  
-Bitte sichert eure LS Savegames / Mods vor dem ersten Start von FSL.</span>
+I tried to make FSL as stable and save at possible.
+The safest way is to use FSL to start the game, manage savegames and mods. Should it happen that FS is started without FSL, should FSL recognize that at the next start and try to import or backup the changes.
 
-Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf.
+<span style="color:red">**I do not assume responsibility for lost savegames and / or mods.** Please backup your original savegames and mods before you use FSL the first time.</span>
+
+The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS.  
 <div style="page-break-after: always;"></div>  
 
-## Allgemein
-Beim Start erscheint zuerst die Auswahl, welche LS Version benutzt werden soll.  
-<img src="../images/select_version_german.png" width="400"/>  
-Sollte nur eine Version installiert sein oder soll nur eine Version von FSL verwaltet werden, kann, bevor die Version ausgewählt wird, der Haken bei "Immer die gewählte LS Version benutzen?" gesetzt werden. Dadurch erscheint der Auswahldialog zukünftig nicht mehr.  
-Dies kann auch später in den Einstellungen eingestellt werden.  
-Wenn der erste Start (Siehe *Erster Start*) erfolgreich durchlaufen wurde öffnet sich das Hauptfenster.  
-<img src="../images/main_german.png" width="800"/>  
-Im Dropdownmenü können die in FSL gespeicherten Savegames ausgewählt werden. Diese müssen vorher aus bestehenden Savegames importiert oder neu angelegt werden. Die Einträge im Dropdownmenü setzen sich dabei aus dem Savegamenamen und der verwendeten Map zusammen.  
-Unter Beschreibung wird die während des Anlegens des Savegames eingetragene Beschreibung angezeigt.
-### Tasten
-#### ***Neu***
-Anlegen einen neuen Savegames. Siehe *Savegame anlegen*
-#### ***Importieren***
-Importieren eines vorhanden Savegames. Siehe *Savegame importieren*
+## General
+At the FSL, first the FS version selection must be done.  
+<img src="../images/select_version_english.png" width="400"/>  
+Is there only one version installed or shall only one version managed, it is possible, before version selection, to set "Remember FS version for future starts?". That in future will always work with that version and the dialog will not appear.  
+It is possible to set or remove that later at the settings.  
+If the first start successful done (see *First start") the main window appear.  
+<img src="../images/main_english.png" width="800"/>  
+At the drop down list can a stored savegame be selected. Savegmaes must be imported, from FS savegames, or new created before. The list entrys are combined by savegame name and map name.  
+During th import or creaton it is possibel to give a small description which will be displayed under the drop done list.
+
+### Buttons
+#### ***New***
+Create new savegame. See *Create savegame*
+#### ***Import***
+Import existing savegame. See *Import savegame*
 <div style="page-break-after: always;"></div>  
 
-#### ***Ändern***
-Ändern des ausgewählten Savegames. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame ändern*
-#### ***Löschen***
-Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame löschen*
+#### ***Change***
+Change selected savegame. Button enabled after savegame selection. See *Change savegame*
+#### ***Remove***
+Remove selected savegame. Button enabled after savegame selection. See *Change savegame*
 #### ***Mods***
-Öffnet die Modverwaltung. Siehe *Mods*
-#### ***Einstellungen***
-Öffnet das Einstellungsmenü für FSL. Siehe *FSL Einstellungen*
-#### ***Beenden***
-Beendet FSL
+Open mod management. See *Mods*
+#### ***Settings***
+Open FSL settings menu. See *FSL Settings*
+#### ***Exit***
+Exit FSL
 #### ***Start***
-Startet das ausgewähle Savegame. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame starten*
+Start selected savegame. Button enabled after savegame selection. See *Start savegame*
 #### ***Update***
-Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.
-#### ***Spende***
-Wenn man mich und meine Arbeit unterstützen möchte ... ;)
+Open webpage with latest FSL release. Button only visible if a new version is released.
+#### ***Donate***
+If you want to support my work ... ;)
 
-## Erster Start
+## First start
 Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe hierzu *FSL Einstellungen*.  
 Danach sucht FSL im angegebenen Ordner nach dem `mods`-Ordner. Dieser kann dann importiert werden. 
 Wird der Import durchgeführt werden zuerst die Mods aus dem `mods` Ordner in den FSL Alle-Mods-Ordner importiert.  

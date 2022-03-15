@@ -22,7 +22,7 @@ def getMods(l = True):
 		files = os.listdir(se.getSettings('all_mods_path'))
 	except FileNotFoundError:
 		pass
-	maps = {'Standard': 'fs_internal'}
+	maps = se.getInternalMaps().copy()
 	mods = {}
 	for i in files:
 		if i.endswith('.zip'):
@@ -138,7 +138,7 @@ def markMods(window, title):
 		data = TinyDB(se.games_json).search((Query().name == title))
 		window['-TITLE-'].update(title)
 		window['-DESC-'].update(data[0]['desc'])
-		if data[0]['map'] != 'fs_internal':
+		if data[0]['map'] not in se.getInternalMaps().values():
 			window['-MAP-'].update(tr.getTrans('map_not_found').format(data[0]['map'].split('!')[1], data[0]['map'].split('!')[0].split('_')[1]))
 		for key, val in maps.items():
 			if val == data[0]['map']:

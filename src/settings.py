@@ -13,6 +13,8 @@ games_json = ''
 vers = ''
 def_vers = ''
 logger = None
+ls19_internal_maps = {'Ravenport': 'Ravenport', 'Felsbrunn': 'Felsbrunn'}
+ls22_internal_maps = {'Elmcreek': 'Elmcreek', 'Haut-Beyleron': 'Haut-Beyleron', 'Erlengrat': 'Erlengrat'}
 
 def init():
 	global settings_json
@@ -133,6 +135,12 @@ def saveSettings(values):
 	else:
 		TinyDB(fsl_settings_json).update({'def_vers': ''}, doc_ids = [1])
 	return True
+
+def getInternalMaps():
+	if vers == 'ls22':
+		return ls22_internal_maps
+	elif vers == 'ls19':
+		return ls19_internal_maps
 
 def getSettings(key):
 	db = TinyDB(settings_json)

@@ -62,18 +62,19 @@ def getSaveGames():
 	for i in all:
 		n = i['name']
 		m = i['map']
-		try:
-			with zipfile.ZipFile(all_mods_folder + m) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				m = moddesc.find('maps/map/title/en')
-				if m != None:
-					l.append(n + ' : ' + m.text)
-		except FileNotFoundError:
-			if i['map'] == 'fs_internal':
-				l.append(n + ' : ' + tr.getTrans('def_map'))
-			else:
-				sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
-			pass
+		if i['map'] not in se.getInternalMaps().values():
+			try:
+				with zipfile.ZipFile(all_mods_folder + m) as z:
+					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					m = moddesc.find('maps/map/title/en')
+					if m != None:
+						l.append(n + ' : ' + m.text)
+			except FileNotFoundError:
+				l.append(n + ' : ' + tr.getTrans('ghostmap'))
+				#sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
+				pass
+		else:
+			l.append(n + ' : ' + m)
 	return l
 
 def updateSGS(sgs, mod):
@@ -130,7 +131,8 @@ def getAllMods():
 	m = ga.getMods(False)
 	existing_mods = m[0]
 	existing_mods.update(m[1])
-	del existing_mods['Standard']
+	for i in list(se.getInternalMaps().values()):
+		del existing_mods[i]
 	return list(existing_mods.keys())
 
 def guiImportMods(updateSGs = True):
@@ -229,7 +231,7 @@ def importSavegame(values):
 		modstoadd[str(i)] = mods[i]
 
 	if len(maps) == 0:
-		maps.append('fs_internal')
+		maps.append(map_title)
 	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
 
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
@@ -271,7 +273,7 @@ def importSavegame(values):
 				shutil.copyfile(src, dest)
 				pysed.replace(i.split('_')[0], 'savegame1', dest)
 				os.remove(src)
-		if len(os.listdir(values['-SGB_PATH-'])) == 0:
+		if values['-SGB_PATH-'] != '' and len(os.listdir(values['-SGB_PATH-'])) == 0:
 			shutil.rmtree(values['-SGB_PATH-'])
 	shutil.rmtree(values['-SG_PATH-'])
 	if missing_mods:

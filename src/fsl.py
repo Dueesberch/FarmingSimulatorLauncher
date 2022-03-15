@@ -126,6 +126,35 @@ def checkFirstRun():
 				pass
 	return ret
 
+def validateModsFolder(fs_game_data_folder):
+	if checksumdir.dirhash(fs_game_data_folder + 'mods') != TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] != '':
+		logger.debug('fsl:checkChanges:mods folder changed')
+		all_mods = os.listdir(se.getSettings('all_mods_path'))
+		mods = {}
+		logger.debug('fsl:checkChanges:existing mods ' + str(all_mods))
+		path = fs_game_data_folder + 'mods'
+		for i in os.listdir(path):
+			if i.endswith('.zip'):
+				with zipfile.ZipFile(path + os.sep + i) as z:
+					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					version = moddesc.find('version')
+					k = 'fsl_' + version.text + '!' + i
+					if k not in all_mods:
+						logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
+						mods[i] = version.text
+			else:
+				continue
+		for i in mods:
+			if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod'), icon = 'logo.ico') == 'Yes':
+				logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
+				im.importMods(path, [i], True)
+			else:
+				try:
+					os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
+				except FileExistsError:
+					pass
+				shutil.copyfile(path + os.sep + i, fs_game_data_folder + 'mods_fsl_bak' + os.sep + i)
+
 def checkChanges():
 	""" check if game data changed
 	check if savegame1 and / or mods folder where changed after last usage
@@ -136,35 +165,7 @@ def checkChanges():
 	fs_game_data_folder = se.getSettings('fs_game_data_path') + os.sep
 	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	if os.path.exists(fs_game_data_folder + 'mods'):
-		if checksumdir.dirhash(fs_game_data_folder + 'mods') != TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] != '':
-			logger.debug('fsl:checkChanges:mods folder changed')
-			all_mods = os.listdir(se.getSettings('all_mods_path'))
-			mods = {}
-			logger.debug('fsl:checkChanges:existing mods ' + str(all_mods))
-			path = fs_game_data_folder + 'mods'
-			for i in os.listdir(path):
-				if i.endswith('.zip'):
-					print(i)
-					with zipfile.ZipFile(path + os.sep + i) as z:
-						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-						version = moddesc.find('version')
-						k = 'fsl_' + version.text + '!' + i
-						print(k)
-						if k not in all_mods:
-							logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
-							mods[i] = version.text
-				else:
-					continue
-			for i in mods:
-				if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod'), icon = 'logo.ico') == 'Yes':
-					logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
-					im.importMods(path, [i], True)
-				else:
-					try:
-						os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
-					except FileExistsError:
-						pass
-					shutil.copyfile(path + os.sep + i, fs_game_data_folder + 'mods_fsl_bak' + os.sep + i)
+		validateModsFolder(fs_game_data_folder)
 		shutil.rmtree(fs_game_data_folder + 'mods')
 
 	if os.path.exists(fs_game_data_folder + 'savegame1'):
@@ -183,13 +184,18 @@ def checkChanges():
 					break
 				elif event == '-NEW-':
 					ret = im.guiImportSG(fs_game_data_folder + 'savegame1', True)
-					logger.debug('fsl:checkChanges:add savegame as new ' + ret)
+					logger.debug('fsl:checkChanges:add savegame as new ' + str(ret))
 					if ret == False:
 						window.close()
 						return ret
 				elif event == '-BACKUP-':
 					logger.debug('fsl:checkChanges:backup savegame')
 					shutil.copytree(fs_game_data_folder + 'savegame1', fs_game_data_folder + 'savegame1_' + date)
+					if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+						if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
+							logger.debug('fsl:checkChanges:savegame Backup changed')
+							shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
+						shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 					break
 				elif event == '-OVERWRITE-':
 					logger.debug('fsl:checkChanges:overwrite existing savegame')
@@ -207,6 +213,15 @@ def checkChanges():
 							if os.path.exists(fs_game_data_folder + n):
 								shutil.rmtree(fs_game_data_folder + n)
 							shutil.copytree(fs_game_data_folder + 'savegame1', fs_game_data_folder + n)
+							if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+								if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
+									logger.debug('fsl:checkChanges:savegame Backup changed')
+									old = set(os.listdir(fs_game_data_folder + n + ' Backup'))
+									changed = set(os.listdir(fs_game_data_folder + 'savegameBackup'))
+									new = (changed.difference(old))
+									for i in new:
+										shutil.copytree(fs_game_data_folder + 'savegameBackup' + os.sep + i, fs_game_data_folder + n + ' Backup' + os.sep + i)
+									shutil.move(fs_game_data_folder + 'savegameBackup' + os.sep + 'savegame1_backupLatest.txt', fs_game_data_folder + n + ' Backup' + os.sep + 'savegame1_backupLatest.txt')
 							saved = True
 							break
 						elif event == '-CANCEL-':
@@ -216,15 +231,17 @@ def checkChanges():
 						break
 					window.UnHide()
 			window.close()
+		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 		shutil.rmtree(fs_game_data_folder + 'savegame1')
 
-	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
-		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
-			logger.debug('fsl:checkChanges:savegame Backup changed')
-			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50), icon = 'logo.ico')
-			shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
-		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
+#	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+#		#TODO check what was selected and act according too. 
+#		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
+#			logger.debug('fsl:checkChanges:savegame Backup changed')
+#			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+#			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50), icon = 'logo.ico')
+#			shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
+#		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 	return True
 
 def getSaveGames():
@@ -238,19 +255,18 @@ def getSaveGames():
 	for i in all:
 		n = i['name']
 		m = i['map']
-		try:
-			with zipfile.ZipFile(all_mods_folder + m) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				t = moddesc.find('maps/map/title/en')
-				if t != None:
-					l.append(n + ' : ' + t.text)
-		except FileNotFoundError:
-			if i['map'] == 'fs_internal':
-				l.append(n + ' : ' + tr.getTrans('def_map'))
-			else:
+		if i['map'] not in se.getInternalMaps().values():
+			try:
+				with zipfile.ZipFile(all_mods_folder + m) as z:
+					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					t = moddesc.find('maps/map/title/en')
+					if t != None:
+						l.append(n + ' : ' + t.text)
+			except FileNotFoundError:
 				l.append(n + ' : ' + tr.getTrans('ghostmap'))
-				#sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
-			pass
+				pass
+		else:
+			l.append(n + ' : ' + m)
 	return l
 
 def startSaveGame(name):
@@ -265,13 +281,13 @@ def startSaveGame(name):
 	os.makedirs(fs_game_data_folder + 'mods' + os.sep)
 	q = Query()
 	sg_map = TinyDB(se.games_json).get((q.name == name))['map']
-	if sg_map != 'fs_internal':
-		os.link(all_mods_folder + sg_map, fs_game_data_folder + 'mods' + os.sep + sg_map.split('!')[-1])
+	if sg_map not in se.getInternalMaps().values():
+		os.symlink(all_mods_folder + sg_map, fs_game_data_folder + 'mods' + os.sep + sg_map.split('!')[-1])
 	mods = TinyDB(se.games_json).get((q.name == name))['mods']
 	for i in mods:
-		try:
-			os.link(all_mods_folder + mods[i], fs_game_data_folder + 'mods' + os.sep + mods[i].split('!')[-1])
-		except FileNotFoundError:
+		if os.path.exists(all_mods_folder + mods[i]):
+			os.symlink(all_mods_folder + mods[i], fs_game_data_folder + 'mods' + os.sep + mods[i].split('!')[-1])
+		else:
 			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico') == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
 				return False
@@ -316,6 +332,7 @@ def startSaveGame(name):
 				break
 			if 'steam' in (p.info['name']).lower() and steam_check:
 				loop = True
+	validateModsFolder(fs_game_data_folder)
 	return True
 
 def disableButtons(window):
@@ -328,7 +345,7 @@ def main():
 	#sys.exit()
 	global logger
 	logger = log.getLogger('fsl')
-	logger.setLevel(log.DEBUG)
+	logger.setLevel(log.INFO)
 	handler = log.FileHandler('log.txt', mode = 'w')
 	logger.addHandler(handler)
 	logger.debug('fsl:main: FSL version ' + FSL_Version)
