@@ -1,5 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
-# python -m PyInstaller --uac-admin --distpath ../dist --workpath ../build .\fsl.spec
+# python -m PyInstaller --distpath ../dist --workpath ../build .\fsl.spec
 
 block_cipher = None
 

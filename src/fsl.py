@@ -216,12 +216,12 @@ def checkChanges():
 							if os.path.exists(fs_game_data_folder + 'savegameBackup'):
 								if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
 									logger.debug('fsl:checkChanges:savegame Backup changed')
-									old = set(os.listdir(fs_game_data_folder + n + ' Backup'))
+									old = set(os.listdir(fs_game_data_folder + n + '_Backup'))
 									changed = set(os.listdir(fs_game_data_folder + 'savegameBackup'))
 									new = (changed.difference(old))
 									for i in new:
-										shutil.copytree(fs_game_data_folder + 'savegameBackup' + os.sep + i, fs_game_data_folder + n + ' Backup' + os.sep + i)
-									shutil.move(fs_game_data_folder + 'savegameBackup' + os.sep + 'savegame1_backupLatest.txt', fs_game_data_folder + n + ' Backup' + os.sep + 'savegame1_backupLatest.txt')
+										shutil.copytree(fs_game_data_folder + 'savegameBackup' + os.sep + i, fs_game_data_folder + n + '_Backup' + os.sep + i)
+									shutil.move(fs_game_data_folder + 'savegameBackup' + os.sep + 'savegame1_backupLatest.txt', fs_game_data_folder + n + '_Backup' + os.sep + 'savegame1_backupLatest.txt')
 							saved = True
 							break
 						elif event == '-CANCEL-':
@@ -291,14 +291,14 @@ def startSaveGame(name):
 			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico') == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
 				return False
-	savegame = TinyDB(se.games_json).get((q.name == name))['name']
+	savegame = TinyDB(se.games_json).get((q.name == name))['folder']
 	if os.path.exists(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml'):
 		tree = ET.parse(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml')
-		tree.find('settings/savegameName').text = savegame
+		tree.find('settings/savegameName').text = name
 		with open(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml', 'wb') as f:
 			tree.write(f)
 	shutil.copytree(fs_game_data_folder + savegame, fs_game_data_folder + 'savegame1')
-	shutil.copytree(fs_game_data_folder + savegame + ' Backup', fs_game_data_folder + 'savegameBackup')
+	shutil.copytree(fs_game_data_folder + savegame + '_Backup', fs_game_data_folder + 'savegameBackup')
 	TinyDB(se.settings_json).update({'last_sg': name, 'sg_hash': '', 'sgb_hash': '', 'mods_hash': checksumdir.dirhash(fs_game_data_folder + 'mods')}, doc_ids = [1])
 	fs_path = se.getSettings('fs_path')
 	subprocess.run("\"" + fs_path + "\"", shell = True)
@@ -313,7 +313,7 @@ def startSaveGame(name):
 				TinyDB(se.settings_json).update({'sg_hash': checksumdir.dirhash(fs_game_data_folder + 'savegame1')}, doc_ids = [1])
 				sync(fs_game_data_folder + 'savegame1', fs_game_data_folder + savegame, 'sync')
 				TinyDB(se.settings_json).update({'sgb_hash': checksumdir.dirhash(fs_game_data_folder + 'savegameBackup')}, doc_ids = [1])
-				sync(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + savegame + ' Backup', 'sync')
+				sync(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + savegame + '_Backup', 'sync')
 				break
 			except PermissionError:
 				time.sleep(0.5)

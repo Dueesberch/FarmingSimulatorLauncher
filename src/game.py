@@ -2,6 +2,7 @@ import zipfile
 import os
 import shutil
 from pathlib import Path
+import hashlib
 
 import PySimpleGUI as sg
 from tinydb import TinyDB, Query
@@ -48,8 +49,8 @@ def removeSaveGame(title):
 		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
 		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip()):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip())
-		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + ' Backup'):
-			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + ' Backup')
+		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + '_Backup'):
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + '_Backup')
 	return
 
 def saveSaveGame(values, update):
@@ -58,9 +59,6 @@ def saveSaveGame(values, update):
 	db = TinyDB(se.games_json)
 	if ':' in values['-TITLE-']:
 		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50), icon = 'logo.ico')
-		return False
-	if values['-TITLE-'] == 'savegame1':
-		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50), icon = 'logo.ico')
 		return False
 	if update == -1 and db.get((Query().name == values['-TITLE-'])):
 		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
@@ -98,29 +96,31 @@ def saveSaveGame(values, update):
 		return False
 	if update == -1:
 		try:
-			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']
+			folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
+			p = se.getSettings('fs_game_data_path') + os.sep + folder_name
 			os.mkdir(p)
-			os.mkdir(p + ' Backup')
+			os.mkdir(p + '_Backup')
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
 			return False
-		try:
-			p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup'
-		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
-			return False
+		#try:
+		#	p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + '_Backup'
+		#except FileExistsError:
+		#	sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = 'logo.ico')
+		#	return False
 
 	for i, val in enumerate(values['-MODS-']):
 		modstoadd[str(i)] = mods[val]
 
 	if update == -1:
-		db.insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
+		db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 	else:
+		folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
 		data = db.get(doc_id = update)
-		db.update({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
+		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
-			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['name'], se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
-			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['name'] + ' Backup', se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup')
+			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
+			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
 	return True
 
 def addMissingMods(title):

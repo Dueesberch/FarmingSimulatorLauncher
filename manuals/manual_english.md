@@ -2,7 +2,7 @@
 
 # FarmingSimulatorLauncher
 
-The goal of the FarmingSimulatorLauncher (FSL) is to simplify the savegame and mod management.  
+The goal of the FarmingSimulatorLauncher (FSL) is to simplify the savegame and mod management and make it more flexible.  
   
 Therfore FSL is creating a special folder to store all mods including mod maps.  
 It is possible to import different version of the same mod or map and use that different versions in diffenent savegames.  
@@ -57,29 +57,30 @@ Open webpage with latest FSL release. Button only visible if a new version is re
 If you want to support my work ... ;)
 
 ## First start
-Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe hierzu *FSL Einstellungen*.  
-Danach sucht FSL im angegebenen Ordner nach dem `mods`-Ordner. Dieser kann dann importiert werden. 
-Wird der Import durchgeführt werden zuerst die Mods aus dem `mods` Ordner in den FSL Alle-Mods-Ordner importiert.  
-<span style="color:red"> !!! Der orginale `mods` Ordner wird nach dem Import gelöscht. Dies ist nötig, da FSL bei jedem Spielstart einen mods Ordner erzeugt, der nur die benötigten Mods enthält !!!</span>  
-Danach können weitere Mods aus anderen Ordnern importiert werden. Siehe *Mods importieren*  
+At the first start the required pathes must be set. See *FSL settings*  
+Afterwards FSL is looking for the `mod` folder. The mods can be imported then.  
+Is the import accepted all found mods will be imported into an FSL all mods folder.  
+<span style="color:red"> !!! The original mods folder will be deleted after the import. That is neccessary because FSL is creating an empty mods folder at game start which will held only required mods. !!!</span>  
+Finaly it is possible to select addional mods folder and import mods from there. See *Import mods*
+If the import is rejected FSL will move `mods` to `mods_fsl_bak`  
 
-Falls der Import abgelehnt wird, wird der `mods`-Ordner nach `mods_fsl_bak` verschoben.  
-Danach sucht FSL im angegebenen Ordner nach savegame-Ordnern. Werden Entsprechende gefunden, können Diese ebenfalls importiert werden.  
-Soll der Import durchgeführt werden öffnet sich für jedes Savegame das Importfenster. Der Titel ist ein Voschlag und kann geändert werden. Der Ordnerpfad ist hier fest. Weiters siehe *Savegame importieren*.  
-Falls der Import abgelehnt wird, werden die  entsprechenden `savegame`-Ordner und der `savegameBackup`-Ordner nach `savegameX_fsl_bak` bzw. `savegameBackup_fsl_bak` verschoben.  
-Sollten Savegame- und / oder Modordner von FSL nicht automatisch erkannt werden, können Diese später auch manuell importiert werden. Siehe hierfür *Savegame importieren* bzw. *Mods importieren*  
-Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geisterkarte" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter Mods importiert werden.  
+Then FSL will look for savegmae folder. It is possible to import them, if found.  
+The import window is opened for every savegame, if import is accepted. The title is a proposal and can be changed.  
+The folder path is fix. See *Import savegame*  
+FSL will move the `savegame` and `savegameBackup`folder to `savegameX_fsl_bak` respectively to `savegameBackup_fsl_bak`, if the import is rejected.  
+If a savegame and / or mod folder isn't discovered by FSL, it is possible to import them later manually. See *Import savegame* respectively *Import mods*  
+If the import is done the main window appear and the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at *Mods*
 
-FSL legt seine Konfigurationsdateien auf Windows unter `~/AppData/Roaming/FarmingSimulatorLauncher/` bzw. auf MacOS unter `~/Library/Application Support/FarmingSimulatorLauncher/` ab.
+FSL will create different configuration files on Windows at `~/AppData/Roaming/FarmingSimulatorLauncher/` and on  MacOS at `~/Library/Application Support/FarmingSimulatorLauncher/`.
 
 ## Savegame
-### Savegame anlegen
-Hierüber werden neue Savegames angelegt. Dabei wird aber nur ein FSL internes Savegame erzeugt, welches beim ersten Start im LS mit Daten gefüllt wird.  
+### Create savegame
+Here new savegame configurations will be created. FSL is just creating an internal savegmae which will befilled by FS at the first start.  
   
-<img src="../images/new_sg_german.png" width="800"/>  
+<img src="../images/new_sg_english.png" width="800"/>  
 
-Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
-Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
+The *FSL savegame Titel* is required. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
+Nicht erlaubt ist hier der Doppelpunkt..  
 Das Feld *Beschreibung* ist optional.  
 Es muss unter *Karte* eine Map ausgewählt werden.  
 Aus der Liste der verfügbaren *Mods* werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
@@ -113,7 +114,7 @@ Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wi
 #### ***Shift + Mausklick***  
 Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.
 Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden entsprechende Einträge in der FSL Konfiguration erzeugt und die passenden Ordner angelegt.  
-Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
+Nicht erlaubt ist hier der Doppelpunkt..  
 Das Feld *Beschreibung* ist optional.  
 
 Beim *Importieren* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird. Ist alles in Ordnung wird das Savegame importiert. Der Savegameordner wird hierbei mit dem vergebenen Titel umbenannt und ggf. vorhandene LS Backup in den FSL savegame Backupordner verschoben.  
@@ -128,7 +129,7 @@ Hierüber können bereits vorhanden FSL Savegames angepasst werden.
 <img src="../images/change_sg_german.png" width="800"/>  
   
 Der *FSL Savegame Titel* kann verändert werden, muss aber gesetzt sein.
-Nicht erlaubt sind hier der Name *savegame1*, sowie der Doppelpunkt.  
+Nicht erlaubt ist hier der Doppelpunkt..  
 
 Das Feld *Beschreibung* ist optional. Es kann eine neue Beschreibung eingetragen, die vorhandene geändert oder gelöscht werden.  
 

@@ -11,7 +11,7 @@ from tinydb import TinyDB, Query
 from tinydb.operations import delete
 import logging as log
 import pysed
-
+import hashlib
 existing_mods = {}
 
 def importAllMods(path, rem = False):
@@ -71,7 +71,6 @@ def getSaveGames():
 						l.append(n + ' : ' + m.text)
 			except FileNotFoundError:
 				l.append(n + ' : ' + tr.getTrans('ghostmap'))
-				#sg.popup_error(tr.getTrans('map_not_found').format(m.split('!')[1], m.split('!')[0][4:]), title = tr.getTrans('file_not_found'), location = (50, 50), icon = 'logo.ico')
 				pass
 		else:
 			l.append(n + ' : ' + m)
@@ -232,13 +231,14 @@ def importSavegame(values):
 
 	if len(maps) == 0:
 		maps.append(map_title)
-	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
+	folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
+	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
 
-	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
+	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + folder_name)
 	for i in os.listdir(values['-SG_PATH-']):
-		shutil.move(values['-SG_PATH-'] + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'])
+		shutil.move(values['-SG_PATH-'] + os.sep + i, se.getSettings('fs_game_data_path') + os.sep + folder_name)
 	try:
-		os.mkdir(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup') 
+		os.mkdir(se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup') 
 	except FileExistsError:
 		pass
 	if not '-SGB_PATH-' in values:
@@ -249,11 +249,11 @@ def importSavegame(values):
 				if sg_title in i:
 					src = bak_path + os.sep + i
 					if os.path.isdir(src):
-						dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
+						dest = se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
 						shutil.copytree(src, dest)
 						shutil.rmtree(src)
 					else:
-						dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
+						dest = se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup' + os.sep + 'savegame1_backupLatest.txt'
 						shutil.copyfile(src, dest)
 						pysed.replace(sg_title, 'savegame1', dest)
 						os.remove(src)
@@ -265,11 +265,11 @@ def importSavegame(values):
 		for i in values['-SGB-']:
 			src = values['-SGB_PATH-'] + os.sep + i
 			if os.path.isdir(src):
-				dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
+				dest = se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup' + os.sep + 'savegame1_' + i.split('_')[1] + '_' + i.split('_')[2]
 				shutil.copytree(src, dest)
 				shutil.rmtree(src)
 			else:
-				dest = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + ' Backup' + os.sep + 'savegame1_backupLatest.txt'
+				dest = se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup' + os.sep + 'savegame1_backupLatest.txt'
 				shutil.copyfile(src, dest)
 				pysed.replace(i.split('_')[0], 'savegame1', dest)
 				os.remove(src)
