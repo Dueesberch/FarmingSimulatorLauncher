@@ -231,8 +231,10 @@ def checkChanges():
 						break
 					window.UnHide()
 			window.close()
-		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
-		shutil.rmtree(fs_game_data_folder + 'savegame1')
+		if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+			shutil.rmtree(fs_game_data_folder + 'savegameBackup')
+		if os.path.exists(fs_game_data_folder + 'savegame1'):
+			shutil.rmtree(fs_game_data_folder + 'savegame1')
 
 #	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
 #		#TODO check what was selected and act according too. 

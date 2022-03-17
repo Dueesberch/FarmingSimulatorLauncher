@@ -49,6 +49,7 @@ Fehler bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLaunch
 * Mods in careerSavegame.xml entsprechend der Konfuguration setzen
 * Karte updaten
 * Savegame kopieren
+* orginal LS setup wieder herstellen
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
   
