@@ -47,10 +47,10 @@ def removeSaveGame(title):
 	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
 	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50), icon = 'logo.ico') == "Yes":
 		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
-		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip()):
-			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip())
-		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + '_Backup'):
-			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + title.split(' : ')[0].rstrip() + '_Backup')
+		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + exists['folder']):
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'])
+		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + exists['folder'] + '_Backup'):
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'] + '_Backup')
 	return
 
 def saveSaveGame(values, update):
@@ -121,6 +121,8 @@ def saveSaveGame(values, update):
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
+	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+		exportSGC(values['-TITLE-'])
 	return True
 
 def addMissingMods(title):
@@ -165,20 +167,31 @@ def remMissingMods(values):
 			del(sg_mods[key])
 	TinyDB(se.games_json).update({'mods': sg_mods}, doc_ids = [dataset.doc_id])
 
+def exportSGC(title):
+	data = TinyDB(se.games_json).get(Query().name == title)
+	path = sg.popup_get_folder(tr.getTrans('storeat'))
+	path = path + os.sep + ''.join(e for e in title if e.isalnum()) + '.fsl_sgc'
+	print(data)
+	try:
+		TinyDB(path).insert(data)
+	except AssertionError:
+		TinyDB(path).update(data)
+
 def guiNewSaveGame(title = None):
 	global maps
 	global mods
+	exp = True
 	maps_keys, mods_keys = getMods()
 	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
-				[sg.Input(key = '-TITLE-', size = (100, 1))],
+				[sg.Input(key = '-TITLE-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('description'), size = (90, 1))],
-				[sg.Input(key = '-DESC-', size = (100, 1))],
+				[sg.Input(key = '-DESC-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('map'))],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
-				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'))],
-				[	sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (20, 1), visible = False),
-					sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1))
+				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'), enable_events = True)],
+				[	sg.Button(tr.getTrans('export'), key = '-EXPORT_SAVE-', size = (14, 1)),
+					sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (20, 1), visible = False)
 				],
 				[sg.Text(tr.getTrans('missing'), key = '-MISS_TITLE-', visible = False)],
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
@@ -188,7 +201,6 @@ def guiNewSaveGame(title = None):
 	]
 	
 	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), icon = 'logo.ico')
-	window['-MODS-'].bind('<FocusIn>', 'click')
 
 	update_sg = -1
 	if title != None:
@@ -205,17 +217,20 @@ def guiNewSaveGame(title = None):
 		#print(event, values)
 		if event == sg.WIN_CLOSED or event == '-EXIT-':
 			break
-		elif event == '-SAVE-':
-			if saveSaveGame(values, update_sg):
-				break
-		elif event == '-MODS-click':
-			#handlePicture(values['-MODS-'])
-			window['-SAVE-'].SetFocus(True)
+		elif event == '-EXPORT_SAVE-':
+			if exp:
+				exportSGC(values['-TITLE-'])
+			else:
+				if saveSaveGame(values, update_sg):
+					break
 		elif event == '-SEL_MOD-':
 			markMods(window, title)
 		elif event == '-REM_MOD-':
 			remMissingMods(values)
 			window['-MISS-'].update(addMissingMods(title))
+		elif event == '-MODS-' or event == '-TITLE-' or event == '-DESC-':
+			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+			exp = False
 		
 	window.close()
 

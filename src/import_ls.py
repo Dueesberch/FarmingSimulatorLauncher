@@ -156,9 +156,9 @@ def guiImportMods(updateSGs = True):
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-			window.Hide()
+			#window.Hide()
 			importMods(values['-MOD_PATH-'], values['-MODS-'], updateSGs)
-			window.UnHide()
+			#window.UnHide()
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
@@ -215,9 +215,9 @@ def importSavegame(values):
 	if ':' in values['-TITLE-']:
 		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50), icon = 'logo.ico')
 		return False
-	if values['-TITLE-'] == 'savegame1':
-		sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50), icon = 'logo.ico')
-		return False
+	#if values['-TITLE-'] == 'savegame1':
+	#	sg.popup(tr.getTrans('ssg_wrong_title'), title = tr.getTrans('ssg_title_title'), location = (50, 50), icon = 'logo.ico')
+	#	return False
 	if values['-TITLE-'] == '':
 		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = 'logo.ico')
 		return False
@@ -287,12 +287,25 @@ def getBackupFolder(path):
 			l.append(i)
 	return l
 
+def importSGC(path):
+	new = TinyDB(path).all()[0]
+	if TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']):
+		doc_id = TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']).doc_id
+		TinyDB(se.games_json).update({"name": new['name'], "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']}, doc_ids = [doc_id])
+	else:
+		try:
+			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'])
+			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'] + '_Backup')
+		except FileExistsError:
+			pass
+		TinyDB(se.games_json).insert({"name": new['name'], "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']})
+
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
 	if path == '':
 		path = se.getSettings('fs_game_data_path')
 
-		layout =    [	[sg.Text(tr.getTrans('get_sg_path'))],
+		layout1 =   [	[sg.Text(tr.getTrans('get_sg_path'))],
 						[sg.Input('', key = '-SG_PATH-', size = (92, 1))],
 						[sg.FolderBrowse(initial_folder = path, target = '-SG_PATH-', key = '-SG_SELECT-')],
 						[sg.Text(tr.getTrans('get_sgb_path'))],
@@ -305,8 +318,20 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 						[sg.Text(tr.getTrans('description'), size = (60, 1))],
 						[sg.Input(key = '-DESC-', size = (92, 1))],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (14, 1)),
-							sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))
+							sg.Button(tr.getTrans('cancel'), key = '-EXIT_1-', size = (14, 1))
 						]
+					]
+		layout2 = 	[	[sg.Text(tr.getTrans('sgc_file'))],
+						[sg.Input('', key = '-SGC_PATH-', size = (92,1))],
+						[sg.FileBrowse(file_types = (('Text Files', '*.fsl_sgc'),), target = '-SGC_PATH-', key = '-SGC_SELECT-')],
+						[	sg.Button(tr.getTrans('import'), key = '-IMPORT_SGC-', size = (14, 1)),
+							sg.Button(tr.getTrans('cancel'), key = '-EXIT_2-', size = (14, 1))
+						]
+					]
+		layout = 	[	[sg.TabGroup(	[	[sg.Tab(tr.getTrans('sg_import_tab'), layout1)],
+											[sg.Tab(tr.getTrans('sgc_import_tab'), layout2)]
+										]
+									)]	
 					]
 	else:
 		sg_title = 'SG' + path.split('savegame')[1]
@@ -320,13 +345,13 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 							sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))
 						]
 					]
-
+	
 	window = sg.Window(tr.getTrans('import'), layout, finalize = True, location = (50, 50), icon = 'logo.ico')
 
 	while True:
 		event, values = window.read()
 		#print(event, values)
-		if event == sg.WIN_CLOSED or event=="-EXIT-":
+		if event == sg.WIN_CLOSED or event=="-EXIT_1-" or event=="-EXIT_2-":
 			ret = False
 			break
 		elif event == '-SGB_PATH-':
@@ -336,5 +361,8 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 			if importSavegame(values):
 				break
 			w.close()
+		elif event == '-IMPORT_SGC-':
+			importSGC(values['-SGC_PATH-'])
+			break
 	window.close()
 	return ret

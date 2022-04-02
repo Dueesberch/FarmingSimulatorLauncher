@@ -1,4 +1,5 @@
 import os
+import ctypes
 import platform
 import PySimpleGUI as sg
 import translation as tr
@@ -33,6 +34,9 @@ def init():
 		fsl_config_path = os.path.expanduser('~') + '/Library/Application Support/FarmingSimulatorLauncher/'
 	elif platform.system() == 'Windows':
 		logger.debug('settings:init:OS Windows')
+		if not ctypes.windll.shell32.IsUserAnAdmin():
+			sg.popup_error('FSL must be run with administrator rights.')
+			return False
 		fsl_config_path = os.path.expanduser('~').replace('\\', '/') + '/AppData/Roaming/FarmingSimulatorLauncher/'
 	else:
 		logger.debug('settings:init:unsupported OS')

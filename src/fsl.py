@@ -419,11 +419,13 @@ def main():
 			window.Hide()
 			ga.guiNewSaveGame(values['-COMBO-'].split(' : ')[0].rstrip())
 			window['-COMBO-'].update(value = '', values = getSaveGames())
+			window['-DESC-'].update(value = '')
 			disableButtons(window)
 			window.UnHide()
 		elif event == '-REMOVE-':
 			ga.removeSaveGame(values['-COMBO-'])
 			window['-COMBO-'].update(value = '', values = getSaveGames())
+			window['-DESC-'].update(value = '')
 			disableButtons(window)
 		elif event == '-NEW-':
 			window.Hide()
