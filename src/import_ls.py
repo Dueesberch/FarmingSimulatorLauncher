@@ -287,18 +287,18 @@ def getBackupFolder(path):
 			l.append(i)
 	return l
 
-def importSGC(path):
+def importSGC(path, title):
 	new = TinyDB(path).all()[0]
-	if TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']):
+	if TinyDB(se.games_json).get(Query().name == title):
 		doc_id = TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']).doc_id
-		TinyDB(se.games_json).update({"name": new['name'], "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']}, doc_ids = [doc_id])
+		TinyDB(se.games_json).update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']}, doc_ids = [doc_id])
 	else:
 		try:
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'])
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'] + '_Backup')
 		except FileExistsError:
 			pass
-		TinyDB(se.games_json).insert({"name": new['name'], "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']})
+		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']})
 
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
@@ -322,8 +322,10 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 						]
 					]
 		layout2 = 	[	[sg.Text(tr.getTrans('sgc_file'))],
-						[sg.Input('', key = '-SGC_PATH-', size = (92,1))],
+						[sg.Input('', key = '-SGC_PATH-', size = (92,1), enable_events = True)],
 						[sg.FileBrowse(file_types = (('Text Files', '*.fsl_sgc'),), target = '-SGC_PATH-', key = '-SGC_SELECT-')],
+						[sg.Text(tr.getTrans('sg_title'))],
+						[sg.Input('', key = '-I_TITLE-', enable_events = True), sg.Text(tr.getTrans('exists')), sg.Text('', key = '-EXISTS-')],
 						[	sg.Button(tr.getTrans('import'), key = '-IMPORT_SGC-', size = (14, 1)),
 							sg.Button(tr.getTrans('cancel'), key = '-EXIT_2-', size = (14, 1))
 						]
@@ -362,7 +364,19 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 				break
 			w.close()
 		elif event == '-IMPORT_SGC-':
-			importSGC(values['-SGC_PATH-'])
+			importSGC(values['-SGC_PATH-'], '-SGC_PATH-')
 			break
+		elif event == '-SGC_PATH-':
+			window['-I_TITLE-'].update(TinyDB(values['-SGC_PATH-']).all()[0]['name'])
+			if TinyDB(se.games_json).get(Query().name == TinyDB(values['-SGC_PATH-']).all()[0]['name']):
+				window['-EXISTS-'].update(tr.getTrans('yes'), background_color = 'red')
+			else:
+				window['-EXISTS-'].update(tr.getTrans('no'), background_color = 'green')
+		elif event == '-I_TITLE-':
+			if TinyDB(se.games_json).get(Query().name == values['-I_TITLE-']):
+				window['-EXISTS-'].update(tr.getTrans('yes'), background_color = 'red')
+			else:
+				window['-EXISTS-'].update(tr.getTrans('no'), background_color = 'green')
+			
 	window.close()
 	return ret

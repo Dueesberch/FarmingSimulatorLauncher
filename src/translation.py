@@ -48,6 +48,7 @@ dictionary = {
         "import_sg_init": "There is {} in {}\nImport that?",
         "importable_mods": "Available mods to import",
         "existing_mods": "Already imported mods",
+        "exists": "Exists",
         "map": "Map",
         "map_not_found": "Map file \"{}\" in Version \"{}\" not found",
         "miss_path": "Path missing",
@@ -60,6 +61,7 @@ dictionary = {
         "new_release": "There is a new version of FarmingSimulatorLauncher.\nClick here to get the latest one.",
         "not_found_folder": "Path \"{}\" not found",
         "no_savegame_files": "No savegame file found.",
+        "no": "no",
         "overwrite": "Overwrite",
         "remove": "Remove",
         "remove_title": "Remove folder",
@@ -92,7 +94,8 @@ dictionary = {
         "sgc_file": "FSL configuration file to import",
         "sgc_import_tab": "FSL configuration",
         "tt_gaLbMods": "click: select one item | strg + click: multiselect | shift + click: select all between first and second click | strg + click at selected entry to unselect",
-        "wait_for_import": "Import running. Please wait"
+        "wait_for_import": "Import running. Please wait",
+        "yes": "yes"
     },
     "de": {
         "backup": "Sichern",
@@ -121,6 +124,7 @@ dictionary = {
         "exe_not_found": "{} nicht gefunden",
         "export": "Export",
         "exportsg": "Savegamekonfiguration exportieren?",
+        "exists": "Vorhanden",
         "file_not_found": "Datei nicht gefunden",
         "found_new_mod": "Neuen Mod \"{}\" gefunden. Importieren? Falls nicht wird er in mods_fsl_bak verschoben und kann später importiert werden.",
         "fsl_bak_exists": "_fsl_bak bereits vorhanden. Bitte umbenennen oder löschen",
@@ -153,6 +157,7 @@ dictionary = {
         "new_release": "Neue FarmingSimulatorLauncher Version verfügbar.\nHier klicken um die neuste Version zu laden.",
         "not_found_folder": "Der angegebene angegebene Ordnerpfad \"{}\" wurde nicht gefunden",
         "no_savegame_files": "Der angegebene Ordner enthält keine savegame Dateien.",
+        "no": "nein",
         "overwrite": "Überschreiben",
         "remove": "Löschen",
         "remove_title": "Lösche Ordner",
@@ -185,7 +190,8 @@ dictionary = {
         "sgc_file": "Import FSL Konfigurationsdatei",
         "sgc_import_tab": "FSL Konfiguration",
         "tt_gaLbMods": "klick: einen Eintrag auswählen, andere abwählen | strg + klick: mehrere Einträge auswählen | shift + klick: alle Einträge zwischen ersten und letzen Ausgewählten markieren | strg + klick auf markierten EIntrag entfernt Selektion",
-        "wait_for_import": "Importiere. Bitte warten"
+        "wait_for_import": "Importiere. Bitte warten",
+        "yes": "ja"
     }
 }
 
