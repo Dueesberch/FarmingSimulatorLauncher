@@ -42,9 +42,9 @@ Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *S
 <div style="page-break-after: always;"></div>  
 
 #### ***Ändern***
-Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame ändern*
+Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfiguration ändern*
 #### ***Löschen***
-Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame löschen*
+Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion löschen*
 #### ***Mods***
 Öffnet die Modverwaltung. Siehe *Mods*
 #### ***Einstellungen***
@@ -52,7 +52,7 @@ Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn ein Savegame
 #### ***Beenden***
 Beendet FSL
 #### ***Start***
-Startet das ausgewähle Savegame. Taste wird eingeschaltet wenn ein Savegame ausgewählt wurde. Siehe *Savegame starten*
+Startet das ausgewähle Savegame. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion starten*
 #### ***Update***
 Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.
 #### ***Spende***
@@ -167,12 +167,13 @@ Wurden Änderungen am Titel, der Beschreibung und / oder den Mods vorgenommen, �
 
 Unter *Fehlend* werden die Mods aufgelistet, welche nicht im FSL verfügbar sind. Diese können aus der Savegamekonfiguration gelöscht werden. Das Importieren ist über Hauptfenster > Mods möglich. Siehe *Mods importieren*  
 
-*Abbrechen* schliesst das Fenster ohne die Änderungen zu übernehmen.
-### Savegame löschen
+*Abbrechen* schliesst das Fenster ohne die Änderungen zu übernehmen.  
+
+### Savegamekonfigurtion löschen
 Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.  
 <span style="color:red">Achtung:</span> Dadurch wird die Savegamekonfiguration für das Savegame entfernt und die zugehörigen Ordner gelöscht.  
 
-### Savegame starten
+### Savegamekonfiguration starten
 Ist ein Savegame im Hautpfenster ausgwählt, kann dieses über die Taste *Starten* gestartet werden.
 Das ausgewählte Savegame steht in LS dann unter savegame1 zur Verfügung.  
 
