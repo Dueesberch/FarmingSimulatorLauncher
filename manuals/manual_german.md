@@ -44,7 +44,7 @@ Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *S
 #### ***Ändern***
 Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfiguration ändern*
 #### ***Löschen***
-Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion löschen*
+Löschen der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion löschen*
 #### ***Mods***
 Öffnet die Modverwaltung. Siehe *Mods*
 #### ***Einstellungen***
@@ -52,7 +52,7 @@ Löschen des ausgewählten Savegames. Taste wird eingeschaltet wenn eine Konfigu
 #### ***Beenden***
 Beendet FSL
 #### ***Start***
-Startet das ausgewähle Savegame. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion starten*
+Startet der ausgewählen Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion starten*
 #### ***Update***
 Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.
 #### ***Spende***
@@ -95,6 +95,7 @@ Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wi
 Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.
   
 Beim *Speichern* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird und ob eine Karte ausgewählt wurde. Weitherin wird geprüft, dass die ausgewählten Mods nicht kollidieren. Eine Auswahl des selben Mods in unterschiedlichen Versionen ist nicht möglich. Ist alles in Ordnung wird die Savegamekonfiguration gespeichert und das Fenster geschlossen.  
+
 *Abbrechen* verlässt das Fenster ohne eine neue Savegamekonfiguration anzulegen.
 
 ### Savegame importieren
@@ -127,11 +128,14 @@ Anschließend wird das Fenster geschlossen.
 
 ### Savegamekonfiguration importieren
 Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Siehe *Tipps - Savegamekonfiguration teilen* bzw. *Tipps - Savegamekonfiguration sichern*  
+#TODO neues bild
 <img src="../images/import_sgc_german.png" width="800"/>  
 
 *Browse* öffnet das Dateiauswahlfenster in dem die ``fsl_sgc``-Datei ausgewält wird. FSL prüft ob der Titel bereits vergeben ist und zeigt dies neben dem Titelfeld an.  
+
 *Importieren* Gibt es noch keine Konfiguration(Vorhanden: nein) mit dem Title wird diese neu hinzugefügt.  
 <span style="color:red">Wenn es bereits eine Konfiguration (Vorhanden: ja) mit dem gleichen Namen gibt, wird diese überschrieben.</span>
+
 *Abbrechen* Verwirft den Import und schließt das Fenster.
 
 ### Savegamekonfiguration ändern oder exportieren
