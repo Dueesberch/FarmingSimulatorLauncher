@@ -33,12 +33,11 @@ Dies kann auch später in den Einstellungen eingestellt werden.
 Wenn der erste Start (Siehe *Erster Start*) erfolgreich durchlaufen wurde öffnet sich das Hauptfenster.  
 <img src="../images/main_german.png" width="800"/>  
 Im Dropdownmenü können die in FSL gespeicherten Savegamekonfigurationen ausgewählt werden. Diese müssen vorher aus bestehenden Savegames importiert oder neu angelegt werden. Die Einträge im Dropdownmenü setzen sich dabei aus dem Savegamenamen und der verwendeten Map zusammen.  
-Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eingetragene Beschreibung angezeigt.
+Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eingetragene Beschreibung angezeigt.  
+
 ### Tasten
-#### ***Neu***
-Anlegen einer neuen Savegamekonfiguration. Siehe *Savegamekonfiguration anlegen*
-#### ***Importieren***
-Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *Savegame importieren* bzw. *Savegamekonfiguration importieren*
+***Neu*** Anlegen einer neuen Savegamekonfiguration. Siehe *Savegamekonfiguration anlegen*
+***Importieren*** Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *Savegame importieren* bzw. *Savegamekonfiguration importieren*
 <div style="page-break-after: always;"></div>  
 
 #### ***Ändern***
