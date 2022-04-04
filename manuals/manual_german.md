@@ -37,25 +37,25 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 
 ### Tasten
 ***Neu*** Anlegen einer neuen Savegamekonfiguration. Siehe *Savegamekonfiguration anlegen*  
+
 ***Importieren*** Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *Savegame importieren* bzw. *Savegamekonfiguration importieren*
 <div style="page-break-after: always;"></div>  
 
-#### ***Ändern***
-Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfiguration ändern*
-#### ***Löschen***
-Löschen der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion löschen*
-#### ***Mods***
-Öffnet die Modverwaltung. Siehe *Mods*
-#### ***Einstellungen***
-Öffnet das Einstellungsmenü für FSL. Siehe *FSL Einstellungen*
-#### ***Beenden***
-Beendet FSL
-#### ***Start***
-Startet der ausgewählen Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion starten*
-#### ***Update***
-Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.
-#### ***Spende***
-Wenn man mich und meine Arbeit unterstützen möchte ... ;)
+***Ändern*** Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfiguration ändern*  
+
+***Löschen*** Löschen der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion löschen*  
+
+***Mods*** Öffnet die Modverwaltung. Siehe *Mods*  
+
+***Einstellungen*** Öffnet das Einstellungsmenü für FSL. Siehe *FSL Einstellungen*  
+
+***Beenden*** Beendet FSL  
+
+***Start*** Startet der ausgewählen Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe *Savegamekonfigurtion starten*  
+
+***Update*** Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.  
+
+***Spende*** Wenn man mich und meine Arbeit unterstützen möchte ... ;)  
 
 ## Erster Start
 Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe hierzu *FSL Einstellungen*.  
