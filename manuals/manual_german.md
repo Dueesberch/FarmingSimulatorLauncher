@@ -79,10 +79,12 @@ Hierüber werden neue Savegamekonfigurationen angelegt. <!--Dabei wird aber nur 
   
 <img src="../images/new_sg_german.png" width="800"/>  
 
-Der ***FSL Savegame Titel*** muss gesetzt werden. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
-Nicht erlaubt ist hier der Doppelpunkt.  
+Der ***FSL Savegame Titel*** muss gesetzt werden. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt. Nicht erlaubt ist hier der Doppelpunkt.  
+
 Das Feld ***Beschreibung*** ist optional.  
+
 Es muss unter ***Karte*** eine Map ausgewählt werden.  
+
 Aus der Liste der verfügbaren ***Mods*** werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
 Die Auswhal erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
