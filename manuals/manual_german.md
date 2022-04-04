@@ -23,7 +23,7 @@ Bitte sichert eure LS Savegames / Mods vor dem ersten Start von FSL.</span>
 Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf.
 <div style="page-break-after: always;"></div>  
 
-<span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht gemacht werden können.**</span>
+<span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht möglich sind. Siehe. *Tipps - Administratorrechte bekommen***</span>
 
 ## Allgemein
 Beim Start erscheint zuerst die Auswahl, welche LS Version benutzt werden soll.  
