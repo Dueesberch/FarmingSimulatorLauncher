@@ -121,8 +121,8 @@ Nicht erlaubt ist hier der Doppelpunkt.
 Das Feld *Beschreibung* ist optional.  
 
 Beim *Importieren* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird. Ist alles in Ordnung wird das Savegame importiert. <!-- Der Savegameordner wird hierbei mit dem vergebenen Titel umbenannt und ggf. vorhandene LS Backups in den FSL Savegame Backupordner verschoben.-->  
-Außerdem prüft FSL ob die in der Savegamekonfiguration verwendeten Mods bereits in FSL importiert wurden. Werden Mods gefunden, die noch nicht importiert wurden, weißt FSL darauf hin. Die Liste der fehlenden Mods kann dann unter Savegamekonfiguration *Ändern* im Hauptfenster angezeigt werden und ggf. aus der Savegamekonfiguration gelöscht werden.  
-Anschließend wird das Fenster geschlossen.  
+Außerdem prüft FSL ob die in der Savegamekonfiguration verwendeten Mods bereits in FSL importiert wurden. Werden Mods gefunden, die noch nicht importiert wurden, weisst FSL darauf hin. Die Liste der fehlenden Mods kann dann unter Savegamekonfiguration *Ändern* im Hauptfenster angezeigt werden und ggf. aus der Savegamekonfiguration gelöscht werden.  
+Anschliessend wird das Fenster geschlossen.  
 
 *Abbrechen* verlässt das Importfenster ohne Import.
 
@@ -136,7 +136,7 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 *Importieren* - Gibt es noch keine Konfiguration (Vorhanden: nein) mit dem Titel wird diese neu hinzugefügt.  
 <span style="color:red">Wenn es bereits eine Konfiguration (Vorhanden: ja) mit dem gleichen Namen gibt, wird diese überschrieben.</span>
 
-*Abbrechen* Verwirft den Import und schließt das Fenster.
+*Abbrechen* Verwirft den Import und schliesst das Fenster.
 
 ### Savegamekonfiguration ändern oder exportieren
 Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden. 
@@ -189,6 +189,7 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 
 ### Import
 Über *Browse* wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
+
 *Zum Import* listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
   
 Die Auswhal erfolgt über die Tastenkombinationen:  
@@ -199,13 +200,16 @@ Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewä
 Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
 #### ***Shift + Mausklick***  
 Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+
 *Importieren* fügt die ausgewählten Mods in den FSL Alle-Mods-Ordner ein.  
 FSL bietet an, den Quellordner nach dem Import zu löschen. <span style="color:red">Achtung, es wird der gesamte Ordner gelöscht.</span>
 Nach dem Import können die Savegamekonfigurationen ausgewählt werden, bei denen die Modversion geändert werden soll oder der Mod hinzugefügt werden soll.
 Du Zuordung der Mod Versionen zu den Savegamekonfigurationen wird nicht automatisch angepasst.
 ### Löschen
-*Bereits importierte Mods* listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.
+*Bereits importierte Mods* listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.  
+
 *Löschen* entfernt die markierten Mods aus dem FSL Alle-Mods-Ordner.  
+
 *Beenden* schliesst das Fenster.
 
 ## FSL Einstellungen
@@ -216,8 +220,10 @@ Hierüber werden die FSL Einstellungen verwaltet.
 Bild steht stellvertretend für beide LS Versionen.
 
 Über *Sprache wählen* kann die FSL Sprache ausgewählt werden. Im Dropdownmenü werden alle verfügbaren Sprachen aufgelistet.  
+
 Wird der Haken bei *Immer die gewählte LS Version benutzen* gesetzt, wird die Abfrage zum Programmstart übersprungen.  
-Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.
+
+Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.  
 Über *Browse* kann die Datei gesucht werden.  
 *Standard LS19 Pfad* setzt  
 `C:\Program Files (x86)\Farming Simulator 2019\Farmingsimulator2019.exe`  
@@ -229,6 +235,7 @@ unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Pfad* beschrifte
 unter Windows bzw.  
 `~/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game`  
 unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Steam Pfad* beschriftet und der Pfad wird analog gesetzt.  
+
 Unter *Landwirtschaftssimulator Savgames Ordner auswählen* wird der Pfad zu den LS Savegames angezeigt.  
 Über *Browse* kann der Pfad gesucht werden.  
 *Standard LS19 Savegames Ordner Pfad* setzt den Pfad auf  
@@ -241,7 +248,9 @@ Der bei *Pfad für Alle-Mods-Ordner auswählen* gesetzte Pfad wird von FSL benut
 Siehe *Tipps - Mods teilen*  
 
 *Speichern* übernimmt die Einstellungen.  
-*Beenden* verlässt das Fenster ohne zu speichern.
+
+*Beenden* verlässt das Fenster ohne zu speichern.  
+
 ## FSL updaten
 FSL prüft bei jedem Start, ob eine neu FSL Version verfügbar ist. Ist dies der Fall wird im Hauptfenster die entsprechende Taste angezeigt. Hierüber wird die Webseite mit der neusten Version geöffnet und die entsprechenden Datei können heruntergeladen und ausgetauscht werden. Ein automatisches ersetzen erfolgt nicht.  
 
