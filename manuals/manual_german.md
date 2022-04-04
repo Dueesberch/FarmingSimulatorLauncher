@@ -70,7 +70,7 @@ Danach sucht FSL im angegebenen Ordner nach savegame-Ordnern. Werden Entsprechen
 Soll der Import durchgeführt werden öffnet sich für jedes Savegame das Importfenster. Der Titel ist ein Vorschlag und kann geändert werden. Der Ordnerpfad ist hier fest. Weiters siehe *Savegame importieren*.  
 Falls der Import abgelehnt wird, werden die  entsprechenden `savegame`-Ordner und der `savegameBackup`-Ordner nach `savegameX_fsl_bak` bzw. `savegameBackup_fsl_bak` verschoben.  
 Sollten Savegame- und / oder Modordner von FSL nicht automatisch erkannt werden, können Diese später auch manuell importiert werden. Siehe hierfür *Savegame importieren* bzw. *Mods importieren*  
-Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geisterkarte" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter Mods importiert werden.  
+Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geistermap" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter Mods importiert werden.  
 
 FSL legt seine Konfigurationsdateien auf Windows unter `~/AppData/Roaming/FarmingSimulatorLauncher/` bzw. auf MacOS unter `~/Library/Application Support/FarmingSimulatorLauncher/` ab.
 
@@ -133,7 +133,7 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 
 *Browse* öffnet das Dateiauswahlfenster in dem die ``fsl_sgc``-Datei ausgewält wird. FSL prüft ob der Titel bereits vergeben ist und zeigt dies neben dem Titelfeld an.  
 
-*Importieren* Gibt es noch keine Konfiguration(Vorhanden: nein) mit dem Title wird diese neu hinzugefügt.  
+*Importieren* - Gibt es noch keine Konfiguration (Vorhanden: nein) mit dem Titel wird diese neu hinzugefügt.  
 <span style="color:red">Wenn es bereits eine Konfiguration (Vorhanden: ja) mit dem gleichen Namen gibt, wird diese überschrieben.</span>
 
 *Abbrechen* Verwirft den Import und schließt das Fenster.
@@ -149,7 +149,7 @@ Nicht erlaubt ist hier der Doppelpunkt.
 Das Feld *Beschreibung* ist optional. Es kann eine neue Beschreibung eingetragen, die vorhandene geändert oder gelöscht werden.  
 
 Die *Karte* ist nicht änderbar.  
-Sollte die Datei zur Karte in FSL noch fehlen, "Geisterkarte", wird in diesem Feld der Kartenname und die entsprechende Version angezeigt. Diese kann dann importiert werden. Siehe *Mods importieren*
+Sollte die Datei zur Karte in FSL noch fehlen ("Geistermap"), wird ein entsprechender Hinweis in diesem Feld mit Kartenname und Version angezeigt. Diese kann dann importiert werden. Siehe *Mods importieren*
 
 Unter *Mods* können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Savegamekonfiguration Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
 Die Auswhal der Mods erfolgt über die Tastenkombinationen:  

@@ -151,7 +151,7 @@ dictionary = {
         "mod_not_found": "Mod {} nicht in {}\nTrotzdem starten?",
         "missing_mod": "Im Savegame verwendete Mods wurden noch nicht importiert. Bitte später importieren. Die fehlenden Mods werden unter 'Ändern' für das Savegame angezeigt.",
         "missing": "Fehlend",
-        "missing_map": "Karte \"{}\" in Version \"{}\" nicht gefunden. Bitte später importieren. Bis dahin wird das Savegame nicht gelistet.",
+        "missing_map": "Karte \"{}\" in Version \"{}\" nicht gefunden. Bitte später importieren.",
         "new": "Neu",
         "new_mod": "Neuer Mod",
         "new_release": "Neue FarmingSimulatorLauncher Version verfügbar.\nHier klicken um die neuste Version zu laden.",
