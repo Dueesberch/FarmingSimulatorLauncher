@@ -128,7 +128,7 @@ Anschließend wird das Fenster geschlossen.
 
 ### Savegamekonfiguration importieren
 Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Siehe *Tipps - Savegamekonfiguration teilen* bzw. *Tipps - Savegamekonfiguration sichern*  
-#TODO neues bild
+
 <img src="../images/import_sgc_german.png" width="800"/>  
 
 *Browse* öffnet das Dateiauswahlfenster in dem die ``fsl_sgc``-Datei ausgewält wird. FSL prüft ob der Titel bereits vergeben ist und zeigt dies neben dem Titelfeld an.  
