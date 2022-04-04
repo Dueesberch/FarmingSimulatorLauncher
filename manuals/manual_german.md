@@ -79,23 +79,22 @@ Hierüber werden neue Savegamekonfigurationen angelegt. <!--Dabei wird aber nur 
   
 <img src="../images/new_sg_german.png" width="800"/>  
 
-Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
+Der ***FSL Savegame Titel*** muss gesetzt werden. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
 Nicht erlaubt ist hier der Doppelpunkt.  
-Das Feld *Beschreibung* ist optional.  
-Es muss unter *Karte* eine Map ausgewählt werden.  
-Aus der Liste der verfügbaren *Mods* werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
+Das Feld ***Beschreibung*** ist optional.  
+Es muss unter ***Karte*** eine Map ausgewählt werden.  
+Aus der Liste der verfügbaren ***Mods*** werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
 Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.
-  
-Beim *Speichern* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird und ob eine Karte ausgewählt wurde. Weitherin wird geprüft, dass die ausgewählten Mods nicht kollidieren. Eine Auswahl des selben Mods in unterschiedlichen Versionen ist nicht möglich. Ist alles in Ordnung wird die Savegamekonfiguration gespeichert und das Fenster geschlossen.  
+***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 
-*Abbrechen* verlässt das Fenster ohne eine neue Savegamekonfiguration anzulegen.
+***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. 
+Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  
+
+***Shift + Mausklick*** Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+  
+Beim ***Speichern*** wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird und ob eine Karte ausgewählt wurde. Weitherin wird geprüft, dass die ausgewählten Mods nicht kollidieren. Eine Auswahl des selben Mods in unterschiedlichen Versionen ist nicht möglich. Ist alles in Ordnung wird die Savegamekonfiguration gespeichert und das Fenster geschlossen.  
+
+***Abbrechen*** verlässt das Fenster ohne eine neue Savegamekonfiguration anzulegen.
 
 ### Savegame importieren
 Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert werden.  
@@ -107,8 +106,7 @@ Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert w
 Zuerst muss der LS Savegame Ordner ausgewählt werden, der importiert werden soll.  
 Danach kann der Ordner mit den Backups angegeben werden und dann ausgewählt werden welche Backups übernommen werrden sollen.  
 Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
+***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
 #### ***Strg + Mausklick***  
 Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
 Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
@@ -152,7 +150,7 @@ Sollte die Datei zur Karte in FSL noch fehlen ("Geistermap"), wird ein entsprech
 
 Unter *Mods* können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
 Die Auswhal der Mods erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
+***Mausklick*** 
 Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
 #### ***Strg + Mausklick***  
 Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
@@ -192,7 +190,7 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 *Zum Import* listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
   
 Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
+***Mausklick*** 
 Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
 #### ***Strg + Mausklick***  
 Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
