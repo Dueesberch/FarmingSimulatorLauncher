@@ -86,7 +86,7 @@ Das Feld ***Beschreibung*** ist optional.
 Es muss unter ***Karte*** eine Map ausgewählt werden.  
 
 Aus der Liste der verfügbaren ***Mods*** werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
-Die Auswhal erfolgt über die Tastenkombinationen:  
+Die Auswahl erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. 
@@ -107,7 +107,7 @@ Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert w
 
 Zuerst muss der LS Savegame Ordner ausgewählt werden, der importiert werden soll.  
 Danach kann der Ordner mit den Backups angegeben werden und dann ausgewählt werden welche Backups übernommen werrden sollen.  
-Die Auswhal erfolgt über die Tastenkombinationen:  
+Die Auswahl erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. 
@@ -143,42 +143,41 @@ Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder e
   
 <img src="../images/change_sg_german.png" width="800"/>  
   
-Der *FSL Savegame Titel* kann verändert werden, muss aber gesetzt sein.
+Der ***FSL Savegame Titel*** kann verändert werden, muss aber gesetzt sein.
 Nicht erlaubt ist hier der Doppelpunkt.  
 
-Das Feld *Beschreibung* ist optional. Es kann eine neue Beschreibung eingetragen, die vorhandene geändert oder gelöscht werden.  
+Das Feld ***Beschreibung*** ist optional. Es kann eine neue Beschreibung eingetragen, die vorhandene geändert oder gelöscht werden.  
 
-Die *Karte* ist nicht änderbar.  
+Die ***Karte*** ist nicht änderbar.  
 Sollte die Datei zur Karte in FSL noch fehlen ("Geistermap"), wird ein entsprechender Hinweis in diesem Feld mit Kartenname und Version angezeigt. Diese kann dann importiert werden. Siehe **Mods importieren**
 
-Unter *Mods* können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
-Die Auswhal der Mods erfolgt über die Tastenkombinationen:  
-***Mausklick*** 
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+Unter ***Mods*** können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
+Die Auswahl der Mods erfolgt über die Tastenkombinationen:  
+***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 
-*Export* erzeugt eine ``SAVEGAMENAME.fsl_sgc`` Datei und speichert dies im ausgewählten Ordner.  
+***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. 
+Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  
+
+***Shift + Mausklick*** Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+
+***Export*** erzeugt eine ``SAVEGAMENAME.fsl_sgc`` Datei und speichert dies im ausgewählten Ordner.  
 Diese kann dann importiert werden. Siehe **Savegamekonfiguration importieren**  
 
 Wurden Änderungen am Titel, der Beschreibung und / oder den Mods vorgenommen, ändert sicher der Export Button zu Speichern.
-*Speichern* übernimmt die Änderungen für die Savegamekonfiguration und bietet an die geänderte Konfiguration zu exportieren.  
+***Speichern*** übernimmt die Änderungen für die Savegamekonfiguration und bietet an die geänderte Konfiguration zu exportieren.  
 
-Über *Benutzte Mods markieren* wird die aktuelle Zuordnung zum Savegame wieder angezeigt. Die neue Auswahl wird verworfen  
+Über ***Benutzte Mods markieren*** wird die aktuelle Zuordnung zum Savegame wieder angezeigt. Die neue Auswahl wird verworfen.  
 
-Unter *Fehlend* werden die Mods aufgelistet, welche nicht im FSL verfügbar sind. Diese können aus der Savegamekonfiguration gelöscht werden. Das Importieren ist über Hauptfenster > Mods möglich. Siehe **Mods importieren**  
+Unter ***Fehlend*** werden die Mods aufgelistet, welche nicht im FSL verfügbar sind. Diese können aus der Savegamekonfiguration gelöscht werden. Das Importieren ist über Hauptfenster > Mods möglich. Siehe **Mods importieren**  
 
-*Abbrechen* schliesst das Fenster ohne die Änderungen zu übernehmen.  
+***Abbrechen*** schliesst das Fenster ohne die Änderungen zu übernehmen.  
 
 ### Savegamekonfigurtion löschen
 Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.  
 <span style="color:red">Achtung:</span> Dadurch wird die Savegamekonfiguration für das Savegame entfernt und die zugehörigen Ordner gelöscht.  
 
 ### Savegamekonfiguration starten
-Ist ein Savegame im Hautpfenster ausgwählt, kann dieses über die Taste *Starten* gestartet werden.
+Ist ein Savegame im Hautpfenster ausgwählt, kann dieses über die Taste ***Starten*** gestartet werden.
 Das ausgewählte Savegame steht in LS dann unter savegame1 zur Verfügung.  
 
 ## Mods
@@ -188,29 +187,28 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 <img src="../images/import_mods_german.png" width="800"/>
 
 ### Import
-Über *Browse* wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
+Über ***Browse*** wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
 
-*Zum Import* listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
+***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
   
-Die Auswhal erfolgt über die Tastenkombinationen:  
-***Mausklick*** 
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+Die Auswahl erfolgt über die Tastenkombinationen:  
+***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 
-*Importieren* fügt die ausgewählten Mods in den FSL Alle-Mods-Ordner ein.  
+***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  
+
+***Shift + Mausklick*** Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+
+***Importieren*** fügt die ausgewählten Mods in den FSL Alle-Mods-Ordner ein.  
 FSL bietet an, den Quellordner nach dem Import zu löschen. <span style="color:red">Achtung, es wird der gesamte Ordner gelöscht.</span>
 Nach dem Import können die Savegamekonfigurationen ausgewählt werden, bei denen die Modversion geändert werden soll oder der Mod hinzugefügt werden soll.
-Du Zuordung der Mod Versionen zu den Savegamekonfigurationen wird nicht automatisch angepasst.
+Du Zuordung der Mod Versionen zu den Savegamekonfigurationen wird nicht automatisch angepasst.  
+
 ### Löschen
-*Bereits importierte Mods* listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.  
+***Bereits importierte Mods*** listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.  
 
-*Löschen* entfernt die markierten Mods aus dem FSL Alle-Mods-Ordner.  
+***Löschen*** entfernt die markierten Mods aus dem FSL Alle-Mods-Ordner.  
 
-*Beenden* schliesst das Fenster.
+***Beenden*** schliesst das Fenster.
 
 ## FSL Einstellungen
 Hierüber werden die FSL Einstellungen verwaltet.
@@ -219,37 +217,37 @@ Hierüber werden die FSL Einstellungen verwaltet.
 
 Bild steht stellvertretend für beide LS Versionen.
 
-Über *Sprache wählen* kann die FSL Sprache ausgewählt werden. Im Dropdownmenü werden alle verfügbaren Sprachen aufgelistet.  
+Über ***Sprache wählen*** kann die FSL Sprache ausgewählt werden. Im Dropdownmenü werden alle verfügbaren Sprachen aufgelistet.  
 
-Wird der Haken bei *Immer die gewählte LS Version benutzen* gesetzt, wird die Abfrage zum Programmstart übersprungen.  
+Wird der Haken bei ***Immer die gewählte LS Version benutzen*** gesetzt, wird die Abfrage zum Programmstart übersprungen.  
 
-Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.  
-Über *Browse* kann die Datei gesucht werden.  
-*Standard LS19 Pfad* setzt  
+Unter ***Pfad zu Farmingsimulator exe auswählen*** wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.  
+Über ***Browse*** kann die Datei gesucht werden.  
+***Standard LS19 Pfad*** setzt  
 `C:\Program Files (x86)\Farming Simulator 2019\Farmingsimulator2019.exe`  
 unter Windows bzw.  
 `/Applications/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game`  
-unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Pfad* beschriftet und der Pfad wird analog gesetzt.  
-*Standard LS19 Steam Pfad* setzt  
+unter MacOS ein. Für den LS22 ist die Taste mit ***Standard LS22 Pfad*** beschriftet und der Pfad wird analog gesetzt.  
+***Standard LS19 Steam Pfad*** setzt  
 `C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 19/FarmingSimulator2019.exe`  
 unter Windows bzw.  
 `~/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game`  
-unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Steam Pfad* beschriftet und der Pfad wird analog gesetzt.  
+unter MacOS ein. Für den LS22 ist die Taste mit ***Standard LS22 Steam Pfad*** beschriftet und der Pfad wird analog gesetzt.  
 
-Unter *Landwirtschaftssimulator Savgames Ordner auswählen* wird der Pfad zu den LS Savegames angezeigt.  
-Über *Browse* kann der Pfad gesucht werden.  
-*Standard LS19 Savegames Ordner Pfad* setzt den Pfad auf  
+Unter ***Landwirtschaftssimulator Savgames Ordner auswählen*** wird der Pfad zu den LS Savegames angezeigt.  
+Über ***Browse*** kann der Pfad gesucht werden.  
+***Standard LS19 Savegames Ordner Pfad*** setzt den Pfad auf  
 `C:/Users/USERNAME/Documents/My Games/FarmingSimulator2019`  
 für Windows bzw.  
 `~/Library/Application Support/FarmingSimulator2019`  
-für MacOS gesetzt. Für den LS22 ist die Taste mit *Standard LS22 Savegames Ordner Pfad* beschriftet und der Pfad wird analog gesetzt.  
+für MacOS gesetzt. Für den LS22 ist die Taste mit ***Standard LS22 Savegames Ordner Pfad*** beschriftet und der Pfad wird analog gesetzt.  
 
-Der bei *Pfad für Alle-Mods-Ordner auswählen* gesetzte Pfad wird von FSL benutzt um einen all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden. Achte daher auf ausreichend Speicherplatz.  
-Siehe *Tipps - Mods teilen*  
+Der bei ***Pfad für Alle-Mods-Ordner auswählen*** gesetzte Pfad wird von FSL benutzt um einen all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden. Achte daher auf ausreichend Speicherplatz.  
+Siehe **Tipps - Mods teilen**  
 
-*Speichern* übernimmt die Einstellungen.  
+***Speichern*** übernimmt die Einstellungen.  
 
-*Beenden* verlässt das Fenster ohne zu speichern.  
+***Beenden*** verlässt das Fenster ohne zu speichern.  
 
 ## FSL updaten
 FSL prüft bei jedem Start, ob eine neu FSL Version verfügbar ist. Ist dies der Fall wird im Hauptfenster die entsprechende Taste angezeigt. Hierüber wird die Webseite mit der neusten Version geöffnet und die entsprechenden Datei können heruntergeladen und ausgetauscht werden. Ein automatisches ersetzen erfolgt nicht.  
