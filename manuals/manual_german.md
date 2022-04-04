@@ -132,8 +132,8 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 ***Importieren*** - Gibt es noch keine Konfiguration (Vorhanden: nein) mit dem Titel wird diese neu hinzugefügt.  
 <span style="color:red">Wenn es bereits eine Konfiguration (Vorhanden: ja) mit dem gleichen Namen gibt, wird diese überschrieben.</span>
 
-***Abbrechen*** Verwirft den Import und schliesst das Fenster.
------------------------------------
+***Abbrechen*** Verwirft den Import und schliesst das Fenster.  
+
 ### Savegamekonfiguration ändern oder exportieren
 Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden. 
   
