@@ -36,7 +36,7 @@ Im Dropdownmenü können die in FSL gespeicherten Savegamekonfigurationen ausgew
 Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eingetragene Beschreibung angezeigt.  
 
 ### Tasten
-***Neu*** Anlegen einer neuen Savegamekonfiguration. Siehe *Savegamekonfiguration anlegen*
+***Neu*** Anlegen einer neuen Savegamekonfiguration. Siehe *Savegamekonfiguration anlegen*  
 ***Importieren*** Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe *Savegame importieren* bzw. *Savegamekonfiguration importieren*
 <div style="page-break-after: always;"></div>  
 
