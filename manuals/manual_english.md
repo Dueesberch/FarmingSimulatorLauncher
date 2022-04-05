@@ -87,7 +87,7 @@ The field **Description** is optional.
 
 A map must be selected at **Map**.  
 
-The mod which should be used at the savegame can be selected at the list of available **Mods**.
+The mods which should be used at the savegame can be selected at the list of available **Mods**.
 The selection is done by:
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
