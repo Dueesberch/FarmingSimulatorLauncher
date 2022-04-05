@@ -234,7 +234,7 @@ See **Recommendation - Share mods**
 
 ***Save*** take the settings and close the window.  
 
-***Close*** close the windows without saving.  
+***Exit*** close the windows without saving.  
 
 ## Update FSL
 FSL will check at every start if there is a new version. If so, the according button will be visible at the main window. The button will open the page with the latest release at the web browser. There the newest version can be downloaded, but the current local version will not replaced.
