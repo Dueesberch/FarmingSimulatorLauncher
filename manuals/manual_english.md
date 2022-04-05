@@ -181,7 +181,7 @@ At the **Mods** window the mods will be managed. It is possible to import new mo
 With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
 ***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
-The selection is done by: 
+The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
