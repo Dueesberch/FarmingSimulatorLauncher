@@ -28,7 +28,7 @@ Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität g
 ## Allgemein
 Beim Start erscheint zuerst die Auswahl, welche LS Version benutzt werden soll.  
 <img src="../images/select_version_german.png" width="400"/>  
-Sollte nur eine Version installiert sein oder soll nur eine Version von FSL verwaltet werden, kann, bevor die Version ausgewählt wird, der Haken bei "Immer die gewählte LS Version benutzen." gesetzt werden. Dadurch erscheint der Auswahldialog zukünftig nicht mehr.  
+Sollte nur eine Version installiert sein oder soll nur eine Version von FSL verwaltet werden, kann, bevor die Version ausgewählt wird, der Haken bei ***Immer die gewählte LS Version benutzen.*** gesetzt werden. Dadurch erscheint der Auswahldialog zukünftig nicht mehr.  
 Dies kann auch später in den Einstellungen eingestellt werden.  
 Wenn der erste Start (Siehe **Erster Start**) erfolgreich durchlaufen wurde öffnet sich das Hauptfenster.  
 <img src="../images/main_german.png" width="800"/>  
