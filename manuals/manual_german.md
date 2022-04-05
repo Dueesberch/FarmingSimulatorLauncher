@@ -5,13 +5,13 @@
 Der FarmingSimulatorLauncher (FSL) soll das Verwalten der verschiedenen Spielstände und Mods vereinfachen und flexibler gestalten.  
   
 Zur Verwaltung der Mods legt FSL einen eigenen Ordner an, in dem alle Mods, inkl. Mod-Maps, gespeichert werden.  
-Es ist Möglich, von einem Mod oder einer Map mehrere Versionen in FSL zu importieren und in unterschiedlichen Savegames unterschiedliche Versionen zu nutzen.  
+Es ist Möglich, von einem Mod oder einer Map mehrere Versionen in FSL zu importieren und in unterschiedlichen Savegames unterschiedliche Versionen zu nutzen. Somit ist es Möglich einen Mod vorab zu testen, anstatt ihn direkt auszutauschen.  
 <span style="color:red">**!!!** Es ist aber weiterhin nicht möglich in einem Savegame unterschiedliche Versionen des selben Mods zu verwenden. **!!!**</span>  
-FSL erzeugt für jedes Savegame eine Konfiguration. Die Konfiguration beinhaltet die verwendete Map, die verwendeten Mods, den Namen des Savegames ()erscheint später auch im LS), den Ordner in dem das Savegame gespeichert wird und die Beschreibung. Weiterhin legt FSL zu einem Savegame einen eigenen Savegameordner und einen eigenen Backup Ordner an. Somit gibt es, im Unterschied zum Landwirtschaftssimulator mehrere Backupordner.  
+FSL erzeugt für jedes Savegame eine Konfiguration. Die Konfiguration beinhaltet die verwendete Map, die verwendeten Mods, den Namen des Savegames (erscheint später auch im LS), den Ordner in dem das Savegame gespeichert wird und die Beschreibung. Weiterhin legt FSL zu einem Savegame einen eigenen Savegameordner und einen eigenen Backup Ordner an. Somit gibt es, im Unterschied zum Landwirtschaftssimulator mehrere Backupordner.  
 
-Er funktioniert sowohl mit dem LS19 als auch mit dem LS22 und es kann die Giants oder Steam Version genutzt werden. FSL läuft auf Windows PC's und MacOS.  
+FSL funktioniert sowohl mit dem LS19 als auch mit dem LS22 und es kann die Giants oder Steam Version genutzt werden. Er läuft auf Windows PC's und MacOS.  
 
-Beim Start eines Savegames, aus FSL heraus, wird das savegame1 angelegt und alle benötigten Mods in den LS-Modsordner verlinkt. Somit sind für LS nur die benötigten Mods sichtbar, es gibt bspw. nur eine Mod Map und es werden auch nur die zum Savegame definierten Skript Mods geladen.  
+Beim Start eines Savegames, aus FSL heraus, wird das savegame1 angelegt und alle benötigten Mods in den LS-Modsordner verlinkt. Somit sind für LS nur die benötigten Mods sichtbar. Es gibt bspw. nur eine Mod Map und es werden auch nur die zum Savegame definierten Skript Mods geladen.  
 Nach dem Spielstart läuft FSL im Hintergrund weiter und synchronisiert die Savegame- und Backup-Ordner kontinuierlich.  
   
 Ich habe versucht FSL, bzw. das Savegame- / Modhandling so stabil und sicher wie möglich zu machen.  
@@ -51,7 +51,7 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 
 ***Beenden*** Beendet FSL  
 
-***Start*** Startet der ausgewählen Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe **Savegamekonfigurtion starten**  
+***Start*** Startet LS mit der ausgewählen Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe **Savegamekonfigurtion starten**  
 
 ***Update*** Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.  
 
@@ -61,21 +61,22 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe **FSL Einstellungen**.  
 Danach sucht FSL im angegebenen Ordner nach dem `mods`-Ordner. Dieser kann dann importiert werden. 
 Wird der Import durchgeführt werden zuerst die Mods aus dem `mods` Ordner in den FSL Alle-Mods-Ordner importiert.  
-<span style="color:red"> !!! Der orginale `mods` Ordner wird nach dem Import gelöscht. Dies ist nötig, da FSL bei jedem Spielstart einen mods Ordner erzeugt, der nur die benötigten Mods enthält !!!</span>  
+<span style="color:red"> !!! Der orginale mods Ordner wird nach dem Import gelöscht. Dies ist nötig, da FSL bei jedem Spielstart einen mods Ordner erzeugt, der nur die benötigten Mods enthält. !!!</span>  
 Danach können weitere Mods aus anderen Ordnern importiert werden. Siehe **Mods importieren**  
 
 Falls der Import abgelehnt wird, wird der `mods`-Ordner nach `mods_fsl_bak` verschoben.  
+
 Danach sucht FSL im angegebenen Ordner nach savegame-Ordnern. Werden Entsprechende gefunden, können Diese ebenfalls importiert werden.  
 Soll der Import durchgeführt werden öffnet sich für jedes Savegame das Importfenster. Der Titel ist ein Vorschlag und kann geändert werden. Der Ordnerpfad ist hier fest. Siehe **Savegame importieren**.  
 Falls der Import abgelehnt wird, werden die  entsprechenden `savegame`-Ordner und der `savegameBackup`-Ordner nach `savegameX_fsl_bak` bzw. `savegameBackup_fsl_bak` verschoben.  
 Sollten Savegame- und / oder Modordner von FSL nicht automatisch erkannt werden, können Diese später auch manuell importiert werden. Siehe **Savegame importieren** bzw. **Mods importieren**  
-Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geistermap" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter Mods importiert werden.  
+Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geistermap" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter **Mods** importiert werden.  
 
 FSL legt seine Konfigurationsdateien auf Windows unter `~/AppData/Roaming/FarmingSimulatorLauncher/` bzw. auf MacOS unter `~/Library/Application Support/FarmingSimulatorLauncher/` ab.
 
 ## Savegame
 ### Savegamekonfiguration anlegen
-Hierüber werden neue Savegamekonfigurationen angelegt. <!--Dabei wird aber nur ein FSL internes Savegame erzeugt, welches beim ersten Start im LS mit Daten gefüllt wird.-->  
+Hierüber werden neue Savegamekonfigurationen angelegt.  
   
 <img src="../images/new_sg_german.png" width="800"/>  
 
@@ -101,7 +102,7 @@ Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert w
 
 <img src="../images/import_sg_german.png" width="800"/>
   
-<span style="color:red">Achtung:</span> Bei einem Multiplayerspiel wird im LS für den Client kein Savegame erzeugt. Somit kann natürlich auch keines importiert werden. FSL benötigt aber die Angabe, welche Mods für das Spiel zur Verfügung gestellt werden sollen. Es muss also ein neue Savegamekonfiguration angelegt werden. Siehe **Savegamekonfiguration anlegen**
+<span style="color:red">Achtung:</span> Bei einem Multiplayerspiel wird im LS für den Client kein Savegame erzeugt. Somit kann natürlich auch keines importiert werden. FSL benötigt aber die Angabe, welche Mods für das Spiel zur Verfügung gestellt werden sollen. Es muss also ein neue Savegamekonfiguration angelegt werden. Siehe **Savegamekonfiguration anlegen**  
 
 Zuerst muss der LS Savegame Ordner ausgewählt werden, der importiert werden soll.  
 Danach kann der Ordner mit den Backups angegeben werden und dann ausgewählt werden welche Backups übernommen werrden sollen.  
@@ -117,7 +118,7 @@ Nicht erlaubt ist hier der Doppelpunkt.
 Das Feld ***Beschreibung*** ist optional.  
 
 Beim ***Importieren*** wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird. Ist alles in Ordnung wird das Savegame importiert. Außerdem prüft FSL ob die in der Savegamekonfiguration verwendeten Mods bereits in FSL importiert wurden. 
-Werden Mods gefunden, die noch nicht importiert wurden, weisst FSL darauf hin. Die Liste der fehlenden Mods kann dann unter Savegamekonfiguration *Ändern* im Hauptfenster angezeigt werden und ggf. aus der Savegamekonfiguration gelöscht werden.  
+Werden Mods gefunden, die noch nicht importiert wurden, weisst FSL darauf hin. Die Liste der fehlenden Mods kann dann unter Savegamekonfiguration **Ändern** im Hauptfenster angezeigt werden und ggf. aus der Savegamekonfiguration gelöscht werden.  
 Anschliessend wird das Fenster geschlossen.  
 
 ***Abbrechen*** verlässt das Importfenster ohne Import.
@@ -135,10 +136,10 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 ***Abbrechen*** Verwirft den Import und schliesst das Fenster.  
 
 ### Savegamekonfiguration ändern oder exportieren
-Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden. 
-  
+Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden.  
+
 <img src="../images/change_sg_german.png" width="800"/>  
-  
+
 Der ***FSL Savegame Titel*** kann verändert werden, muss aber gesetzt sein.
 Nicht erlaubt ist hier der Doppelpunkt.  
 
@@ -147,7 +148,7 @@ Das Feld ***Beschreibung*** ist optional. Es kann eine neue Beschreibung eingetr
 Die ***Karte*** ist nicht änderbar.  
 Sollte die Datei zur Karte in FSL noch fehlen ("Geistermap"), wird ein entsprechender Hinweis in diesem Feld mit Kartenname und Version angezeigt. Diese kann dann importiert werden. Siehe **Mods importieren**
 
-Unter ***Mods*** können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
+Unter ***Mods*** können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Konfiguration entfernt, bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das **Mods** Fenster erfolgen.  
 Die Auswahl der Mods erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. 
@@ -166,7 +167,7 @@ Unter ***Fehlend*** werden die Mods aufgelistet, welche nicht im FSL verfügbar 
 
 ***Abbrechen*** schliesst das Fenster ohne die Änderungen zu übernehmen.  
 
-### Savegamekonfigurtion löschen
+### Savegame löschen
 Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.  
 <span style="color:red">Achtung:</span> Dadurch wird die Savegamekonfiguration für das Savegame entfernt und die zugehörigen Ordner gelöscht.  
 
@@ -184,7 +185,6 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 Über ***Browse*** wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
 
 ***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
-  
 Die Auswahl erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  
@@ -192,8 +192,7 @@ Die Auswahl erfolgt über die Tastenkombinationen:
 
 ***Importieren*** fügt die ausgewählten Mods in den FSL Alle-Mods-Ordner ein.  
 FSL bietet an, den Quellordner nach dem Import zu löschen. <span style="color:red">Achtung, es wird der gesamte Ordner gelöscht.</span>
-Nach dem Import können die Savegamekonfigurationen ausgewählt werden, bei denen die Modversion geändert werden soll oder der Mod hinzugefügt werden soll.
-Du Zuordung der Mod Versionen zu den Savegamekonfigurationen wird nicht automatisch angepasst.  
+Nach dem Import können die Savegamekonfigurationen ausgewählt werden, bei denen die Modversion geändert werden soll oder der Mod hinzugefügt werden soll.  
 
 ### Löschen
 ***Bereits importierte Mods*** listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.  
@@ -261,9 +260,9 @@ Ab dann reicht ein einfacher Doppelklick auf die Datei zum starten
 Folge der Anleitung auf <a href="https://www.heise.de/tipps-tricks/Windows-10-UAC-deaktivieren-oder-anpassen-4232842.html">https://www.heise.de/tipps-tricks/Windows-10-UAC-deaktivieren-oder-anpassen-4232842.html</a>  
 
 ### Mods teilen
-Wir haben für unsere Mods einen Cloudserver, welcher im Explorer eingebunden ist. Alle Spieler haben diesen Ordner als Alle-Mods-Ordner gesetzt, wodurch die Möglichkeit besteht, dass der Admin neue Mods einfügt oder auch entfernt und alle immer mit der selben Modbasis arbeiten. Das Herunterladen und Einfügen bei jedem einzelnen entfällt. Aktuell werden aber die FSL Savegames noch nicht geteilt. Somit muss ein neuer Mod zumindest noch für das Savegame ausgewählt werden. Das Teilen von FSL Savegame Konfigurationen ist geplant.
+Wir haben für unsere Mods einen Cloudserver, welcher im Explorer eingebunden ist. Alle Spieler haben diesen Ordner als Alle-Mods-Ordner gesetzt, wodurch die Möglichkeit besteht, dass der Admin neue Mods einfügt oder auch entfernt und alle immer mit der selben Modbasis arbeiten. Das Herunterladen und Einfügen bei jedem einzelnen entfällt.
 ### Savegamekonfiguration teilen
 Wie beschrieben, lassen sich die Savegamekonfigurationen exportieren und  wieder importieren. Wir nutzen dies in unseren Multiplayerspielen in verbindung mit dem gemeinsamen Modordner als Netzlaufwerk.
 Der Administrator des Spiels defniert die Mods und importiert diese in FSL. Danach exportiert er die Savegamekonfiguration und teilt diese ebenfalss über das Netzlaufwerk. Die Anderen importieren die Konfiguration und haben somit immmer den selben Stand wie der Administrator. Das lästige "Ich muss noch kurz updaten oder Mod xyz installieren." entfällt
 ### Savegamekonfiguration sichern
-Auf die gleiche Art, wie man Konfigurationen teieln kann, kann man natürlich auch alte Stände wieder herstellen, indem man sie in das eigene FSL importiert.
+Auf die gleiche Art, wie man Konfigurationen teilen kann, kann man natürlich auch alte Stände wieder herstellen, indem man sie in das eigene FSL importiert.

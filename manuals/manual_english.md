@@ -4,14 +4,15 @@
 
 The goal of the FarmingSimulatorLauncher (FSL) is to simplify the savegame and mod management and make it more flexible.  
   
-Therfore FSL is creating a special folder to store all mods including mod maps.  
-It is possible to import different version of the same mod or map and use that different versions in diffenent savegames.  
-<span style="color:red">!!! But it is still not possible to use different versions of one mod at the same savegame. !!!</span>  
-For every savegame FSL is creating an own folder and also an own backup folder. So there wil be planty backup folders.  
+Therefore FSL is creating a special folder to store all mods including mod maps.  
+It is possible to import different version of the same mod or map and use that different versions in different savegames. That makes it possible to test mods before change completely.  
+<span style="color:red">**!!!** But it is still not possible to use different versions of one mod at the same savegame. **!!!**</span>  
+FSL will create a configuration for every savegame. That configuration conatins the used map, the used mods, the name of the savegame (used later inside FS), the folder path where the savegame is stored and the description.
+Additionally FSL is creating an own folder and also an own backup folder for every savegame. So there wil be plenty backup folders instead of one for all.  
 
 FSL is working with FS19 and FS22 and can be used with Giants or Steam installation. It is running on Windows PC's and MacOS.  
 
-When Farming Simulator is started by FSL, FSL is creating the savegame1 and links all required mods into the FS mods folder. So only the required mods are visible for FS and not all existing script mods will be loaded by FS.  
+When Farming Simulator is started by FSL, FSL is creating the savegame1 and links all required mods into the FS mods folder. So only the required mods are visible for FS. There is for example only one map file at the mods folder and not all existing script mods will be loaded by FS, only the required.  
 FSL is running in background after game start and is syncing the savegame and backup folder continuously.  
 
 I tried to make FSL as stable and save at possible.
@@ -22,208 +23,246 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS.  
 <div style="page-break-after: always;"></div>  
 
+<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.</span> See **Recommendation - Get administrator rights**
+
 ## General
 At the FSL, first the FS version selection must be done.  
 <img src="../images/select_version_english.png" width="400"/>  
-Is there only one version installed or shall only one version managed, it is possible, before version selection, to set "Remember FS version for future starts?". That in future will always work with that version and the dialog will not appear.  
+Is there only one version installed or shall only one version managed, it is possible, before version selection, to set "Use always the selected FS version". That in future will the dialog will not appear anymore.  
 It is possible to set or remove that later at the settings.  
-If the first start successful done (see *First start") the main window appear.  
+If the first start is successful done (see **First start**) the main window appear.  
 <img src="../images/main_english.png" width="800"/>  
-At the drop down list can a stored savegame be selected. Savegmaes must be imported, from FS savegames, or new created before. The list entrys are combined by savegame name and map name.  
-During th import or creaton it is possibel to give a small description which will be displayed under the drop done list.
+At the drop down list a stored savegame configuration can be selected. Savegames must be imported, from FS savegames, or new created before. The list entries are combined by savegame name and map name.  
+During the import or creation it is possible to give a small description which will be displayed under the drop down list.  
 
 ### Buttons
-#### ***New***
-Create new savegame. See *Create savegame*
-#### ***Import***
-Import existing savegame. See *Import savegame*
+***New*** Create new savegame. See **Create savegame**  
+
+***Import*** Import existing savegame or savegame configuration. See **Import savegame** or **Import savegame configuration**  
 <div style="page-break-after: always;"></div>  
 
-#### ***Change***
-Change selected savegame. Button enabled after savegame selection. See *Change savegame*
-#### ***Remove***
-Remove selected savegame. Button enabled after savegame selection. See *Change savegame*
-#### ***Mods***
-Open mod management. See *Mods*
-#### ***Settings***
-Open FSL settings menu. See *FSL Settings*
-#### ***Exit***
-Exit FSL
-#### ***Start***
-Start selected savegame. Button enabled after savegame selection. See *Start savegame*
-#### ***Update***
-Open webpage with latest FSL release. Button only visible if a new version is released.
-#### ***Donate***
-If you want to support my work ... ;)
+***Change*** Change selected savegame configuration. Button enabled after savegame selection. See **Change savegame configuration**  
+
+***Remove*** Remove selected savegame configuration. Button enabled after savegame selection. See **Remove savegame configuration**  
+
+***Mods*** Open mod management. See **Mods**  
+
+***Settings*** Open FSL settings menu. See **FSL Settings**  
+
+***Exit*** Close FSL  
+
+***Start*** Start FS with the selected savegame configuration. Button enabled after savegame selection. See **Start savegame**
+
+***Update*** Open webpage with latest FSL release. Button only visible if a new version is released.  
+
+***Donate*** If you want to support my work ... ;)
 
 ## First start
-At the first start the required pathes must be set. See *FSL settings*  
+At the first start the required path's must be set. See **FSL settings**  
 Afterwards FSL is looking for the `mod` folder. The mods can be imported then.  
-Is the import accepted all found mods will be imported into an FSL all mods folder.  
-<span style="color:red"> !!! The original mods folder will be deleted after the import. That is neccessary because FSL is creating an empty mods folder at game start which will held only required mods. !!!</span>  
-Finaly it is possible to select addional mods folder and import mods from there. See *Import mods*
+Is the import accepted all found mods will be imported into an fsl-all-mods folder.  
+<span style="color:red"> !!! The original mods folder will be deleted after the import. That is necessary because FSL is creating an empty mods folder at game start which will held only required mods. !!!</span>  
+Finally it is possible to select additional mods folder and import mods from there. See **Import mods**
+
 If the import is rejected FSL will move `mods` to `mods_fsl_bak`  
 
-Then FSL will look for savegmae folder. It is possible to import them, if found.  
+Then FSL will look for savegame folder. It is possible to import them, if found.  
 The import window is opened for every savegame, if import is accepted. The title is a proposal and can be changed.  
-The folder path is fix. See *Import savegame*  
+The folder path is fix. See **Import savegame**  
 FSL will move the `savegame` and `savegameBackup`folder to `savegameX_fsl_bak` respectively to `savegameBackup_fsl_bak`, if the import is rejected.  
-If a savegame and / or mod folder isn't discovered by FSL, it is possible to import them later manually. See *Import savegame* respectively *Import mods*  
-If the import is done the main window appear and the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at *Mods*
+If a savegame and / or mod folder isn't discovered by FSL, it is possible to import them later manually. See **Import savegame** respectively **Import mods**  
+If the import is done the main window appear and the configurations of the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at **Mods**
 
 FSL will create different configuration files on Windows at `~/AppData/Roaming/FarmingSimulatorLauncher/` and on  MacOS at `~/Library/Application Support/FarmingSimulatorLauncher/`.
 
 ## Savegame
-### Create savegame
-Here new savegame configurations will be created. FSL is just creating an internal savegmae which will befilled by FS at the first start.  
+### Create savegame configuration
+Here new savegame configurations will be created.  
   
 <img src="../images/new_sg_english.png" width="800"/>  
 
-The *FSL savegame Titel* is required. Unter diesem Titel werden die Einträge in der FSL Konfiguration erzeugt und die entsprechenden Ordner angelegt.  
-Nicht erlaubt ist hier der Doppelpunkt..  
-Das Feld *Beschreibung* ist optional.  
-Es muss unter *Karte* eine Map ausgewählt werden.  
-Aus der Liste der verfügbaren *Mods* werden diejenigen ausgewählt, welche für das Savegame verwendet werden sollen.  
-Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits ausgwählten ebenfalls ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.
+The **FSL savegame title** is required. With that title the configuration and the according folder will be created. Colon isn't allowed here.  
+
+The field **Description** is optional.  
+
+A map must be selected at **Map**.  
+
+The mod which should be used at the savegame can be selected at the list of available **Mods**.
+The selection is done by:
+***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
+***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
+
+At ***Save**, the title will be check if ok and not already used and if a map is selected. Additionally the mods will be checked that only one version is selected. If everything ok the configuration will be created and the window will be closed.
+
+**Cancel** will close the window without saving the new configuration.
+
+### Import savegame
+Here it is possible to import already existing savegames from FS into FSL.  
+
+<img src="../images/import_sg_english.png" width="800"/>
   
-Beim *Speichern* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird und ob eine Karte ausgewählt wurde. Weitherin wird geprüft, dass die ausgewählten Mods nicht kollidieren. Eine Auswahl des selben Mods in unterschiedlichen Versionen ist nicht möglich. Ist alles in Ordnung wird das Savegame gespeichert und das Fenster geschlossen.  
-*Abbrechen* verlässt das Fenster ohne einen neues Savegame anzulegen.
+<span style="color:red">Attention:</span>  FS will not create a savegame for multiplayer when it is client. So it isn't possible to import one. But FSL requires the information which mods shall be provided for FS. So it is necessary to create a savegame configuration also when the savegame is only at the client. See **Create savegame configuration**
 
-### Savegame importieren
-Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert werden.  
+First the FS savegame folder must be selected which shall be imported.
+After that the folder with the backups can be set and the backups to import can be selected.
+The selection is done by:
+***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
+***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
 
-<img src="../images/import_sg_german.png" width="800"/>
-  
-<span style="color:red">Achtung:</span> Bei einem Multiplayerspiel wird im LS für den Client kein Savegame erzeugt. Somit kann natürlich auch keines importiert werden. FSL benötigt aber die Angabe, welche Mods für das Spiel zur Verfügung gestellt werden sollen. Es muss also ein neues Savegame angelegt werden. Siehe *Savegame anlegen*
+The ***FSL savegame title*** is required. With that title the configuration and the according folder will be created. Colon isn't allowed here.  
 
-Zuerst muss der LS Savegame Ordner ausgewählt werden, der importiert werden soll.  
-Danach kann der Ordner mit den Backups angegeben werden und dann ausgewählt werden welche Backups übernommen werrden sollen.  
-Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits ausgwählten ebenfalls ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt ausgewähltem Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.
-Der *FSL Savegame Titel* muss gesetzt werden. Unter diesem Titel werden entsprechende Einträge in der FSL Konfiguration erzeugt und die passenden Ordner angelegt.  
-Nicht erlaubt ist hier der Doppelpunkt..  
-Das Feld *Beschreibung* ist optional.  
+The field ***Description*** is optional.  
 
-Beim *Importieren* wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird. Ist alles in Ordnung wird das Savegame importiert. Der Savegameordner wird hierbei mit dem vergebenen Titel umbenannt und ggf. vorhandene LS Backup in den FSL savegame Backupordner verschoben.  
-Außerdem prüft FSL ob die im Savegame verwendeten Mods bereits in FSL importiert wurden. Werden Mods gefunden, die noch nicht importiert wurden, weißt FSL darauf hin. Die Liste der fehlenden Mods kann dann unter Savegame *Ändern* im Hauptfenster angezeigt werden und ggf. aus dem Savegame gelöscht werden.  
-Anschließend wird das Fenster geschlossen.  
+At ***Import*** FSL will check if the title is ok and not already used. If so FSL will create a new configuration.  
+Additionally FSL is checking if all required mods are available. If a mod isn't found FSL will a popup will appear. The list of missing mods is shown at **Change* at the main window and removed if unwanted.
+The window is closed after import.
 
-*Abbrechen* verlässt das Importfenster ohne Import.
+***Cancel*** will close the window without import.
 
-### Savegame ändern
-Hierüber können bereits vorhanden FSL Savegames angepasst werden.
-  
-<img src="../images/change_sg_german.png" width="800"/>  
-  
-Der *FSL Savegame Titel* kann verändert werden, muss aber gesetzt sein.
-Nicht erlaubt ist hier der Doppelpunkt..  
+### Import savegame configuration
+Here it is possible to import a before exported savegame configuration. See **Recommendation - Share savegame configuration** or **Recommendation - Backup savegame configuration**  
 
-Das Feld *Beschreibung* ist optional. Es kann eine neue Beschreibung eingetragen, die vorhandene geändert oder gelöscht werden.  
+<img src="../images/import_sgc_english.png" width="800"/>  
 
-Die *Karte* ist nicht änderbar.  
-Sollte die Datei zur Karte in FSL noch fehlen, "Geisterkarte", wird ind diesem Feld der Kartenname und die entsprechende Version angezeigt. Diese kann dann importiert werden. Siehe *Mods importieren*
+***Browse*** will open the file dialog to select the ``fsl_sgc`` file. FSL will check if the title is already used and will display that beside the title field.  
 
-Unter *Mods* können die verwendeten Mods angepasst werden. Bereits verwendete Mods werden markiert. Es können Mods hinzugefügt (markiert) und Mods entfernt (Markierung löschen) werden. Der Mod wird nur aus der Savegame Konfiguration entfernt. Bleibt aber im FSL verhanden. Soll der Mod komplett gelöscht werden muss dies über das *Mods* Fenster erfolgen.  
-Die Auswhal der Mods erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits ausgwählten ebenfalls ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
+***Import*** - Isn't there a configuration with that title already (Exists: no) FSL will add the configuration as new.  
+<span style="color:red">Is there already a configuration with that title (Exists: yes) the existing configuration will be replaced</span>  
 
-Über *Benutzte Mods markieren* wird die aktuelle Zuordnung zum Savegame wieder angezeigt.  
+***Cancel*** close the window without import.  
 
-Unter *Fehlend* werden die Mods aufgelistet, welche nicht im FSL verfügbar sind. Diese können aus dem Savegame gelöscht werden. Das Importieren ist über Hauptfenster > Mods möglich. Siehe *Mods importieren*  
+### Change or export savegame configuration
+Here it is possible to change already existing configurations or export them.  
 
-*Speichern* übernimmt die Änderungen für das Savegame und schliesst das Fenster.  
+<img src="../images/change_sg_english.png" width="800"/>  
 
-*Abbrechen* schliesst das Fenster ohne die Änderungen zu übernehmen.
-### Savegame löschen
-Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.  
-<span style="color:orange">Achtung:</span> Dadurch wird die FSL Konfiguration für das Savegame entfernt und die zugehörigen Ordner gelöscht.  
+The ***FSL savegame title*** can be changed but must be set. Colon isn't allowed.  
 
-### Savegame starten
-Ist ein Savegame im Hautpfenster ausgwählt, kann dieses über die Taste *Starten* gestartet werden.
-Das ausgewählte Savegame steht in LS dann unter savegame1 zur Verfügung.  
+The field ***Description*** is optional. It is possible to add, remove or change the description.  
+
+***Map*** can't be changed.  
+If the map file is missing ("ghost map") an according notice is displayed at that field including map name and version. The map can be imported then. See **Import mods**  
+
+It is possible to change the used mods at the ***Mods*** list. Already used mods are marked. To add new mods they must be marked or to remove mods they must be unmarked. The mod is only removed from configuration. To remove the mod completely from FSL use **Mods** at main window.
+The selection is done by:
+***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
+***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
+
+***Export*** will create a ``SAVEGAMENAME.fsl_sgc`` file and store at the selected folder.  
+That file can be imported then. See **Import savegame configuration**
+
+If the title, the description or the mod list changed, the export button will switch to save.
+***Save*** will store the changed configuration and it is possible to export then.
+
+With ***Mark used mods*** the current stored mod selection will be reset at the list. The new selection will be discard.
+
+At ***Missed mods*** all not already imported mods at FSL will be listed. It is possible to remove them from configuration. Import the mod is possible at **Mods** at the main window. See **Import mods**  
+
+***Cancel*** will close the window without change
+
+### Remove savegame
+At the main window the selected savegame can be removed.  
+<span style="color:red">Attention:</span> The configuration and the according folders will be removed.
+
+### Start savegame configuration
+At the main window the selected savegame can be started by ***Start***
+The selected savegame will be available at savegame1 in FS.  
 
 ## Mods
-### Mods importieren oder löschen
-Hierüber werden die in FSL verfügbaren Mods vewrwaltet. Es können neue Mods importiert werden und bereits importierte wieder entfernt werden.
+### Import or remove mods
+At the **Mods** window the mods will be managed. It is possible to import new mods or remove existing.
 
-<img src="../images/import_mods_german.png" width="800"/>
+<img src="../images/import_mods_english.png" width="800"/>
 
 ### Import
-Über *Browse* wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
-*Zum Import* listet alle gefundenen Mods auf. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
-Hierüber werden alle zu importierenden Mods ausgewählt.  
-Die Auswhal erfolgt über die Tastenkombinationen:  
-#### ***Mausklick***  
-Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.
-#### ***Strg + Mausklick***  
-Es wird der angeklickte Eintrag zusätzlich zu den bereits ausgwählten ebenfalls ausgewählt.  
-Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.
-#### ***Shift + Mausklick***  
-Alle Einträge zwischen dem zuletzt angeklickten Eintrag und dem aktuell angeklickten Eintrag werden ausgewählt.  
-*Importieren* fügt die ausgewählten Mods in den FSL Alle-Mods-Ordner ein.  
-FSL bietet an, den Quellordner nach dem Import zu löschen. <span style="color:red">Achtung, es wird der gesamte Ordner gelöscht.</span>
-Nach dem Import können die Savegames ausgewählt werden, bei denen die Modversion geändert werden soll oder der Mod hinzugefügt werden soll.
-Du Zuordung der Mod Versionen zu den Savegames wird nicht automatisch angepasst.
-### Löschen
-*Bereits importierte Mods* listet alle in FSL verfügbaren Mods auf. Hierüber können die Mods ausgewählt werden, die gelöscht werden sollen.
-*Löschen* entfernt die markierten Mods aus dem FSL Alle-Mods-Ordner.  
-*Beenden* schliesst das Fenster.
+With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
-## FSL Einstellungen
-Hierüber werden die FSL Einstellungen verwaltet.
+***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
+The selection is done by:
+***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
+***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
 
-<img src="../images/settings_german.png" width="800"/>  
+***Import*** will copy all selected mods into fsl-all-mods folder.  
+After that it is possible to delete the selected folder. <span style='color:red'>Attention, the whole folder will be removed.</span>
+After the import the savegame configurations can be selected where to update or add the according mod.
 
-Bild steht stellvertretend für beide LS Versionen.
+### Remove
+***Already imported mods*** list all available mods. Here it is possible to select all mods to remove.  
 
-Über *Sprache wählen* kann die FSL Sprache ausgewählt werden. Im Dropdownmenü werden alle verfügbaren Sprachen aufgelistet.  
-Wird der Haken bei *Immer die gewählte LS Version benutzen* gesetzt, wird die Abfrage zum Programmstart übersprungen.  
-Unter *Pfad zu Farmingsimulator exe auswählen* wird der gewählte Pfad zur Farmingsimulator19.exe bzw. Farmingsimulator22.exe für Windows oder FarmingSimulator2019Game bzw. FarmingSimulator2022Game für MacOS angezeigt.
-Über *Browse* kann die Datei gesucht werden.  
-*Standard LS19 Pfad* setzt  
+***Remove*** will delete the mod file at the fsl-all-mods. The mod isn't available for all savegames then.
+
+***Close*** will close the window.
+
+## FSL settings
+Here the settings for FSL will be managed.
+
+<img src="../images/settings_english.png" width="800"/>  
+
+The picture is representative for both FS versions.
+
+The FSL language can be selected at ***Select language***. All existing will be listed at the drop down menu.  
+
+If the ***Use always the selected FS version*** is set the current selected FS version will be used in future and the selection dialog at the start will not appear.  
+
+At ***Select farming simulator executable*** the currently set path to Farmingsimulator19.exe or Farmingsimulator22.exe at Windows or FarmingSimulator2019Game or FarmingSimulator2022Game at MacOS is shown.
+By ***Browse*** the path to file can be changed.
+***Default FS19 path*** will set the path to 
 `C:\Program Files (x86)\Farming Simulator 2019\Farmingsimulator2019.exe`  
-unter Windows bzw.  
+at Windows and  
 `/Applications/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game`  
-unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Pfad* beschriftet und der Pfad wird analog gesetzt.  
-*Standard LS19 Steam Pfad* setzt  
+at MacOS. At FS22 the button is ***Default FS22 path*** and the path is set accordingly.
+***Default LS19 steam path*** will set  
 `C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 19/FarmingSimulator2019.exe`  
-unter Windows bzw.  
+at Windows and  
 `~/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game`  
-unter MacOS ein. Für den LS22 ist die Taste mit *Standard LS22 Steam Pfad* beschriftet und der Pfad wird analog gesetzt.  
-Unter *Landwirtschaftssimulator Savgames Ordner auswählen* wird der Pfad zu den LS Savegames angezeigt.  
-Über *Browse* kann der Pfad gesucht werden.  
-*Standard LS19 Savegames Ordner Pfad* setzt den Pfad auf  
-`C:/Users/USERNAME/Documents/My Games/FarmingSimulator2019`  
-für Windows bzw.  
-`~/Library/Application Support/FarmingSimulator2019`  
-für MacOS gesetzt. Für den LS22 ist die Taste mit *Standard LS22 Savegames Ordner Pfad* beschriftet und der Pfad wird analog gesetzt.  
-Der bei *Pfad für Alle-Mods-Ordner auswählen* gesetzte Pfad wird von FSL benutzt um einen all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden. Achte daher auf ausreichend Speicherplatz.  
-Tipp: Wir haben für unsere Mods einen Cloudserver, welcher im Explorer eingebunden ist. Alle Spieler haben diesen Ordner als Alle-Mods-Ordner gesetzt, wodurch die Möglichkeit besteht, dass der Admin neue Mods einfügt oder auch entfernt und alle immer mit der selben Modbasis arbeiten. Das Herunterladen und Einfügen bei jedem einzelnen entfällt. Aktuell werden aber die FSL Savegames noch nicht geteilt. Somit muss ein neuer Mod zumindest noch für das Savegame ausgewählt werden. Das Teilen von FSL Savegame Konfigurationen ist geplant.
-*Speichern* übernimmt die Einstellungen.
-*Beenden* verlässt das Fenster ohne zu speichern.
-## FSL updaten
-FSL prüft bei jedem Start, ob eine neu FSL Version verfügbar ist. Ist dies der Fall wird im Hauptfenster die entsprechende Taste angezeigt. Hierüber wird die Webseite mit der neusten Version geöffnet und die entsprechenden Datei können heruntergeladen und ausgetauscht werden. Ein automatisches ersetzen erfolgt nicht.  
+at MacOS. At FS22 the button is ***Default FS22 steam path*** and the path is set accordingly.  
 
-## Problembehebung
-### Mods Ordner geändert
-### Savegameordner geändert
-### Mod importiert, aber im Spiel immer noch alte Modversion
+At ***Select farming simulator gaming data folder*** the currently set path to the FS savegame folder is shown.
+By ***Browse*** the path to the folder can be changed.
+***Default FS19 savegame data folder*** will set the path to  
+`C:/Users/USERNAME/Documents/My Games/FarmingSimulator2019`  
+at Windows and  
+`~/Library/Application Support/FarmingSimulator2019`  
+at MacOS. At FS22 the button is ***Default FS22 savegame folder path*** and the path is set accordingly.  
+
+The path set at ***Select folder at all mods*** is used to create the fsl-all-mods folder. At that folder all imported mods will be stored. Please be aware that there is enough disk space.
+See **Recommendation - Share mods**
+
+***Save*** take the settings and close the window.  
+
+***Close*** close the windows without saving.  
+
+## Update FSL
+FSL will check at every start if there is a new version. If so, the according button will be visible at the main window. The button will open the page with the latest release at the web browser. There the newest version can be downloaded, but the current local version will not replaced.
+
+## Recommendation
+### Get administrator rights
+#### Variant 1 (single shot):
+1. right click at FarmingSimulatorLauncher.exe
+2. Select "Run as administrator"
+#### Variant 2 (permanent):
+1. right click at FarmingSimulatorLauncher.exe
+2. Select "Properties"
+3. Select tab "Compatibility"
+4. Set "Run this program as administrator
+5. Apply
+After that a double click is enough to start FSL
+#### Variant 3 (deactivate UAC):
+<span style='color:red'>At your own risk</span>
+1. Open "Registry editor"
+2. Go to `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System`
+3. Double click EnableLUA
+4. Change value data from 1 to 0
+
+### Share mods
+We (me and my friends) got a cloud server for our fsl-all-mods folder, which is mounted at the explorer. Our game administrator is managing all the mods. He add or remove mods and so all tam members got the mod base. So the download and adding at every single computer is history.
+
+### Share savegame configuration
+As explained it is possible to export and import savegame configurations. We use our cloud server to share that configurations managed by our game administrator. Our admin is adding the required mods and enables them at the configuration. After he exported the configuration all team members can import and we are all at the same base.
+
+### Backup savegame configuration
+At the same way you can share configurations you can backup them. Export a config and later import will reset your changes.

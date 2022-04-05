@@ -55,7 +55,7 @@ dictionary = {
         "mod_not_found": "Mod {} not in {}\nStart anyway?",
         "missing_mod": "There are mods at the savegame which are not imported yet. Please import later. Missing mods listed at 'Change' for the savegame.",
         "missing": "Missing",
-        "missing_map": "Map \"{}\" in version \"{}\" not found. Please import later. Until that savegame isn't listed.",
+        "missing_map": "Map \"{}\" in version \"{}\" not found. Please import later.",
         "new": "New",
         "new_mod": "New mod",
         "new_release": "There is a new version of FarmingSimulatorLauncher.\nClick here to get the latest one.",
