@@ -23,7 +23,7 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS.  
 <div style="page-break-after: always;"></div>  
 
-<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.</span> See **Recommendation - Get administrator rights**
+<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**
 
 ## General
 At the FSL, first the FS version selection must be done.  
