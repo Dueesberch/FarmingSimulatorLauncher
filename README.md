@@ -83,7 +83,7 @@ Please report bugs at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLau
 * Nur Mods auflisten die noch nicht importiert wurden / list only mods not already imported
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
-Feature requests at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) with lable *feature request*
+Feature requests at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) with label *feature request*
   
 ## Falls du mich und meine Arbeit unterstützen möchtest > [Spende](https://www.paypal.com/donate/?hosted_button_id=ZR4EGNDAVD4Q4)  
 ## If you want to donate my work > [Donate](https://www.paypal.com/donate/?hosted_button_id=ZR4EGNDAVD4Q4)
