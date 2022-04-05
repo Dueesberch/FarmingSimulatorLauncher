@@ -21,15 +21,17 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 <span style="color:red">**I do not assume responsibility for lost savegames and / or mods.** Please backup your original savegames and mods before you use FSL the first time.</span>
 
 The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS.  
-<div style="page-break-after: always;"></div>  
 
 <span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**
+<div style="page-break-after: always;"></div>
 
 ## General
 At the FSL, first the FS version selection must be done.  
 <img src="../images/select_version_english.png" width="400"/>  
 Is there only one version installed or shall only one version managed, it is possible, before version selection, to set ***Use always the selected FS version***. That in future will the dialog will not appear anymore.  
 It is possible to set or remove that later at the settings.  
+
+<div style="page-break-after: always;"></div>
 If the first start is successful done (see **First start**) the main window appear.  
 <img src="../images/main_english.png" width="800"/>  
 At the drop down list a stored savegame configuration can be selected. Savegames must be imported, from FS savegames, or new created before. The list entries are combined by savegame name and map name.  
@@ -39,7 +41,6 @@ During the import or creation it is possible to give a small description which w
 ***New*** Create new savegame. See **Create savegame**  
 
 ***Import*** Import existing savegame or savegame configuration. See **Import savegame** or **Import savegame configuration**  
-<div style="page-break-after: always;"></div>  
 
 ***Change*** Change selected savegame configuration. Button enabled after savegame selection. See **Change savegame configuration**  
 
@@ -56,6 +57,7 @@ During the import or creation it is possible to give a small description which w
 ***Update*** Open webpage with latest FSL release. Button only visible if a new version is released.  
 
 ***Donate*** If you want to support my work ... ;)
+<div style="page-break-after: always;"></div>
 
 ## First start
 At the first start the required path's must be set. See **FSL settings**  
@@ -74,6 +76,7 @@ If a savegame and / or mod folder isn't discovered by FSL, it is possible to imp
 If the import is done the main window appear and the configurations of the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at ***Mods***
 
 FSL will create different configuration files on Windows at `~/AppData/Roaming/FarmingSimulatorLauncher/` and on  MacOS at `~/Library/Application Support/FarmingSimulatorLauncher/`.
+<div style="page-break-after: always;"></div>
 
 ## Savegame
 ### Create savegame configuration
@@ -170,6 +173,7 @@ At the main window the selected savegame can be removed.
 ### Start savegame configuration
 At the main window the selected savegame can be started by ***Start***
 The selected savegame will be available at savegame1 in FS.  
+<div style="page-break-after: always;"></div>
 
 ## Mods
 ### Import or remove mods
@@ -196,6 +200,7 @@ After the import the savegame configurations can be selected where to update or 
 ***Remove*** will delete the mod file at the fsl-all-mods. The mod isn't available for all savegames then.
 
 ***Exit*** will close the window.
+<div style="page-break-after: always;"></div>
 
 ## FSL settings
 Here the settings for FSL will be managed.
@@ -238,6 +243,7 @@ See **Recommendation - Share mods**
 
 ## Update FSL
 FSL will check at every start if there is a new version. If so, the according button will be visible at the main window. The button will open the page with the latest release at the web browser. There the newest version can be downloaded, but the current local version will not replaced.
+<div style="page-break-after: always;"></div>
 
 ## Recommendation
 ### Get administrator rights

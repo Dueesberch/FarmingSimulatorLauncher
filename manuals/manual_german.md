@@ -21,15 +21,16 @@ Am sichersten ist es, um zu spielen, Savegames zu verwalten und Mods hinzuzufüg
 Bitte sichert eure LS Savegames / Mods vor dem ersten Start von FSL.</span>
 
 Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf.
-<div style="page-break-after: always;"></div>  
 
 <span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht möglich sind.**</span> Siehe **Tipps - Administratorrechte bekommen**
+<div style="page-break-after: always;"></div>  
 
 ## Allgemein
 Beim Start erscheint zuerst die Auswahl, welche LS Version benutzt werden soll.  
 <img src="../images/select_version_german.png" width="400"/>  
 Sollte nur eine Version installiert sein oder soll nur eine Version von FSL verwaltet werden, kann, bevor die Version ausgewählt wird, der Haken bei ***Immer die gewählte LS Version benutzen.*** gesetzt werden. Dadurch erscheint der Auswahldialog zukünftig nicht mehr.  
 Dies kann auch später in den Einstellungen eingestellt werden.  
+<div style="page-break-after: always;"></div>
 Wenn der erste Start (Siehe **Erster Start**) erfolgreich durchlaufen wurde öffnet sich das Hauptfenster.  
 <img src="../images/main_german.png" width="800"/>  
 Im Dropdownmenü können die in FSL gespeicherten Savegamekonfigurationen ausgewählt werden. Diese müssen vorher aus bestehenden Savegames importiert oder neu angelegt werden. Die Einträge im Dropdownmenü setzen sich dabei aus dem Savegamenamen und der verwendeten Map zusammen.  
@@ -38,8 +39,7 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 ### Tasten
 ***Neu*** Anlegen einer neuen Savegamekonfiguration. Siehe **Savegamekonfiguration anlegen**  
 
-***Importieren*** Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe **Savegame importieren** bzw. **Savegamekonfiguration importieren**
-<div style="page-break-after: always;"></div>  
+***Importieren*** Importieren eines vorhanden Savegames oder einer Savegamekonfiguration. Siehe **Savegame importieren** bzw. **Savegamekonfiguration importieren**  
 
 ***Ändern*** Ändern der ausgewählten Savegamekonfiguration. Taste wird eingeschaltet wenn eine Konfiguration ausgewählt wurde. Siehe **Savegamekonfiguration ändern**  
 
@@ -56,6 +56,7 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 ***Update*** Öffnet die Webseite mit dem letzten FSL Release. Taste nur verfügbar wenn es eine neuere Version als die Benutzte gibt.  
 
 ***Spende*** Wenn man mich und meine Arbeit unterstützen möchte ... ;)  
+<div style="page-break-after: always;"></div>
 
 ## Erster Start
 Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe **FSL Einstellungen**.  
@@ -73,6 +74,7 @@ Sollten Savegame- und / oder Modordner von FSL nicht automatisch erkannt werden,
 Ist der Import abgeschlossen, öffnet sich das Hauptfenster und die importierten Savegames, sind im Dropdown verfügbar. Wurde zu einem Savegame keine Mapdatei gefunden, wird für den Kartennamen in der Dropdownliste "Geistermap" gesetzt. Welche Karte exakt fehlt kann über Ändern herausgefunden werden und unter **Mods** importiert werden.  
 
 FSL legt seine Konfigurationsdateien auf Windows unter `~/AppData/Roaming/FarmingSimulatorLauncher/` bzw. auf MacOS unter `~/Library/Application Support/FarmingSimulatorLauncher/` ab.
+<div style="page-break-after: always;"></div>
 
 ## Savegame
 ### Savegamekonfiguration anlegen
@@ -96,6 +98,7 @@ Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wi
 Beim ***Speichern*** wird geprüft, ob der Titel in Ordnung ist und noch nicht benutzt wird und ob eine Karte ausgewählt wurde. Weitherin wird geprüft, dass die ausgewählten Mods nicht kollidieren. Eine Auswahl des selben Mods in unterschiedlichen Versionen ist nicht möglich. Ist alles in Ordnung wird die Savegamekonfiguration gespeichert und das Fenster geschlossen.  
 
 ***Abbrechen*** verlässt das Fenster ohne eine neue Savegamekonfiguration anzulegen.
+<div style="page-break-after: always;"></div>
 
 ### Savegame importieren
 Hierüber können bereits vorhanden Savegames aus dem LS in den FSL importiert werden.  
@@ -122,6 +125,7 @@ Werden Mods gefunden, die noch nicht importiert wurden, weisst FSL darauf hin. D
 Anschliessend wird das Fenster geschlossen.  
 
 ***Abbrechen*** verlässt das Importfenster ohne Import.
+<div style="page-break-after: always;"></div>
 
 ### Savegamekonfiguration importieren
 Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Siehe **Tipps - Savegamekonfiguration teilen** bzw. **Tipps - Savegamekonfiguration sichern**  
@@ -134,6 +138,7 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 <span style="color:red">Wenn es bereits eine Konfiguration (Vorhanden: ja) mit dem gleichen Namen gibt, wird diese überschrieben.</span>
 
 ***Abbrechen*** Verwirft den Import und schliesst das Fenster.  
+<div style="page-break-after: always;"></div>
 
 ### Savegamekonfiguration ändern oder exportieren
 Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden.  
@@ -166,6 +171,7 @@ Wurden Änderungen am Titel, der Beschreibung und / oder den Mods vorgenommen, �
 Unter ***Fehlend*** werden die Mods aufgelistet, welche nicht im FSL verfügbar sind. Diese können aus der Savegamekonfiguration gelöscht werden. Das Importieren ist über Hauptfenster > Mods möglich. Siehe **Mods importieren**  
 
 ***Abbrechen*** schliesst das Fenster ohne die Änderungen zu übernehmen.  
+<div style="page-break-after: always;"></div>
 
 ### Savegame löschen
 Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.  
@@ -174,6 +180,7 @@ Im Hauptfenster kann das ausgewählte Savegame gelöscht werden.
 ### Savegamekonfiguration starten
 Ist ein Savegame im Hautpfenster ausgwählt, kann dieses über die Taste ***Starten*** gestartet werden.
 Das ausgewählte Savegame steht in LS dann unter savegame1 zur Verfügung.  
+<div style="page-break-after: always;"></div>
 
 ## Mods
 ### Mods importieren oder löschen
@@ -200,6 +207,7 @@ Nach dem Import können die Savegamekonfigurationen ausgewählt werden, bei dene
 ***Löschen*** entfernt die markierten Mods aus dem FSL Alle-Mods-Ordner.  
 
 ***Beenden*** schliesst das Fenster.
+<div style="page-break-after: always;"></div>
 
 ## FSL Einstellungen
 Hierüber werden die FSL Einstellungen verwaltet.
@@ -242,6 +250,7 @@ Siehe **Tipps - Mods teilen**
 
 ## FSL updaten
 FSL prüft bei jedem Start, ob eine neu FSL Version verfügbar ist. Ist dies der Fall wird im Hauptfenster die entsprechende Taste angezeigt. Hierüber wird die Webseite mit der neusten Version geöffnet und die entsprechenden Datei können heruntergeladen und ausgetauscht werden. Ein automatisches ersetzen erfolgt nicht.  
+<div style="page-break-after: always;"></div>
 
 ## Tipps
 ### Administratorrechte bekommen
