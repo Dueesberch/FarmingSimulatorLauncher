@@ -105,8 +105,8 @@ Here it is possible to import already existing savegames from FS into FSL.
 <span style="color:red">Attention:</span>  FS will not create a savegame for multiplayer when it is client. So it isn't possible to import one. But FSL requires the information which mods shall be provided for FS. So it is necessary to create a savegame configuration also when the savegame is only at the client. See **Create savegame configuration**
 
 First the FS savegame folder must be selected which shall be imported.
-After that the folder with the backups can be set and the backups to import can be selected.
-The selection is done by:
+After that the folder with the backups can be set and the backups to import can be selected.  
+The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
@@ -145,8 +145,8 @@ The field ***Description*** is optional. It is possible to add, remove or change
 ***Map*** can't be changed.  
 If the map file is missing ("ghost map") an according notice is displayed at that field including map name and version. The map can be imported then. See **Import mods**  
 
-It is possible to change the used mods at the ***Mods*** list. Already used mods are marked. To add new mods they must be marked or to remove mods they must be unmarked. The mod is only removed from configuration. To remove the mod completely from FSL use **Mods** at main window.
-The selection is done by:
+It is possible to change the used mods at the ***Mods*** list. Already used mods are marked. To add new mods they must be marked or to remove mods they must be unmarked. The mod is only removed from configuration. To remove the mod completely from FSL use **Mods** at main window.  
+The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
@@ -181,7 +181,7 @@ At the **Mods** window the mods will be managed. It is possible to import new mo
 With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
 ***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
-The selection is done by:
+The selection is done by: 
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
