@@ -1,15 +1,6 @@
 """ main python file
 
 """
-# In Progress
-# mac version
-# steam version
-
-# RELEASE v1.0.0
-# Anleitung englisch, französisch
-# translation.py / beschriftung sauber
-# Übersetzung deutsch, englisch, französisch
-# bei anlegen von dateien / Ordnern immmer prüfen ob schon vorhanden
 
 import os
 import sys
