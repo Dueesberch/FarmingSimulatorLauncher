@@ -181,7 +181,7 @@ At the **Mods** window the mods will be managed. It is possible to import new mo
 With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
 ***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
-The selection is done by: 
+The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
@@ -195,7 +195,7 @@ After the import the savegame configurations can be selected where to update or 
 
 ***Remove*** will delete the mod file at the fsl-all-mods. The mod isn't available for all savegames then.
 
-***Close*** will close the window.
+***Exit*** will close the window.
 
 ## FSL settings
 Here the settings for FSL will be managed.
@@ -234,7 +234,7 @@ See **Recommendation - Share mods**
 
 ***Save*** take the settings and close the window.  
 
-***Close*** close the windows without saving.  
+***Exit*** close the windows without saving.  
 
 ## Update FSL
 FSL will check at every start if there is a new version. If so, the according button will be visible at the main window. The button will open the page with the latest release at the web browser. There the newest version can be downloaded, but the current local version will not replaced.
