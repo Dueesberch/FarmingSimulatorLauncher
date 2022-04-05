@@ -195,7 +195,7 @@ After the import the savegame configurations can be selected where to update or 
 
 ***Remove*** will delete the mod file at the fsl-all-mods. The mod isn't available for all savegames then.
 
-***Close*** will close the window.
+***Exit*** will close the window.
 
 ## FSL settings
 Here the settings for FSL will be managed.
