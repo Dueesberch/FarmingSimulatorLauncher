@@ -28,7 +28,7 @@ The FSL isn't a design highlight. The focus was mor on functionality. That is mo
 ## General
 At the FSL, first the FS version selection must be done.  
 <img src="../images/select_version_english.png" width="400"/>  
-Is there only one version installed or shall only one version managed, it is possible, before version selection, to set "Use always the selected FS version". That in future will the dialog will not appear anymore.  
+Is there only one version installed or shall only one version managed, it is possible, before version selection, to set ***Use always the selected FS version***. That in future will the dialog will not appear anymore.  
 It is possible to set or remove that later at the settings.  
 If the first start is successful done (see **First start**) the main window appear.  
 <img src="../images/main_english.png" width="800"/>  
