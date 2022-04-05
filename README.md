@@ -81,6 +81,7 @@ Please report bugs at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLau
 * Konfiguration kopieren / copy configuration
 * orginal LS Setup wieder herstellen / remove FSL
 * Nur Mods auflisten die noch nicht importiert wurden / list only mods not already imported
+* Französische Übersetzung / french translation
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
 Feature requests at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) with label *feature request*
