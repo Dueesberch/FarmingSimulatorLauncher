@@ -71,7 +71,7 @@ The import window is opened for every savegame, if import is accepted. The title
 The folder path is fix. See **Import savegame**  
 FSL will move the `savegame` and `savegameBackup`folder to `savegameX_fsl_bak` respectively to `savegameBackup_fsl_bak`, if the import is rejected.  
 If a savegame and / or mod folder isn't discovered by FSL, it is possible to import them later manually. See **Import savegame** respectively **Import mods**  
-If the import is done the main window appear and the configurations of the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at **Mods**
+If the import is done the main window appear and the configurations of the imported savegames are listed at the drop down list. If there isn't an according map file for an imported savegame the map title is set to "ghost map". You can check which map is missing at the change window after select the savegame. The map can then imported at ***Mods***
 
 FSL will create different configuration files on Windows at `~/AppData/Roaming/FarmingSimulatorLauncher/` and on  MacOS at `~/Library/Application Support/FarmingSimulatorLauncher/`.
 
@@ -81,11 +81,11 @@ Here new savegame configurations will be created.
   
 <img src="../images/new_sg_english.png" width="800"/>  
 
-The **FSL savegame title** is required. With that title the configuration and the according folder will be created. Colon isn't allowed here.  
+The ***FSL savegame title*** is required. With that title the configuration and the according folder will be created. Colon isn't allowed here.  
 
-The field **Description** is optional.  
+The field ***Description*** is optional.  
 
-A map must be selected at **Map**.  
+A map must be selected at ***Map***.  
 
 The mods which should be used at the savegame can be selected at the list of available **Mods**.  
 The selection is done by:  
@@ -93,9 +93,9 @@ The selection is done by:
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
 ***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
 
-At ***Save**, the title will be check if ok and not already used and if a map is selected. Additionally the mods will be checked that only one version is selected. If everything ok the configuration will be created and the window will be closed.
+At ***Save***, the title will be check if ok and not already used and if a map is selected. Additionally the mods will be checked that only one version is selected. If everything ok the configuration will be created and the window will be closed.
 
-**Cancel** will close the window without saving the new configuration.
+***Cancel*** will close the window without saving the new configuration.
 
 ### Import savegame
 Here it is possible to import already existing savegames from FS into FSL.  
