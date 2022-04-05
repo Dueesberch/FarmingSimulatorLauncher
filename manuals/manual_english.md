@@ -116,7 +116,7 @@ The ***FSL savegame title*** is required. With that title the configuration and 
 The field ***Description*** is optional.  
 
 At ***Import*** FSL will check if the title is ok and not already used. If so FSL will create a new configuration.  
-Additionally FSL is checking if all required mods are available. If a mod isn't found FSL will a popup will appear. The list of missing mods is shown at **Change* at the main window and removed if unwanted.
+Additionally FSL is checking if all required mods are available. If a mod isn't found FSL will a popup will appear. The list of missing mods is shown at ***Change*** at the main window and removed if unwanted.
 The window is closed after import.
 
 ***Cancel*** will close the window without import.
