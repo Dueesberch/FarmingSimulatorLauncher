@@ -2,7 +2,6 @@ import os
 import sys
 import ctypes
 import platform
-import base64
 import PySimpleGUI as sg
 import translation as tr
 import import_ls as im
@@ -19,11 +18,6 @@ logger = None
 ls19_internal_maps = {'Ravenport': 'Ravenport', 'Felsbrunn': 'Felsbrunn'}
 ls22_internal_maps = {'Elmcreek': 'Elmcreek', 'Haut-Beyleron': 'Haut-Beyleron', 'Erlengrat': 'Erlengrat'}
 logo = ''
-
-def resource_path(relative_path):
-	""" Get absolute path to resource, works for dev and for PyInstaller """
-	base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-	return os.path.join(base_path, relative_path)
 
 def init():
 	global settings_json
@@ -50,7 +44,7 @@ def init():
 		sg.set_options(icon = 'logo.ico')
 	else:
 		#logger.debug('settings:init:unsupported OS')
-		sg.popup_error('Unsuported operating system.', icon = logo)
+		sg.popup_error('Unsuported operating system.')
 		return False
 		
 	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
@@ -70,9 +64,7 @@ def init():
 					[sg.Checkbox(tr.getTrans('remember', lang), key = '-SET_DEF_LS-')],
 					[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
 				]
-		#logo = resource_path("logo.icns")
-		#sg.set_options(icon = base64.b64encode(open(r'logo.png', 'rb').read()))
-		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c')#, icon = logo)
+		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c')
 		#logger.debug('settings:init:version dialog opened')
 
 		while True:
@@ -119,19 +111,19 @@ def init():
 def saveSettings(values):
 	db = TinyDB(settings_json)
 	if values['-FS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50), icon = logo)
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50))
 		return False
 	if not os.path.exists(values['-FS_PATH-']):
-		sg.popup_error(tr.getTrans('exe_not_found').format(values['-FS_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50), icon = logo)
+		sg.popup_error(tr.getTrans('exe_not_found').format(values['-FS_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
 		return False
 	if values['-FS_GAME_DATA_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50), icon = logo)
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50))
 		return False
 	if not os.path.exists(values['-FS_GAME_DATA_PATH-']):
-		sg.popup_error(tr.getTrans('not_found_folder').format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50), icon = logo)
+		sg.popup_error(tr.getTrans('not_found_folder').format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
 		return False
 	if values['-ALL_MODS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50), icon = logo)
+		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50))
 		return False
 	else:
 		if 'fsl_all_mods_' + vers in values['-ALL_MODS_PATH-']:
@@ -220,7 +212,7 @@ def guiSettings(lang, init = False):
 				]
 			]
 
-	window = sg.Window(tr.getTrans('settings'), layout, finalize = True, location = (50, 50), icon = logo)
+	window = sg.Window(tr.getTrans('settings'), layout, finalize = True, location = (50, 50))
 		
 	while True:
 		event, values = window.read()

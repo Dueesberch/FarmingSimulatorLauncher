@@ -45,7 +45,7 @@ def getMods(l = True):
 def removeSaveGame(title):
 	q = Query()
 	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
-	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50), icon = se.logo) == "Yes":
+	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
 		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
 		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + exists['folder']):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'])
@@ -58,16 +58,16 @@ def saveSaveGame(values, update):
 	global mods
 	db = TinyDB(se.games_json)
 	if ':' in values['-TITLE-']:
-		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50), icon = se.logo)
+		sg.popup(tr.getTrans('ssg_wrong_char'), title = tr.getTrans('ssg_title_char'), location = (50, 50))
 		return False
 	if update == -1 and db.get((Query().name == values['-TITLE-'])):
-		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = se.logo)
+		sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 		return False
 	if values['-TITLE-'] == '':
-		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = se.logo)
+		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 	if values['-MAP-'] == '':
-		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = se.logo)
+		sg.popup(tr.getTrans('ssg_map_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 	modstoadd = {}
 	check = {}
@@ -92,7 +92,7 @@ def saveSaveGame(values, update):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				m = moddesc.find('title/en')
 				f = f + m.text + '\n'
-		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50), icon = se.logo)
+		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50))
 		return False
 	if update == -1:
 		try:
@@ -101,12 +101,12 @@ def saveSaveGame(values, update):
 			os.mkdir(p)
 			os.mkdir(p + '_Backup')
 		except FileExistsError:
-			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = se.logo)
+			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
 		#try:
 		#	p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + '_Backup'
 		#except FileExistsError:
-		#	sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50), icon = se.logo)
+		#	sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 		#	return False
 
 	for i, val in enumerate(values['-MODS-']):
@@ -200,7 +200,7 @@ def guiNewSaveGame(title = None):
 				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
 	]
 	
-	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), icon = se.logo)
+	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50))
 
 	update_sg = -1
 	if title != None:

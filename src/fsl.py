@@ -36,8 +36,8 @@ def checkFirstRun():
 	ret = True
 	#logger.debug('main:checkFirstRun:check if first run')
 	if not os.path.exists(se.settings_json):
-		if sg.popup_yes_no('Did you backup your savegames and mods? After successful setup FSL you can delete your backups.', title = 'Backup', location = (50, 50), icon = se.logo) == 'No':
-			sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50), icon = se.logo)
+		if sg.popup_yes_no('Did you backup your savegames and mods? After successful setup FSL you can delete your backups.', title = 'Backup', location = (50, 50)) == 'No':
+			sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50))
 			return False
 		ret = se.guiSettings('en', True)
 		if ret:
@@ -48,18 +48,18 @@ def checkFirstRun():
 			lang = se.getFslSettings('language')
 			try:
 				if len(os.listdir(mods_path)) > 0 and ret:
-					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50), icon = se.logo) == 'Yes':
+					if sg.popup_yes_no(tr.getTrans('import_mods_init').format(mods_path), title = 'import', location = (50, 50)) == 'Yes':
 						#logger.debug('fsl:checkFirstRun: mods folder found > go to import')
-						w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50), icon = se.logo)
+						w = sg.Window('', no_titlebar = True, layout = [[sg.Text(tr.getTrans('wait_for_import'))]], finalize = True, location = (50, 50))
 						im.importAllMods(mods_path, True)
 						w.close()
-						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50), icon = se.logo) == 'Yes':
+						if sg.popup_yes_no(tr.getTrans('import_more_mods'), title = tr.getTrans('import'), line_width = 100, location = (50, 50)) == 'Yes':
 							#logger.debug('fsl:checkFirstRun: import from additional mods folder')
 							im.guiImportMods(False)
 						mods_imported = True
 					else:
 						#logger.debug('fsl:checkFirstRun: mods folder found > go to backup')
-						sg.popup_ok(tr.getTrans('backup_folder_text').format(mods_path, mods_path), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = se.logo)
+						sg.popup_ok(tr.getTrans('backup_folder_text').format(mods_path, mods_path), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
 						os.rename(mods_path, mods_path + '_fsl_bak')
 #				else:
 #					logger.debug('fsl:checkFirstRun: NO mods folder found')
@@ -68,19 +68,19 @@ def checkFirstRun():
 			except FileExistsError:
 				ret = False
 				#logger.debug('fsl:checkFirstRun: mods_fsl_backup already exists')
-				sg.popup_error(mods_path + tr.getTrans('fsl_bak_exists'), location = (50, 50), icon = se.logo)
+				sg.popup_error(mods_path + tr.getTrans('fsl_bak_exists'), location = (50, 50))
 			
 			if ret:
 				f = "^savegame[0-99]$"
 				for folder in os.listdir(fs_game_data_path):
 					if re.search(f, folder):
 						if  os.path.exists(fs_game_data_path + os.sep + folder + os.sep + 'careerSavegame.xml'):
-							if sg.popup_yes_no(tr.getTrans('import_sg_init').format(folder, fs_game_data_path), title = 'import', location = (50, 50), icon = se.logo) == 'Yes':
+							if sg.popup_yes_no(tr.getTrans('import_sg_init').format(folder, fs_game_data_path), title = 'import', location = (50, 50)) == 'Yes':
 								#logger.debug('fsl:checkFirstRun: valid savegame folder ' + folder + ' found > go to import')
 								ret = im.guiImportSG(fs_game_data_path + os.sep + folder, True)
 								if not ret:
 									#logger.debug('fsl:checkFirstRun: import canceled')
-									sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = se.logo)
+									sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
 									os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
 									if not os.path.exists(savegameBackup_path + '_fsl_bak'):
 										os.makedirs(savegameBackup_path + '_fsl_bak')
@@ -93,7 +93,7 @@ def checkFirstRun():
 									ret = True
 							else:
 								#logger.debug('fsl:checkFirstRun: valid savegame folder ' + folder + ' found > go to backup')
-								sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50), icon = se.logo)
+								sg.popup_ok(tr.getTrans('backup_folder_text').format(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder), title = tr.getTrans('backup_folders_title'), line_width = 100, location = (50, 50))
 								os.rename(fs_game_data_path + os.sep + folder, fs_game_data_path + os.sep + folder + '_fsl_bak')
 								if not os.path.exists(savegameBackup_path + '_fsl_bak'):
 									os.makedirs(savegameBackup_path + '_fsl_bak')
@@ -111,7 +111,7 @@ def checkFirstRun():
 		if ret == False:
 			try:
 				#logger.debug('fsl:checkFirstRun: firstRun failed > quit FSL')
-				sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50), icon = se.logo)
+				sg.popup_ok('Quit FarmingSimulatorLauncher', title = 'Quit', location = (50, 50))
 				os.remove(se.settings_json)
 			except FileNotFoundError:
 				pass
@@ -136,7 +136,7 @@ def validateModsFolder(fs_game_data_folder):
 			else:
 				continue
 		for i in mods:
-			if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod'), icon = se.logo) == 'Yes':
+			if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod')) == 'Yes':
 				#logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
 				im.importMods(path, [i], True)
 			else:
@@ -166,7 +166,7 @@ def checkChanges():
 			layout = [	[sg.Text(tr.getTrans('sg_changed').format(date))],
 						[sg.Button(tr.getTrans('new'), size = (14, 1), key = '-NEW-'), sg.Button(tr.getTrans('backup'), size = (14, 1), key = '-BACKUP-'), sg.Button(tr.getTrans('overwrite'), size = (14, 1), key = '-OVERWRITE-'), sg.Button(tr.getTrans('cancel'), size = (14, 1), key = '-CANCEL-')]
 					]
-			window = sg.Window(tr.getTrans('different'), layout, finalize = True, location = (50, 50), icon = se.logo, disable_close = True)
+			window = sg.Window(tr.getTrans('different'), layout, finalize = True, location = (50, 50), disable_close = True)
 			while True:
 				event, values = window.read()
 				if event == '-CANCEL-':
@@ -196,7 +196,7 @@ def checkChanges():
 								[sg.Combo(getSaveGames(), size = (125,10), key = '-COMBO-', enable_events = True)],
 								[sg.Button(tr.getTrans('sg_overwrite'), size = (14, 1), key = '-SAVE-'), sg.Button(tr.getTrans('cancel'), size = (14, 1), key = '-CANCEL-')]
 					]
-					window2 = sg.Window(tr.getTrans('overwrite'), layout2, finalize = True, location = (50, 50), icon = se.logo, disable_close = True)
+					window2 = sg.Window(tr.getTrans('overwrite'), layout2, finalize = True, location = (50, 50), disable_close = True)
 					while True:
 						event, values = window2.read()
 						if event == '-SAVE-':
@@ -232,7 +232,7 @@ def checkChanges():
 #		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
 #			#logger.debug('fsl:checkChanges:savegame Backup changed')
 #			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-#			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50), icon = se.logo)
+#			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50))
 #			shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
 #		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 	return True
@@ -281,7 +281,7 @@ def startSaveGame(name):
 		if os.path.exists(all_mods_folder + mods[i]):
 			os.symlink(all_mods_folder + mods[i], fs_game_data_folder + 'mods' + os.sep + mods[i].split('!')[-1])
 		else:
-			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50), icon = se.logo) == 'No':
+			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
 				return False
 	savegame = TinyDB(se.games_json).get((q.name == name))['folder']
@@ -353,7 +353,7 @@ def main():
 		sg.popup_ok(tr.getTrans('init_failed'), location = (50, 50))
 		sys.exit()
 
-	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50), icon = se.logo)
+	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
 	new_rel = False
 	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
@@ -384,7 +384,7 @@ def main():
 				[sg.Button(tr.getTrans('donate'), key = '-DONATE-', size = (111, 1), button_color = ('black', 'yellow'))]
 			]
 			
-	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = se.logo)
+	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), element_justification = 'c')
 
 	while True:
 		event, values = window.read()
