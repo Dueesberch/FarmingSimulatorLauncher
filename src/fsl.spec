@@ -6,7 +6,7 @@ block_cipher = None
 a = Analysis(['fsl.py'],
              pathex=[],
              binaries=[],
-             datas=[],
+             datas=[('logo.ico', '.')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -16,6 +16,7 @@ a = Analysis(['fsl.py'],
              win_private_assemblies=False,
              cipher=block_cipher,
              noarchive=False)
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
