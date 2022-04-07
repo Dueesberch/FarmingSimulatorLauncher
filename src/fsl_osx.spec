@@ -6,7 +6,7 @@ block_cipher = None
 a = Analysis(['fsl.py'],
              pathex=[],
              binaries=[],
-             datas=[('logo.ico', '.')],
+             datas=[('logo.icns', '.')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -34,8 +34,19 @@ exe = EXE(pyz,
           upx_exclude=[],
           runtime_tmpdir=None,
           console=False,
-          icon = 'logo.icns',
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None )
+
+app = BUNDLE(
+          exe,
+          name = 'FarmingSimulatorLauncher.app',
+          icon = 'logo.icns',
+          bundle_identifier = None,
+          info_plist = {
+              'NSPrincipalClass': 'NSApplication',
+              'NSHighResolutionCapable': 'True',
+              'NSAppleScriptEnabled': False
+          }
+)

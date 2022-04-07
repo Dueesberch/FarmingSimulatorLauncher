@@ -2,6 +2,7 @@ import os
 import sys
 import ctypes
 import platform
+import base64
 import PySimpleGUI as sg
 import translation as tr
 import import_ls as im
@@ -46,6 +47,7 @@ def init():
 			sg.popup_error('FSL must be run with administrator rights.')
 			return False
 		fsl_config_path = os.path.expanduser('~').replace('\\', '/') + '/AppData/Roaming/FarmingSimulatorLauncher/'
+		sg.set_options(icon = 'logo.ico')
 	else:
 		#logger.debug('settings:init:unsupported OS')
 		sg.popup_error('Unsuported operating system.', icon = logo)
@@ -64,12 +66,13 @@ def init():
 		lang = 'en'
 
 	if def_vers == '':
-		layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 2)), sg.Button('LS22', key = '-LS22-', size = (14, 2))],
+		layout = [	[sg.Button('LS19', key = '-LS19-', size = (14, 1)), sg.Button('LS22', key = '-LS22-', size = (14, 1))],
 					[sg.Checkbox(tr.getTrans('remember', lang), key = '-SET_DEF_LS-')],
 					[sg.Button('Exit', key = '-EXIT-', size = (30, 1))],
 				]
-		logo = resource_path("logo.ico")
-		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c', icon = logo)
+		#logo = resource_path("logo.icns")
+		#sg.set_options(icon = base64.b64encode(open(r'logo.png', 'rb').read()))
+		window = sg.Window('Version', layout, finalize = True, location = (50, 50), element_justification = 'c')#, icon = logo)
 		#logger.debug('settings:init:version dialog opened')
 
 		while True:

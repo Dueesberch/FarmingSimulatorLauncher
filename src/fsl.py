@@ -363,15 +363,15 @@ def main():
 	except KeyError:
 		pass
 
-	button_layout = [	[sg.Button(button_text = tr.getTrans('new'), key='-NEW-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('import'), key='-IMPORT-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('change'), key = '-CHANGE-', size = (14, 2), disabled = True),
-						sg.Button(button_text = tr.getTrans('remove'), key='-REMOVE-', size=(14, 2), disabled = True),
-						sg.Button(button_text = 'Mods', key='-MODS-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('settings'), key='-SET-', size=(14, 2)),
-						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 2))
+	button_layout = [	[sg.Button(button_text = tr.getTrans('new'), key='-NEW-', size=(14, 1)),
+						sg.Button(button_text = tr.getTrans('import'), key='-IMPORT-', size=(14, 1)),
+						sg.Button(button_text = tr.getTrans('change'), key = '-CHANGE-', size = (14, 1), disabled = True),
+						sg.Button(button_text = tr.getTrans('remove'), key='-REMOVE-', size=(14, 1), disabled = True),
+						sg.Button(button_text = 'Mods', key='-MODS-', size=(14, 1)),
+						sg.Button(button_text = tr.getTrans('settings'), key='-SET-', size=(14, 1)),
+						sg.Button(button_text = tr.getTrans('exit'), key='-EXIT-', size=(14, 1))
 						],
-						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 2), disabled = True, button_color = 'gray')
+						sg.Button(button_text = tr.getTrans('start'), key = '-START-', size = (111, 1), disabled = True, button_color = 'gray')
 					]
 	layout = [	[sg.Text(tr.getTrans('sg_title'), key = '-TITLE_T-', size = (111,1))],
 				[sg.Combo(getSaveGames(), size = (125,10), key = '-COMBO-', enable_events = True)],
@@ -380,7 +380,7 @@ def main():
 				[button_layout],
 				[sg.Text(size = (111,1))],
 				[sg.Text(size = (111,1))],
-				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (111, 2), visible = new_rel, button_color = ('black', 'lightgreen'))],
+				[sg.Button(tr.getTrans('new_release'), key = '-RELEASE-', size = (111, 1), visible = new_rel, button_color = ('black', 'lightgreen'))],
 				[sg.Button(tr.getTrans('donate'), key = '-DONATE-', size = (111, 1), button_color = ('black', 'yellow'))]
 			]
 			
