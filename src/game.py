@@ -103,11 +103,6 @@ def saveSaveGame(values, update):
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
-		#try:
-		#	p = se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-'] + '_Backup'
-		#except FileExistsError:
-		#	sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_backup_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
-		#	return False
 
 	for i, val in enumerate(values['-MODS-']):
 		modstoadd[str(i)] = mods[val]
@@ -171,7 +166,6 @@ def exportSGC(title):
 	data = TinyDB(se.games_json).get(Query().name == title)
 	path = sg.popup_get_folder(tr.getTrans('storeat'))
 	path = path + os.sep + ''.join(e for e in title if e.isalnum()) + '.fsl_sgc'
-	print(data)
 	try:
 		TinyDB(path).insert(data)
 	except AssertionError:

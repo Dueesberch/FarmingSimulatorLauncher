@@ -25,6 +25,8 @@ import import_ls as im
 from tinydb import TinyDB, Query
 import json
 from packaging import version
+import hashlib
+import pathlib
 
 FSL_Version = 'v1.0.0'
 
@@ -227,14 +229,16 @@ def checkChanges():
 		if os.path.exists(fs_game_data_folder + 'savegame1'):
 			shutil.rmtree(fs_game_data_folder + 'savegame1')
 
-#	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
-#		#TODO check what was selected and act according too. 
-#		if checksumdir.dirhash(fs_game_data_folder + 'savegameBackup') != TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['sgb_hash'] != '':
-#			#logger.debug('fsl:checkChanges:savegame Backup changed')
-#			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
-#			sg.popup_ok(tr.getTrans('sgb_changed').format(date), location = (50, 50))
-#			shutil.copytree(fs_game_data_folder + 'savegameBackup', fs_game_data_folder + 'savegameBackup_' + date)
-#		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
+	data = TinyDB(se.games_json).all()
+	for i in data:
+		try:
+			path = i['imported']['path']
+			hash_n = hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest()
+			if os.path.exists(path) and hash_n != i['imported']['hash']:
+				if sg.popup_yes_no(tr.getTrans('import_sgc_init').format(i['name'], path), title = 'import', location = (50, 50)) == 'Yes':
+					im.importSGC(path, i['name'])
+		except KeyError:
+			pass
 	return True
 
 def getSaveGames():
@@ -263,9 +267,9 @@ def getSaveGames():
 	return l
 
 def startSaveGame(name):
-	""" start selcted savegame
+	""" start selected savegame
 	link required mods into mods folder
-	copy fsl savegame and fsl savgeme backup folder to savegam1 and savegameBackup folder
+	copy fsl savegame and fsl savegame backup folder to savegam1 and savegameBackup folder
 	start FS
 	keep fsl folder in sync
 	"""

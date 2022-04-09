@@ -12,6 +12,7 @@ from tinydb.operations import delete
 import logging as log
 import pysed
 import hashlib
+import pathlib
 existing_mods = {}
 
 def importAllMods(path, rem = False):
@@ -289,9 +290,10 @@ def getBackupFolder(path):
 
 def importSGC(path, title):
 	new = TinyDB(path).all()[0]
+	fdata = {"hash": hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest(), "path": path}
 	if TinyDB(se.games_json).get(Query().name == title):
 		doc_id = TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']).doc_id
-		TinyDB(se.games_json).update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']}, doc_ids = [doc_id])
+		TinyDB(se.games_json).update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "imported": fdata}, doc_ids = [doc_id])
 	else:
 		try:
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'])
@@ -364,7 +366,7 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 				break
 			w.close()
 		elif event == '-IMPORT_SGC-':
-			importSGC(values['-SGC_PATH-'], '-SGC_PATH-')
+			importSGC(values['-SGC_PATH-'], values['-I_TITLE-'])
 			break
 		elif event == '-SGC_PATH-':
 			window['-I_TITLE-'].update(TinyDB(values['-SGC_PATH-']).all()[0]['name'])
