@@ -44,6 +44,7 @@ app = BUNDLE(
           name = 'FarmingSimulatorLauncher.app',
           icon = 'logo.icns',
           bundle_identifier = None,
+          version = '1.0.0',
           info_plist = {
               'NSPrincipalClass': 'NSApplication',
               'NSHighResolutionCapable': 'True',
