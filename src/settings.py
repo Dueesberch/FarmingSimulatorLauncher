@@ -40,7 +40,7 @@ def init():
 	if platform.system() == 'Darwin':
 		#logger.debug('settings:init:OS Darwin')
 		fsl_config_path = os.path.expanduser('~') + '/Library/Application Support/FarmingSimulatorLauncher/'
-		logo = resource_path("logo.icns")
+		#logo = resource_path("logo.icns")
 	elif platform.system() == 'Windows':
 		#logger.debug('settings:init:OS Windows')
 		if not ctypes.windll.shell32.IsUserAnAdmin():
