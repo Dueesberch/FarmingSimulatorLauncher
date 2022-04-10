@@ -19,6 +19,11 @@ ls19_internal_maps = {'Ravenport': 'Ravenport', 'Felsbrunn': 'Felsbrunn'}
 ls22_internal_maps = {'Elmcreek': 'Elmcreek', 'Haut-Beyleron': 'Haut-Beyleron', 'Erlengrat': 'Erlengrat'}
 logo = ''
 
+def resource_path(relative_path):
+	""" Get absolute path to resource, works for dev and for PyInstaller """
+	base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+	return os.path.join(base_path, relative_path)
+
 def init():
 	global settings_json
 	global fsl_config_path
@@ -35,17 +40,20 @@ def init():
 	if platform.system() == 'Darwin':
 		#logger.debug('settings:init:OS Darwin')
 		fsl_config_path = os.path.expanduser('~') + '/Library/Application Support/FarmingSimulatorLauncher/'
+		logo = resource_path("logo.icns")
 	elif platform.system() == 'Windows':
 		#logger.debug('settings:init:OS Windows')
 		if not ctypes.windll.shell32.IsUserAnAdmin():
 			sg.popup_error('FSL must be run with administrator rights.')
 			return False
 		fsl_config_path = os.path.expanduser('~').replace('\\', '/') + '/AppData/Roaming/FarmingSimulatorLauncher/'
-		sg.set_options(icon = 'logo.ico')
+		logo = resource_path("logo.ico")
 	else:
 		#logger.debug('settings:init:unsupported OS')
 		sg.popup_error('Unsuported operating system.')
 		return False
+
+	sg.set_options(icon = logo)
 		
 	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
 	#logger.debug('settings:init:' + fsl_settings_json)

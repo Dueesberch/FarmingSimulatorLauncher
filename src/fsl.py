@@ -346,7 +346,12 @@ def main():
 	#handler = log.FileHandler('log.txt', mode = 'w')
 	#logger.addHandler(handler)
 	#logger.debug('fsl:main: FSL version ' + FSL_Version)
-
+	try:
+		import pyi_splash
+		pyi_splash.update_text('UI Loaded ...')
+		pyi_splash.close()
+	except:
+		pass
 	if not se.init():
 		sys.exit()
 
@@ -359,7 +364,7 @@ def main():
 
 	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
-	new_rel = False
+	new_rel = True
 	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 	try:
 		if response['tag_name'] > FSL_Version:
