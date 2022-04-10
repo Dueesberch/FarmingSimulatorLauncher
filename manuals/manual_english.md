@@ -20,7 +20,7 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 
 <span style="color:red">**I do not assume responsibility for lost savegames and / or mods.** Please backup your original savegames and mods before you use FSL the first time.</span>
 
-The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS.  
+The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS. Unfortunately, it isn't possible to show a splash screen at MacOS. So it takes a while until you see the FSL window appear. Be patient. 
 
 <span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**
 <div style="page-break-after: always;"></div>
@@ -268,7 +268,7 @@ After that a double click is enough to start FSL
 We (me and my friends) got a cloud server for our fsl-all-mods folder, which is mounted at the explorer. Our game administrator is managing all the mods. He add or remove mods and so all tam members got the mod base. So the download and adding at every single computer is history.
 
 ### Share savegame configuration
-As explained it is possible to export and import savegame configurations. We use our cloud server to share that configurations managed by our game administrator. Our admin is adding the required mods and enables them at the configuration. After he exported the configuration all team members can import and we are all at the same base.
+As explained it is possible to export and import savegame configurations. We use our cloud server to share that configurations managed by our game administrator. Our admin is adding the required mods and enables them at the configuration. After he exported the configuration all team members can import and we are all at the same base. If the folder where the savegame configuration is imported from always the same, FSL is able to check for new configurations when it starts and it is possible to import them. So you will always get a notice when the administrator uploaded a new version to the cloud server.
 
 ### Backup savegame configuration
 At the same way you can share configurations you can backup them. Export a config and later import will reset your changes.

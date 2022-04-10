@@ -20,7 +20,7 @@ Am sichersten ist es, um zu spielen, Savegames zu verwalten und Mods hinzuzufüg
 <span style="color:red">**Ich übernehme ausdrücklich keine Gewähr für verloren gegangene / kaputte Savegame und / oder Mods.**  
 Bitte sichert eure LS Savegames / Mods vor dem ersten Start von FSL.</span>
 
-Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf.
+Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf. Leider ist es unter MacOS nicht möglich einen Splashscreen anzuzeigen. Deshalb dauert es etwas, bis das FSL Fenster erscheint. Habt Geduld.
 
 <span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht möglich sind.**</span> Siehe **Tipps - Administratorrechte bekommen**
 <div style="page-break-after: always;"></div>  
@@ -139,6 +139,8 @@ Hierrüber können zuvor exportierte Savegamekonfiguration importiert werden. Si
 
 ***Abbrechen*** Verwirft den Import und schliesst das Fenster.  
 <div style="page-break-after: always;"></div>
+
+Beim import speichert sich FSL den Ordner, aus dem importiert wurde und prüft zukünftig, ob eine neu / geänderte Savegamekonfigurationsdatei vorhanden ist. Falls ja, kann diese dann importiert und die vorhandene Savegamekonfiguration geupdate werden.
 
 ### Savegamekonfiguration ändern oder exportieren
 Hierüber können bereits vorhanden FSL Savegamekonfigurationen angepasst oder exportiert werden.  
@@ -271,7 +273,8 @@ Folge der Anleitung auf <a href="https://www.heise.de/tipps-tricks/Windows-10-UA
 ### Mods teilen
 Wir haben für unsere Mods einen Cloudserver, welcher im Explorer eingebunden ist. Alle Spieler haben diesen Ordner als Alle-Mods-Ordner gesetzt, wodurch die Möglichkeit besteht, dass der Admin neue Mods einfügt oder auch entfernt und alle immer mit der selben Modbasis arbeiten. Das Herunterladen und Einfügen bei jedem einzelnen entfällt.
 ### Savegamekonfiguration teilen
-Wie beschrieben, lassen sich die Savegamekonfigurationen exportieren und  wieder importieren. Wir nutzen dies in unseren Multiplayerspielen in verbindung mit dem gemeinsamen Modordner als Netzlaufwerk.
-Der Administrator des Spiels defniert die Mods und importiert diese in FSL. Danach exportiert er die Savegamekonfiguration und teilt diese ebenfalss über das Netzlaufwerk. Die Anderen importieren die Konfiguration und haben somit immmer den selben Stand wie der Administrator. Das lästige "Ich muss noch kurz updaten oder Mod xyz installieren." entfällt
+Wie beschrieben, lassen sich die Savegamekonfigurationen exportieren und  wieder importieren. Wir nutzen dies in unseren Multiplayerspielen in Verbindung mit dem gemeinsamen Modordner als Netzlaufwerk.
+Der Administrator des Spiels defniert die Mods und importiert diese in FSL. Danach exportiert er die Savegamekonfiguration und teilt diese ebenfalss über das Netzlaufwerk. Die anderen Spieler importieren die Konfiguration und haben somit immmer den selben Stand wie der Administrator. Das lästige "Ich muss noch kurz updaten oder Mod xyz installieren." etc. entfällt.
+Wenn der Ordner aus dem die Konfiguration importiert wird immer gleich bleibt, zB besgates Netzlaufwerk, kann FSL beim Start prüfen ob es eine neue Version gibt und anbieten diese zu importieren. Somit bekommt ihr immer eine Info, wenn der Admin eine geänderte Konfiguration hochgeladen hat.
 ### Savegamekonfiguration sichern
 Auf die gleiche Art, wie man Konfigurationen teilen kann, kann man natürlich auch alte Stände wieder herstellen, indem man sie in das eigene FSL importiert.
