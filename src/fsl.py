@@ -364,7 +364,7 @@ def main():
 
 	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
-	new_rel = True
+	new_rel = False
 	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 	try:
 		if response['tag_name'] > FSL_Version:
