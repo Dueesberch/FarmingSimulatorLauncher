@@ -4,3 +4,5 @@ src export-ignore
 README.md export-ignore
 images export-ignore
 *.md export-ignore
+dist export-ignore
+manuals export-ignore
