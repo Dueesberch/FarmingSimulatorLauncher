@@ -163,12 +163,33 @@ def remMissingMods(values):
 
 def exportSGC(title):
 	data = TinyDB(se.games_json).get(Query().name == title)
-	path = sg.popup_get_folder(tr.getTrans('storeat'))
-	path = path + os.sep + ''.join(e for e in title if e.isalnum()) + '.fsl_sgc'
+	path = sg.popup_get_folder(tr.getTrans('sgc_export'), title = tr.getTrans('storeat'), default_path = se.getSettings('fs_game_data_path'))
 	try:
+		path = path + os.sep + ''.join(e for e in title if e.isalnum()) + '.fsl_sgc'
 		TinyDB(path).insert(data)
 	except AssertionError:
 		TinyDB(path).update(data)
+	except TypeError:
+		pass
+	#create mods folder to upload to server
+	if sg.popup_yes_no(tr.getTrans('create_upload_folder'), title = '') == 'Yes':
+		path = sg.popup_get_folder(tr.getTrans('sgc_mods_export'), title = tr.getTrans('storeat'), default_path = se.getSettings('fs_game_data_path'))
+		try:
+			path = path + os.sep + ''.join(e for e in title if e.isalnum())
+			if os.path.exists(path):
+				shutil.rmtree(path)
+			os.mkdir(path)
+		except TypeError:
+			return
+		missing = False
+		for key, value in data['mods'].items():
+			try:
+				shutil.copyfile(se.getSettings('all_mods_path') + os.sep + value, path + os.sep + value.split('!')[1])
+			except FileNotFoundError:
+				missing = True
+				pass
+		if missing:
+			sg.popup_ok(tr.getTrans('sgc_mods_export_missing'), title = tr.getTrans('error'))
 
 def guiNewSaveGame(title = None):
 	global maps
