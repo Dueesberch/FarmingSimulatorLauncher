@@ -15,8 +15,8 @@ games_json = ''
 vers = ''
 def_vers = ''
 logger = None
-ls19_internal_maps = {'Ravenport': 'Ravenport', 'Felsbrunn': 'Felsbrunn'}
-ls22_internal_maps = {'Elmcreek': 'Elmcreek', 'Haut-Beyleron': 'Haut-Beyleron', 'Erlengrat': 'Erlengrat'}
+fs19_internal_maps = {'Ravenport': 'MapUS', 'Felsbrunn': 'MapEU'}
+fs22_internal_maps = {'Elmcreek': 'MapUS', 'Haut-Beyleron': 'MapFR', 'Erlengrat': 'mapAlpine'}
 logo = ''
 
 def resource_path(relative_path):
@@ -81,12 +81,12 @@ def init():
 			if event == sg.WIN_CLOSED:
 				break
 			elif event == '-LS19-':
-				vers = 'ls19'
+				vers = 'fs19'
 				if values['-SET_DEF_LS-']:
 					def_vers = vers
 				break
 			elif event == '-LS22-':
-				vers = 'ls22'
+				vers = 'fs22'
 				if values['-SET_DEF_LS-']:
 					def_vers = vers
 				break
@@ -99,11 +99,23 @@ def init():
 		vers = def_vers
 	
 	#logger.debug('settings:init:vers ' + vers)
+
+	if os.path.exists(fsl_config_path + 'games_ls19.json'):
+		os.rename(fsl_config_path + 'games_ls19.json', fsl_config_path + 'games_fs19.json')
+	if os.path.exists(fsl_config_path + 'games_ls22.json'):
+		os.rename(fsl_config_path + 'games_ls22.json', fsl_config_path + 'games_fs22.json')
+
 	games_json = fsl_config_path + 'games_' + vers + '.json'
 	#logger.debug('settings:init:games_json ' + games_json)
 #	if os.path.exists(games_json):
 #		with open(games_json, 'r') as f:
 #			logger.debug('setting:init:games_json ' + f.readline())
+
+	if os.path.exists(fsl_config_path + 'settings_ls19.json'):
+		os.rename(fsl_config_path + 'settings_ls19.json', fsl_config_path + 'settings_fs19.json')
+	if os.path.exists(fsl_config_path + 'settings_ls22.json'):
+		os.rename(fsl_config_path + 'settings_ls22.json', fsl_config_path + 'settings_fs22.json')
+
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
 	#logger.debug('settings:init:settings_json ' + settings_json)
 #	if os.path.exists(settings_json):
@@ -152,10 +164,10 @@ def saveSettings(values):
 	return True
 
 def getInternalMaps():
-	if vers == 'ls22':
-		return ls22_internal_maps
-	elif vers == 'ls19':
-		return ls19_internal_maps
+	if vers == 'fs22':
+		return fs22_internal_maps
+	elif vers == 'fs19':
+		return fs19_internal_maps
 
 def getSettings(key):
 	db = TinyDB(settings_json)
@@ -194,7 +206,7 @@ def guiSettings(lang, init = False):
 	else:
 		set_def_check = False
 
-	if vers == 'ls19':
+	if vers == 'fs19':
 		def_fs_text = tr.getTrans('def_fs19')
 		def_fs_steam_text = tr.getTrans('def_fs19_steam')
 		def_sg_fs_text = tr.getTrans('def_sg_fs19')
@@ -240,7 +252,7 @@ def guiSettings(lang, init = False):
 			window['-SAVE-'].update(tr.getTrans('save', values['-COMBO-']))
 			window['-EXIT-'].update(tr.getTrans('exit', values['-COMBO-']))
 			window['-SET_DEF_LS-'].update(text = tr.getTrans('remember', values['-COMBO-']))
-			if vers == 'ls19':
+			if vers == 'fs19':
 				window['-DEF_FS-'].update(tr.getTrans('def_fs19', values['-COMBO-']))
 				window['-DEF_SG_FS-'].update(tr.getTrans('def_sg_fs19', values['-COMBO-']))
 			else:
@@ -250,32 +262,32 @@ def guiSettings(lang, init = False):
 			window.Hide()
 			im.guiImportMods()
 			window.UnHide()
-		elif event == '-DEF_FS-' and vers == 'ls19':
+		elif event == '-DEF_FS-' and vers == 'fs19':
 			if platform.system() == 'Windows':
 				window['-FS_PATH-'].update('C:/Program Files (x86)/Farming Simulator 2019/FarmingSimulator2019.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update('/Applications/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game')
-		elif event == '-DEF_FS-'  and vers == 'ls22':
+		elif event == '-DEF_FS-'  and vers == 'fs22':
 			if platform.system() == 'Windows':
 				window['-FS_PATH-'].update('C:/Program Files (x86)/Farming Simulator 2022/FarmingSimulator2022.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update('/Applications/Farming Simulator 2022.app/Contents/MacOS/FarmingSimulator2022Game')
-		elif event == '-DEF_FS_STEAM-' and vers == 'ls19':
+		elif event == '-DEF_FS_STEAM-' and vers == 'fs19':
 			if platform.system() == 'Windows':
 				window['-FS_PATH-'].update('C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 19/FarmingSimulator2019.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2019.app/Contents/MacOS/FarmingSimulator2019Game')
-		elif event == '-DEF_FS_STEAM-'  and vers == 'ls22':
+		elif event == '-DEF_FS_STEAM-'  and vers == 'fs22':
 			if platform.system() == 'Windows':
 				window['-FS_PATH-'].update('C:/Program Files (x86)/Steam/SteamApps/Common/Farming Simulator 22/Farmingsimulator2022.exe')
 			elif platform.system() == 'Darwin':
 				window['-FS_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/Steam/SteamApps/common/Farming Simulator 19/Farming Simulator 2022.app/Contents/MacOS/FarmingSimulator2022Game')
-		elif event == '-DEF_SG_FS-' and vers == 'ls19':
+		elif event == '-DEF_SG_FS-' and vers == 'fs19':
 			if platform.system() == 'Windows':
 				window['-FS_GAME_DATA_PATH-'].update(os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games/FarmingSimulator2019')
 			elif platform.system() == 'Darwin':
 				window['-FS_GAME_DATA_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/FarmingSimulator2019')
-		elif event == '-DEF_SG_FS-' and vers == 'ls22':
+		elif event == '-DEF_SG_FS-' and vers == 'fs22':
 			if platform.system() == 'Windows':
 				window['-FS_GAME_DATA_PATH-'].update(os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games/FarmingSimulator2022')
 			elif platform.system() == 'Darwin':

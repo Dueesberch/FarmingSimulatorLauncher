@@ -263,7 +263,8 @@ def getSaveGames():
 				l.append(n + ' : ' + tr.getTrans('ghostmap'))
 				pass
 		else:
-			l.append(n + ' : ' + m)
+			l.append(n + ' : ' + list(se.getInternalMaps().keys())[list(se.getInternalMaps().values()).index(m)])
+			#l.append(n + ' : ' + m)
 	return l
 
 def startSaveGame(name):
@@ -278,7 +279,7 @@ def startSaveGame(name):
 	os.makedirs(fs_game_data_folder + 'mods' + os.sep)
 	q = Query()
 	sg_map = TinyDB(se.games_json).get((q.name == name))['map']
-	if sg_map not in se.getInternalMaps().values():
+	if sg_map not in se.getInternalMaps():#.values():
 		os.symlink(all_mods_folder + sg_map, fs_game_data_folder + 'mods' + os.sep + sg_map.split('!')[-1])
 	mods = TinyDB(se.games_json).get((q.name == name))['mods']
 	for i in mods:

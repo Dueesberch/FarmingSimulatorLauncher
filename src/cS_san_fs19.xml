@@ -1,0 +1,57 @@
+﻿<careerSavegame revision="2" valid="true">
+    <settings>
+        <savegameName>Mein Spielstand</savegameName>
+        <mapId>MapUS</mapId>
+        <mapTitle>Ravenport</mapTitle>
+        <saveDate>12.04.2022</saveDate>
+        <playerModelIndex>1</playerModelIndex>
+        <playerColorIndex>2</playerColorIndex>
+        <playerBodyIndex>1</playerBodyIndex>
+        <playerHatIndex>18</playerHatIndex>
+        <playerAccessoryIndex>0</playerAccessoryIndex>
+        <playerHairIndex>1</playerHairIndex>
+        <playerJacketIndex>0</playerJacketIndex>
+        <playerName>Christian</playerName>
+        <resetVehicles>false</resetVehicles>
+        <isPlantWitheringEnabled>true</isPlantWitheringEnabled>
+        <trafficEnabled>true</trafficEnabled>
+        <stopAndGoBraking>false</stopAndGoBraking>
+        <automaticMotorStartEnabled>false</automaticMotorStartEnabled>
+        <fruitDestruction>true</fruitDestruction>
+        <plowingRequiredEnabled>true</plowingRequiredEnabled>
+        <weedsEnabled>true</weedsEnabled>
+        <limeRequired>true</limeRequired>
+        <fuelUsageLow>false</fuelUsageLow>
+        <helperBuyFuel>false</helperBuyFuel>
+        <helperBuySeeds>false</helperBuySeeds>
+        <helperBuyFertilizer>false</helperBuyFertilizer>
+        <helperSlurrySource>1</helperSlurrySource>
+        <helperManureSource>1</helperManureSource>
+        <densityMapRevision>3</densityMapRevision>
+        <terrainLodTextureRevision>2</terrainLodTextureRevision>
+        <splitShapesRevision>1</splitShapesRevision>
+        <tipCollisionRevision>1</tipCollisionRevision>
+        <placementCollisionRevision>1</placementCollisionRevision>
+        <mapDensityMapRevision>1</mapDensityMapRevision>
+        <mapTerrainLodTextureRevision>1</mapTerrainLodTextureRevision>
+        <mapSplitShapesRevision>1</mapSplitShapesRevision>
+        <mapTipCollisionRevision>1</mapTipCollisionRevision>
+        <mapPlacementCollisionRevision>1</mapPlacementCollisionRevision>
+        <difficulty>3</difficulty>
+        <economicDifficulty>2</economicDifficulty>
+        <plantGrowthRate>2</plantGrowthRate>
+        <dirtInterval>3</dirtInterval>
+        <timeScale>5.000000</timeScale>
+        <autoSaveInterval>15.000000</autoSaveInterval>
+    </settings>
+    <map>
+        <foundHelpIcons>00000000000000000000</foundHelpIcons>
+    </map>
+    <statistics>
+        <money>500000</money>
+        <playTime>0.099205</playTime>
+    </statistics>
+    <mapsSplitShapeFileIds count="1">
+        <id id="0"/>
+    </mapsSplitShapeFileIds>
+</careerSavegame>
