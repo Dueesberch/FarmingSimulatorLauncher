@@ -32,6 +32,7 @@ def importAllMods(path, rem = False):
 
 def getMods(path):
 	mods = []
+	all_mods = os.listdir(se.getSettings('all_mods_path'))
 	try:
 		files = os.listdir(path)
 		for i in files:
@@ -39,6 +40,15 @@ def getMods(path):
 				with zipfile.ZipFile(path + os.sep + i) as z:
 					try:
 						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+						version = moddesc.find('version')
+						descV = int(moddesc.attrib['descVersion'])
+						f_name = 'fsl_' + version.text + '!' + i
+						if f_name in all_mods:
+							moddesc = None
+						if se.vers == 'fs19' and int(descV / 10) >= 6:
+							moddesc = None
+						if se.vers == 'fs22' and int(descV / 10) < 6:
+							moddesc = None
 					except FileNotFoundError:
 						moddesc = None
 						pass
@@ -49,6 +59,8 @@ def getMods(path):
 						mods.append(i)
 	except FileNotFoundError:
 		pass
+	if not mods:
+		sg.popup_ok(tr.getTrans('no_mod_found'), title = '')
 	return mods
 
 
