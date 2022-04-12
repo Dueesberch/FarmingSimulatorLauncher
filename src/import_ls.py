@@ -123,8 +123,17 @@ def importMods(path, mods, updateSGs):
 
 def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')
+	datasets = TinyDB(se.games_json).all()
 	for i, val in enumerate(mods):
-		os.remove(all_mods + os.sep + existing_mods[val])
+		unused = True
+		for i in range(len(datasets)):
+			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
+				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
+				unused = False
+				break
+		if unused:
+			os.remove(all_mods + os.sep + existing_mods[val])
+			
 
 def getAllMods():
 	global existing_mods
@@ -133,7 +142,7 @@ def getAllMods():
 	existing_mods.update(m[1])
 	for i in list(se.getInternalMaps()):
 		del existing_mods[i]
-	return list(existing_mods.keys())
+	return list(sorted(existing_mods.keys()))
 
 def guiImportMods(updateSGs = True):
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
