@@ -164,6 +164,7 @@ Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wi
 
 ***Export*** erzeugt eine ``SAVEGAMENAME.fsl_sgc`` Datei und speichert dies im ausgewählten Ordner.  
 Diese kann dann importiert werden. Siehe **Savegamekonfiguration importieren**  
+Außerdem besteht die Möglichkeit einen Ordner zu erzeugen, der alle für das Savegame benötigten Mods enthält um diese zB auf einen Dedi Server zu laden.
 
 Wurden Änderungen am Titel, der Beschreibung und / oder den Mods vorgenommen, ändert sicher der Export Button zu Speichern.
 ***Speichern*** übernimmt die Änderungen für die Savegamekonfiguration und bietet an die geänderte Konfiguration zu exportieren.  
