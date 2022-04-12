@@ -131,7 +131,7 @@ def getAllMods():
 	m = ga.getMods(False)
 	existing_mods = m[0]
 	existing_mods.update(m[1])
-	for i in list(se.getInternalMaps().values()):
+	for i in list(se.getInternalMaps()):
 		del existing_mods[i]
 	return list(existing_mods.keys())
 
