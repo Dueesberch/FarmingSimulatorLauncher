@@ -152,10 +152,13 @@ It is possible to change the used mods at the ***Mods*** list. Already used mods
 The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
-***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.  
+
+<div style="page-break-after: always;"></div>
 
 ***Export*** will create a ``SAVEGAMENAME.fsl_sgc`` file and store at the selected folder.  
-That file can be imported then. See **Import savegame configuration**
+That file can be imported then. See **Import savegame configuration**  
+Additionally it is possible to create a folder with all for the savegame required mods to upload these to an eg dedi server.  
 
 If the title, the description or the mod list changed, the export button will switch to save.
 ***Save*** will store the changed configuration and it is possible to export then.
