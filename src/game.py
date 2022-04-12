@@ -104,21 +104,21 @@ def saveSaveGame(values, update):
 			p = se.getSettings('fs_game_data_path') + os.sep + folder_name
 			os.mkdir(p)
 			# add default careerSavegame.xml
-			if values['-NF-'] == True:
-				shutil.copyfile(se.resource_path('cS_nf_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
-			elif values['-FM-'] == True:
-				shutil.copyfile(se.resource_path('cS_fm_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
-			elif values['-SAN-'] == True:
-				shutil.copyfile(se.resource_path('cS_san_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
+#			if values['-NF-'] == True:
+#				shutil.copyfile(se.resource_path('cS_nf_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
+#			elif values['-FM-'] == True:
+#				shutil.copyfile(se.resource_path('cS_fm_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
+#			elif values['-SAN-'] == True:
+#				shutil.copyfile(se.resource_path('cS_san_' + se.vers + '.xml'), p + os.sep + 'careerSavegame.xml')
 
 			# change xml entries
-			tree = ET.parse(p + os.sep + 'careerSavegame.xml')
-			tree.find('settings/savegameName').text = values['-TITLE-']
-			tree.find('settings/mapTitle').text = values['-MAP-']
-			if values['-MAP-'] in se.getInternalMaps():
-				tree.find('settings/mapId').text = se.getInternalMaps()[values['-MAP-']]
-			with open(p + os.sep + 'careerSavegame.xml', 'wb') as f:
-				tree.write(f)
+#			tree = ET.parse(p + os.sep + 'careerSavegame.xml')
+#			tree.find('settings/savegameName').text = values['-TITLE-']
+#			tree.find('settings/mapTitle').text = values['-MAP-']
+#			if values['-MAP-'] in se.getInternalMaps():
+#				tree.find('settings/mapId').text = se.getInternalMaps()[values['-MAP-']]
+#			with open(p + os.sep + 'careerSavegame.xml', 'wb') as f:
+#				tree.write(f)
 			
 			os.mkdir(p + '_Backup')
 			db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
@@ -199,10 +199,10 @@ def guiNewSaveGame(title = None):
 				[sg.Input(key = '-DESC-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('map'))],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
-				[	sg.Radio(tr.getTrans('sg_type_new_farmer'), '-SG_TYPE-', key = '-NF-', default = True, visible = True),
-					sg.Radio(tr.getTrans('sg_type_farm_manager'), '-SG_TYPE-', key = '-FM-', default = False, visible = True),
-					sg.Radio(tr.getTrans('sg_type_start_at_null'), '-SG_TYPE-', key = '-SAN-', default = False, visible = True),
-				],
+#				[	sg.Radio(tr.getTrans('sg_type_new_farmer'), '-SG_TYPE-', key = '-NF-', default = True, visible = True),
+#					sg.Radio(tr.getTrans('sg_type_farm_manager'), '-SG_TYPE-', key = '-FM-', default = False, visible = True),
+#					sg.Radio(tr.getTrans('sg_type_start_at_null'), '-SG_TYPE-', key = '-SAN-', default = False, visible = True),
+#				],
 				[sg.Text('Mods')],
 				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'), enable_events = True)],
 				[	sg.Button(tr.getTrans('export'), key = '-EXPORT_SAVE-', size = (14, 1)),
@@ -225,9 +225,9 @@ def guiNewSaveGame(title = None):
 		window['-REM_MOD-'].update(visible = True)
 		window['-MISS-'].update(values = addMissingMods(title), visible = True)
 		window['-MAP-'].update(disabled = True)
-		window['-NF-'].update(visible = False)
-		window['-FM-'].update(visible = False)
-		window['-SAN-'].update(visible = False)
+#		window['-NF-'].update(visible = False)
+#		window['-FM-'].update(visible = False)
+#		window['-SAN-'].update(visible = False)
 		markMods(window, title)
 
 	while True:
