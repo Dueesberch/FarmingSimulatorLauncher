@@ -63,7 +63,6 @@ def getMods(path):
 		sg.popup_ok(tr.getTrans('no_mod_found'), title = '')
 	return mods
 
-
 def getSaveGames():
 	""" get stored save games
 	read the according games_lsxx.json and extract maps
