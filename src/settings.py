@@ -108,10 +108,12 @@ def init():
 
 	games_json = fsl_config_path + 'games_' + vers + '.json'
 	# replace map names for internal maps
-	for key, value in fs19_internal_maps.items():
-		TinyDB(games_json).update({'map': value}, Query().map == key)
-	for key, value in fs22_internal_maps.items():
-		TinyDB(games_json).update({'map': value}, Query().map == key)
+	if vers == 'fs19':
+		for key, value in fs19_internal_maps.items():
+			TinyDB(games_json).update({'map': value}, Query()['map'] == key)
+	if vers == 'fs22':
+		for key, value in fs22_internal_maps.items():
+			TinyDB(games_json).update({'map': value}, Query()['map'] == key)
 
 	#logger.debug('settings:init:games_json ' + games_json)
 #	if os.path.exists(games_json):

@@ -32,6 +32,7 @@ def importAllMods(path, rem = False):
 
 def getMods(path):
 	mods = []
+	all_mods = os.listdir(se.getSettings('all_mods_path'))
 	try:
 		files = os.listdir(path)
 		for i in files:
@@ -39,6 +40,15 @@ def getMods(path):
 				with zipfile.ZipFile(path + os.sep + i) as z:
 					try:
 						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+						version = moddesc.find('version')
+						descV = int(moddesc.attrib['descVersion'])
+						f_name = 'fsl_' + version.text + '!' + i
+						if f_name in all_mods:
+							moddesc = None
+						if se.vers == 'fs19' and int(descV / 10) >= 6:
+							moddesc = None
+						if se.vers == 'fs22' and int(descV / 10) < 6:
+							moddesc = None
 					except FileNotFoundError:
 						moddesc = None
 						pass
@@ -49,8 +59,9 @@ def getMods(path):
 						mods.append(i)
 	except FileNotFoundError:
 		pass
+	if not mods:
+		sg.popup_ok(tr.getTrans('no_mod_found'), title = '')
 	return mods
-
 
 def getSaveGames():
 	""" get stored save games
@@ -123,8 +134,17 @@ def importMods(path, mods, updateSGs):
 
 def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')
+	datasets = TinyDB(se.games_json).all()
 	for i, val in enumerate(mods):
-		os.remove(all_mods + os.sep + existing_mods[val])
+		unused = True
+		for i in range(len(datasets)):
+			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
+				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
+				unused = False
+				break
+		if unused:
+			os.remove(all_mods + os.sep + existing_mods[val])
+			
 
 def getAllMods():
 	global existing_mods
@@ -133,7 +153,7 @@ def getAllMods():
 	existing_mods.update(m[1])
 	for i in list(se.getInternalMaps()):
 		del existing_mods[i]
-	return list(existing_mods.keys())
+	return list(sorted(existing_mods.keys()))
 
 def guiImportMods(updateSGs = True):
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],

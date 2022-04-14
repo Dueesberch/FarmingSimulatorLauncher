@@ -67,12 +67,9 @@ Please report bugs at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLau
 ## Geplante Erweiterungen / Backlog
 * Tooltips zu Feldern hinzufügen / add tooltips to fields
 * Laden alter Spielstände / load savegame backups
-* Prüfen ob ein Mod von einer Konfiguration benutzt wird beim Löschen / check if mod is used by configuration before remove
 * Unbenutzte Mods finden / find unused mods
-* Beim Import von Mods prüfen ob diese zur gewählten Version passen / check if mod fitting selected FS version
 * Beim Anlegen einer neuen Konfiguration den savegame Ordner mit default Dateien erstellen / add default files when new savegame is created
 * Verwalten von Ordnern wie modsettings etc. / manage folders like modsettings
-* Mods (Qelldatei) nach import Moddatei löschen anstatt gesamten Ordner / delete mod after import instead of whole folder
 * Mod Updates verwalten / mod updates managment
 * Einstellung LS Vorspann abschalten / disable FS intro at start by settings
 * Einstellung savegame direkt starten in LS (Singleplayer) / start savegame directly (single player)
@@ -80,7 +77,6 @@ Please report bugs at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLau
 * Karte updaten / update map
 * Konfiguration kopieren / copy configuration
 * orginal LS Setup wieder herstellen / remove FSL
-* Nur Mods auflisten die noch nicht importiert wurden / list only mods not already imported
 * Französische Übersetzung / french translation
 
 Gewünschte Erweiterungen bitte über [GitHub](https://github.com/Dueesberch/FarmingSimulatorLauncher/issues/new) melden und Label *feature request* auswählen.  
