@@ -8,6 +8,7 @@ import import_ls as im
 import logging as log
 
 from tinydb import TinyDB, Query
+from pathlib import Path
 
 fsl_config_path = ''
 settings_json = ''
@@ -134,22 +135,38 @@ def init():
 	
 	return ret
 
+def checkPath(p1, p2):
+	p2 = p2.replace('\\', '/').split('/')
+	p_temp = ''
+	for i, v in enumerate(p2):
+		p_temp = p_temp + v + os.sep
+		try:
+			if os.path.samefile(p_temp, p1) and p2[i + 1] == 'mods':
+				return True
+		except FileNotFoundError:
+			pass
+	return False
+
+
 def saveSettings(values):
 	db = TinyDB(settings_json)
 	if values['-FS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans('empty_fs_path', values['-COMBO-']), title = 'miss_path', location = (50, 50))
 		return False
 	if not os.path.exists(values['-FS_PATH-']):
-		sg.popup_error(tr.getTrans('exe_not_found').format(values['-FS_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
+		sg.popup_error(tr.getTrans('exe_not_found', values['-COMBO-']).format(values['-FS_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
 		return False
 	if values['-FS_GAME_DATA_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_fs_gd_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans('empty_fs_gd_path', values['-COMBO-']), title = 'miss_path', location = (50, 50))
 		return False
 	if not os.path.exists(values['-FS_GAME_DATA_PATH-']):
-		sg.popup_error(tr.getTrans('not_found_folder').format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
+		sg.popup_error(tr.getTrans('not_found_folder', values['-COMBO-']).format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
 		return False
 	if values['-ALL_MODS_PATH-'] == '':
-		sg.popup_error(tr.getTrans(values['-COMBO-'], 'empty_all_mods_path'), title = 'miss_path', location = (50, 50))
+		sg.popup_error(tr.getTrans('empty_all_mods_path', values['-COMBO-']), title = 'miss_path', location = (50, 50))
+		return False
+	elif checkPath(values['-FS_GAME_DATA_PATH-'], values['-ALL_MODS_PATH-']):
+		sg.popup_error(tr.getTrans('illegal_path', values['-COMBO-']).format(values['-FS_GAME_DATA_PATH-']), title = 'miss_path', location = (50, 50))
 		return False
 	else:
 		if 'fsl_all_mods_' + vers in values['-ALL_MODS_PATH-']:

@@ -237,7 +237,8 @@ at Windows and
 `~/Library/Application Support/FarmingSimulator2019`  
 at MacOS. At FS22 the button is ***Default FS22 savegame folder path*** and the path is set accordingly.  
 
-The path set at ***Select folder at all mods*** is used to create the fsl-all-mods folder. At that folder all imported mods will be stored. Please be aware that there is enough disk space.
+The path set at ***Select folder at all mods*** is used to create the fsl-all-mods folder. At that folder all imported mods will be stored. Please be aware that there is enough disk space.  
+<span style='color:red'>Beside check that the folder isn't inside the `My Games/FarmingSimulator20XX/mods/` folder. That folder is reset always when FSL stars and the fsl_all_mods folder will be deleted.</span>
 See **Recommendation - Share mods**
 
 ***Save*** take the settings and close the window.  

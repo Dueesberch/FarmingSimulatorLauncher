@@ -244,7 +244,8 @@ für Windows bzw.
 `~/Library/Application Support/FarmingSimulator2019`  
 für MacOS gesetzt. Für den LS22 ist die Taste mit ***Standard LS22 Savegames Ordner Pfad*** beschriftet und der Pfad wird analog gesetzt.  
 
-Der bei ***Pfad für Alle-Mods-Ordner auswählen*** gesetzte Pfad wird von FSL benutzt um einen all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden. Achte daher auf ausreichend Speicherplatz.  
+Der bei ***Pfad für Alle-Mods-Ordner auswählen*** gesetzte Pfad wird von FSL benutzt um einen fsl_all_mods Ordner anzulegen. In diesem werden alle Mods gespeichert die in FSL importiert wurden. Achte daher auf ausreichend Speicherplatz.  
+<span style='color:red'>Außerdem darf dieser nicht in oder unterhalb des `My Games/FarmingsSimulator2019/mods/` liegen. Der mods-Ordner wird bei jedem FSL-Start neu erzeugt.</span>
 Siehe **Tipps - Mods teilen**  
 
 ***Speichern*** übernimmt die Einstellungen.  
