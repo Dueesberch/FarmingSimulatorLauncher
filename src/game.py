@@ -19,6 +19,7 @@ maps = {}
 def getMods(l = True):
 	global mods
 	global maps
+	files = []
 	try:
 		files = os.listdir(se.getSettings('all_mods_path'))
 	except FileNotFoundError:
