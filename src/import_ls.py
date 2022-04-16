@@ -157,11 +157,14 @@ def getAllMods():
 	return list(sorted(existing_mods.keys()))
 
 def guiImportMods(updateSGs = True):
+	importable_mods_layout =	[	
+								]
+
 	layout =    [	[sg.Text(tr.getTrans('get_mod_path'))],
 					[sg.Input('', key = '-MOD_PATH-', size = (110, 1), enable_events = True)],
 					[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (96,1))],
 					[sg.Text(tr.getTrans('importable_mods'))],
-					[sg.Listbox('',  key = '-MODS-', size = (108, 10), select_mode = 'extended')],
+					importable_mods_layout,
 					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
 					[sg.Text(tr.getTrans('existing_mods'))],
 					[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
@@ -188,7 +191,9 @@ def guiImportMods(updateSGs = True):
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-MOD_PATH-':
-			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
+			mods = getMods(values['-MOD_PATH-'])
+			for i in mods:
+				
 	window.close()
 	return
 
