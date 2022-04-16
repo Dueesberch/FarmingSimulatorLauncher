@@ -279,12 +279,34 @@ def startSaveGame(name):
 	os.makedirs(fs_game_data_folder + 'mods' + os.sep)
 	q = Query()
 	sg_map = TinyDB(se.games_json).get((q.name == name))['map']
-	if sg_map not in se.getInternalMaps():#.values():
+	xml_map = None
+	if sg_map not in se.getInternalMaps().values():
 		os.symlink(all_mods_folder + sg_map, fs_game_data_folder + 'mods' + os.sep + sg_map.split('!')[-1])
+		with zipfile.ZipFile(all_mods_folder + sg_map) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				v = moddesc.find('version').text
+				try:
+					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
+				except AttributeError:
+					t = moddesc.find('maps/map/title/en').text
+					pass
+		# change careersavegame.xml mod list
+		xml_map = ET.Element('mod', modName = sg_map.split('!')[-1].replace('.zip', ''), title = t, version = v, required="true", fileHash="0")
 	mods = TinyDB(se.games_json).get((q.name == name))['mods']
+	xml_mods = []
 	for i in mods:
 		if os.path.exists(all_mods_folder + mods[i]):
 			os.symlink(all_mods_folder + mods[i], fs_game_data_folder + 'mods' + os.sep + mods[i].split('!')[-1])
+			with zipfile.ZipFile(all_mods_folder + mods[i]) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				v = moddesc.find('version').text
+				try:
+					t = moddesc.find('title/' + se.getFslSettings('language')).text
+				except AttributeError:
+					t = moddesc.find('title/en').text
+					pass
+			# change careersavegame.xml mod list
+			xml_mods.append(ET.Element('mod', modName = mods[i].split('!')[-1].replace('.zip', ''), title = t, version = v, required = "false", fileHash = '0'))
 		else:
 			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
@@ -293,6 +315,14 @@ def startSaveGame(name):
 	if os.path.exists(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml'):
 		tree = ET.parse(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml')
 		tree.find('settings/savegameName').text = name
+		xml_mods_old = tree.findall('mod')
+		for i in xml_mods_old:
+			if not 'pdlc' in i.attrib['modName']:
+				tree.getroot().remove(i)
+		if xml_map != None:
+			tree.getroot().append(xml_map)
+		for i in xml_mods:
+			tree.getroot().append(i)
 		with open(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml', 'wb') as f:
 			tree.write(f)
 	shutil.copytree(fs_game_data_folder + savegame, fs_game_data_folder + 'savegame1')
