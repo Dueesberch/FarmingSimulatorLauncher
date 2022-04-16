@@ -307,6 +307,8 @@ def startSaveGame(name):
 					pass
 			# change careersavegame.xml mod list
 			xml_mods.append(ET.Element('mod', modName = mods[i].split('!')[-1].replace('.zip', ''), title = t, version = v, required = "false", fileHash = '0'))
+		elif mods[i].endswith('.dlc'):
+			xml_mods.append(ET.Element('mod', modName = 'pdlc_' + mods[i].replace('.dlc', ''), title = '', version = '', required = "false", fileHash = '0'))
 		else:
 			if sg.popup_yes_no(tr.getTrans('mod_not_found').format(mods[i], all_mods_folder), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
 				shutil.rmtree(fs_game_data_folder + 'mods' + os.sep)
@@ -317,8 +319,7 @@ def startSaveGame(name):
 		tree.find('settings/savegameName').text = name
 		xml_mods_old = tree.findall('mod')
 		for i in xml_mods_old:
-			if not 'pdlc' in i.attrib['modName']:
-				tree.getroot().remove(i)
+			tree.getroot().remove(i)
 		if xml_map != None:
 			tree.getroot().append(xml_map)
 		for i in xml_mods:

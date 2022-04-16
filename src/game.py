@@ -38,6 +38,15 @@ def getMods(l = True):
 					m = moddesc.find('title/en')
 					key = m.text + ' - ' + i.split('!')[0][4:]
 					mods[key] = i
+	files = []
+	try:
+		files = os.listdir(se.getSettings('fs_game_data_path') + os.sep + 'pdlc')
+	except FileNotFoundError:
+		pass
+	for i in files:
+		if i.endswith('.dlc'):
+			key = 'DLC ' + i.replace('.dlc', '')
+			mods[key] = i
 	if l:
 		return list(sorted(maps.keys())), list(sorted(mods.keys()))
 	else:
@@ -74,7 +83,8 @@ def saveSaveGame(values, update):
 	check = {}
 	dupes = []
 	for i, val in enumerate(values['-MODS-']):
-		check[mods[val]] = mods[val].split('!')[1]
+		if not val.startswith('DLC'):
+			check[mods[val]] = mods[val].split('!')[1]
 	seen = set()
 	for x in list(check.values()):
 		if x in seen:
