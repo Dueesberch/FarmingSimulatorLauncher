@@ -51,7 +51,7 @@ def init():
 		logo = resource_path("logo.ico")
 	else:
 		#logger.debug('settings:init:unsupported OS')
-		sg.popup_error('Unsuported operating system.')
+		sg.popup_error('Unsupported operating system.')
 		return False
 
 	sg.set_options(icon = logo)
@@ -124,6 +124,24 @@ def init():
 		os.rename(fsl_config_path + 'settings_ls22.json', fsl_config_path + 'settings_fs22.json')
 
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
+	
+	if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls22' in getSettings('all_mods_path'):
+		new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls22', 'fsl_all_mods_fs22')
+		os.rename(getSettings('all_mods_path'), new_path)
+		TinyDB(settings_json).update({'all_mods_path': new_path})
+
+	if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls19' in getSettings('all_mods_path'):
+		new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls19', 'fsl_all_mods_fs19')
+		os.rename(getSettings('all_mods_path'), new_path)
+		TinyDB(settings_json).update({'all_mods_path': new_path})
+
+	# remove links from mods folder
+	if os.path.exists(getSettings('fs_game_data_path') + os.sep + 'mods'):
+		p = getSettings('fs_game_data_path') + os.sep + 'mods'
+		for i in os.listdir(p):
+			if Path(p + os.sep + i).is_symlink():
+				os.remove(p + os.sep + i)
+
 	#logger.debug('settings:init:settings_json ' + settings_json)
 #	if os.path.exists(settings_json):
 #		with open(settings_json, 'r') as f:

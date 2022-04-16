@@ -74,6 +74,7 @@ def getSaveGames():
 				l.append(n + ' : ' + tr.getTrans('ghostmap'))
 				pass
 		else:
+			m = list(se.getInternalMaps().keys())[list(se.getInternalMaps().values()).index(m)]
 			l.append(n + ' : ' + m)
 	return l
 
