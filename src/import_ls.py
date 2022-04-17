@@ -13,6 +13,8 @@ import logging as log
 import pysed
 import hashlib
 import pathlib
+import copy
+
 existing_mods = {}
 
 def importAllMods(path, rem = False):
@@ -192,8 +194,29 @@ def guiImportMods(updateSGs = True):
 			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-MOD_PATH-':
 			mods = getMods(values['-MOD_PATH-'])
-			for i in mods:
-				
+			importable_mods_layout2 =	[	
+										]
+
+			layout2 =    [	[sg.Text(tr.getTrans('get_mod_path'))],
+							[sg.Input('', key = '-MOD_PATH-', size = (110, 1), enable_events = True)],
+							[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (96,1))],
+							[sg.Text(tr.getTrans('importable_mods'))],
+							[ importable_mods_layout2, sg.Image('icon_robertF2800.dds')],
+							[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
+							[sg.Text(tr.getTrans('existing_mods'))],
+							[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
+							[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (96, 1))],
+							[sg.Text('')],
+							[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
+						]
+			row = []
+			for c, i in enumerate(mods):
+				row.append(sg.Checkbox(i, key = '-MOD_' + str(c) + '-', size = (32, 1)))
+				if (c/2 - int(c/2)) == 0 or c == len(mods)-1:
+					importable_mods_layout2.append(row)
+					row = []
+			window.close()
+			window = sg.Window(tr.getTrans('import'), layout2, finalize = True, location = (50, 50))
 	window.close()
 	return
 
