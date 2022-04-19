@@ -368,6 +368,20 @@ def disableButtons(window):
 	window['-START-'].update(disabled = True, button_color = ('gray'))
 	window['-CHANGE-'].update(disabled = True)
 	window['-REMOVE-'].update(disabled = True)
+	window['-BACKUPS-'].update(visible = False)
+
+def getBackups(title):
+	backups = []
+	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
+	bak_folder = data[0]['folder'] + '_Backup'
+	for i in os.listdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder):
+		if os.path.isdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder + os.sep + i):
+			date = i.split('backup')[1].split('_')[0]
+			time = i.split('backup')[1].split('_')[1].replace('-', ':')
+			backups.append(date + ' ' + time)
+	backups = sorted(backups, reverse = True)
+	backups.insert(0, '')
+	return backups
 
 def main():
 	#print('rename folder')
@@ -418,6 +432,7 @@ def main():
 				[sg.Combo(getSaveGames(), size = (125,10), key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (111,1))],
 				[sg.Text(size = (111,1), key = '-DESC-')],
+				[sg.Combo('', size = (125,10), key = '-BACKUPS-', enable_events = True, visible = False)],
 				[button_layout],
 				[sg.Text(size = (111,1))],
 				[sg.Text(size = (111,1))],
@@ -439,11 +454,14 @@ def main():
 			window['-REMOVE-'].update(disabled = False)
 			data = TinyDB(se.games_json).search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
 			window['-DESC-'].update(value = data[0]['desc'])
+			window['-BACKUPS-'].update(value = '', values = getBackups(values['-COMBO-']), visible = True)
 		elif event == '-COMBO-' and values['-COMBO-'] == '':
 			disableButtons(window)
 			window['-DESC-'].update(value = '')
 		elif event == '-START-':
 			window.Hide()
+			if values['-BACKUPS-'] != '':
+				# copy backup to sg folder
 			if startSaveGame(values['-COMBO-'].split(':')[0].rstrip()):
 				break
 			window.UnHide()
