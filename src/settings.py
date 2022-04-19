@@ -129,12 +129,18 @@ def init():
 	
 	if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls22' in getSettings('all_mods_path'):
 		new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls22', 'fsl_all_mods_fs22')
-		os.rename(getSettings('all_mods_path'), new_path)
+		try:
+			os.rename(getSettings('all_mods_path'), new_path)
+		except FileNotFoundError:
+			pass
 		TinyDB(settings_json).update({'all_mods_path': new_path})
 
 	if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls19' in getSettings('all_mods_path'):
 		new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls19', 'fsl_all_mods_fs19')
-		os.rename(getSettings('all_mods_path'), new_path)
+		try:
+			os.rename(getSettings('all_mods_path'), new_path)
+		except FileNotFoundError:
+			pass
 		TinyDB(settings_json).update({'all_mods_path': new_path})
 
 	# remove links from mods folder
