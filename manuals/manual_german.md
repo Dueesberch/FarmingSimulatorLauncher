@@ -22,7 +22,8 @@ Bitte sichert eure LS Savegames / Mods vor dem ersten Start von FSL.</span>
 
 Der FSL ist kein Designglanzstück. Ich habe mehr Wert auf die Funktionalität gelegt. Besonders unter MacOS fällt dies auf. Leider ist es unter MacOS nicht möglich einen Splashscreen anzuzeigen. Deshalb dauert es etwas, bis das FSL Fenster erscheint. Habt Geduld.
 
-<span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht möglich sind.**</span> Siehe **Tipps - Administratorrechte bekommen**
+<span style="color:red">**Achtung: Unter Windows muss FSL als Adminstrator gestartet werden, da sonst die Datei- / Ordneroperationen nicht möglich sind.**</span> Siehe **Tipps - Administratorrechte bekommen**  
+<spann style="color:red">**Achtung: Unter MacOS muss FSL erst entpackt werden. Dann per Ctrl+Klick das Kontextmenü öffnen und 'Öffnen' auswählen. Es erscheint eine Warnung, welche mit 'Öffnen' bestätigt werden muss.**</span>
 <div style="page-break-after: always;"></div>  
 
 ## Allgemein
