@@ -22,7 +22,8 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 
 The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS. Unfortunately, it isn't possible to show a splash screen at MacOS. So it takes a while until you see the FSL window appear. Be patient. 
 
-<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**
+<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**  
+<span style="color:red">**Attention: FSL must be extracted after Download. To start hold Ctrl and click. Select Open. At the Warning window click open.**</span>
 <div style="page-break-after: always;"></div>
 
 ## General
