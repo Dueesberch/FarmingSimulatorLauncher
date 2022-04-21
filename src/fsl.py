@@ -27,6 +27,7 @@ import json
 from packaging import version
 import hashlib
 import pathlib
+import datetime
 
 FSL_Version = 'v1.1.1'
 
@@ -374,6 +375,8 @@ def getBackups(title):
 	backups = []
 	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
 	bak_folder = data[0]['folder'] + '_Backup'
+	# cleanup backupfolder
+	
 	for i in os.listdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder):
 		if os.path.isdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder + os.sep + i):
 			date = i.split('backup')[1].split('_')[0]
@@ -382,6 +385,21 @@ def getBackups(title):
 	backups = sorted(backups, reverse = True)
 	backups.insert(0, '')
 	return backups
+
+def setBackupAsCurrent(title, backup):
+	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
+	folder = data[0]['folder']
+	date = datetime.datetime.now()
+	date_str = date.strftime('%Y') + '-' + date.strftime('%m') + '-' + date.strftime('%d') + '_' + date.strftime('%H') + '-' + date.strftime('%M')
+	dst_path = se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup' + os.sep + 'savegame1_backup' + date_str
+	os.mkdir(dst_path)
+	src_path = se.getSettings('fs_game_data_path') + os.sep + folder
+	for i in os.listdir(src_path):
+		shutil.copy(src_path + os.sep + i, dst_path)
+	src_path = se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup' + os.sep + 'savegame1_backup' + backup.split(' ')[0] + '_' + backup.split(' ')[1].replace(':', '-')
+	dst_path = se.getSettings('fs_game_data_path') + os.sep + folder
+	for i in os.listdir(src_path):
+		shutil.copy(src_path + os.sep + i, dst_path)
 
 def main():
 	#print('rename folder')
@@ -460,10 +478,16 @@ def main():
 			window['-DESC-'].update(value = '')
 		elif event == '-START-':
 			window.Hide()
+			ret = True
 			if values['-BACKUPS-'] != '':
 				# copy backup to sg folder
-			if startSaveGame(values['-COMBO-'].split(':')[0].rstrip()):
-				break
+				if sg.popup_yes_no(tr.getTrans('sure_start_backup'), title = 'Start backup', location = (50, 50)) == 'Yes':
+					setBackupAsCurrent(values['-COMBO-'], values['-BACKUPS-'])
+				else:
+					ret = False
+			if ret:
+				if startSaveGame(values['-COMBO-'].split(':')[0].rstrip()):
+					break
 			window.UnHide()
 		elif event == '-CHANGE-':
 			window.Hide()
