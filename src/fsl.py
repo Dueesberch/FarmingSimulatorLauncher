@@ -28,7 +28,7 @@ from packaging import version
 import hashlib
 import pathlib
 
-FSL_Version = 'v1.1.0'
+FSL_Version = 'v1.1.1'
 
 logger = None
 def checkFirstRun():

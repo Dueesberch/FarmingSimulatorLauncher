@@ -101,12 +101,22 @@ def init():
 	
 	#logger.debug('settings:init:vers ' + vers)
 
+	if not os.path.exists(fsl_config_path) and ret == True:
+		#logger.debug('settings:init:create fsl config folder')
+		os.makedirs(fsl_config_path)
+		settings_json = fsl_config_path + 'settings_' + vers + '.json'
+		games_json = fsl_config_path + 'games_' + vers + '.json'
+		return True
+
+	settings_json = fsl_config_path + 'settings_' + vers + '.json'
+	games_json = fsl_config_path + 'games_' + vers + '.json'
+
 	if os.path.exists(fsl_config_path + 'games_ls19.json'):
 		os.rename(fsl_config_path + 'games_ls19.json', fsl_config_path + 'games_fs19.json')
 	if os.path.exists(fsl_config_path + 'games_ls22.json'):
 		os.rename(fsl_config_path + 'games_ls22.json', fsl_config_path + 'games_fs22.json')
 
-	games_json = fsl_config_path + 'games_' + vers + '.json'
+	
 	# replace map names for internal maps
 	if vers == 'fs19':
 		for key, value in fs19_internal_maps.items():
@@ -125,8 +135,6 @@ def init():
 	if os.path.exists(fsl_config_path + 'settings_ls22.json'):
 		os.rename(fsl_config_path + 'settings_ls22.json', fsl_config_path + 'settings_fs22.json')
 
-	settings_json = fsl_config_path + 'settings_' + vers + '.json'
-	
 	if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls22' in getSettings('all_mods_path'):
 		new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls22', 'fsl_all_mods_fs22')
 		try:
@@ -154,10 +162,6 @@ def init():
 #	if os.path.exists(settings_json):
 #		with open(settings_json, 'r') as f:
 #			logger.debug('setting:init: ' + f.readline())
-
-	if not os.path.exists(fsl_config_path) and ret == True:
-		#logger.debug('settings:init:create fsl config folder')
-		os.makedirs(fsl_config_path)
 	
 	return ret
 
