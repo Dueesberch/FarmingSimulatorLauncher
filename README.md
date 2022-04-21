@@ -73,7 +73,6 @@ Please report bugs at [GitHub](https://github.com/Dueesberch/FarmingSimulatorLau
 * Mod Updates verwalten / mod updates managment
 * Einstellung LS Vorspann abschalten / disable FS intro at start by settings
 * Einstellung savegame direkt starten in LS (Singleplayer) / start savegame directly (single player)
-* Mods in careerSavegame.xml entsprechend der Konfuguration setzen (Einschalten in LS entfällt) / set mods at careersavegame.xml
 * Karte updaten / update map
 * Konfiguration kopieren / copy configuration
 * orginal LS Setup wieder herstellen / remove FSL
