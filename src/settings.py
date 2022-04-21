@@ -107,6 +107,26 @@ def init():
 		settings_json = fsl_config_path + 'settings_' + vers + '.json'
 		games_json = fsl_config_path + 'games_' + vers + '.json'
 		return True
+	elif not os.path.exists(fsl_settings_json) and ret == True:
+		if os.path.exists(fsl_config_path + 'games_ls19.json'):
+			os.rename(fsl_config_path + 'games_ls19.json', fsl_config_path + 'games_ls19.json_bak')
+		if os.path.exists(fsl_config_path + 'settings_ls19.json'):
+			os.rename(fsl_config_path + 'settings_ls19.json', fsl_config_path + 'settings_ls19.json_bak')
+		if os.path.exists(fsl_config_path + 'games_fs19.json'):
+			os.rename(fsl_config_path + 'games_fs19.json', fsl_config_path + 'games_fs19.json_bak')
+		if os.path.exists(fsl_config_path + 'settings_fs19.json'):
+			os.rename(fsl_config_path + 'settings_fs19.json', fsl_config_path + 'settings_fs19.json_bak')
+		if os.path.exists(fsl_config_path + 'games_ls22.json'):
+			os.rename(fsl_config_path + 'games_ls22.json', fsl_config_path + 'games_ls.json_bak')
+		if os.path.exists(fsl_config_path + 'settings_ls22.json'):
+			os.rename(fsl_config_path + 'settings_ls22.json', fsl_config_path + 'settings_ls22.json_bak')
+		if os.path.exists(fsl_config_path + 'games_fs22.json'):
+			os.rename(fsl_config_path + 'games_fs22.json', fsl_config_path + 'games_fs22.json_bak')
+		if os.path.exists(fsl_config_path + 'settings_fs22.json'):
+			os.rename(fsl_config_path + 'settings_fs22.json', fsl_config_path + 'settings_fs22.json_bak')
+		settings_json = fsl_config_path + 'settings_' + vers + '.json'
+		games_json = fsl_config_path + 'games_' + vers + '.json'
+		return True
 
 	settings_json = fsl_config_path + 'settings_' + vers + '.json'
 	games_json = fsl_config_path + 'games_' + vers + '.json'
