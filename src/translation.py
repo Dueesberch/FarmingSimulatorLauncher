@@ -67,6 +67,7 @@ dictionary = {
         "no_savegame_files": "No savegame file found.",
         "no": "no",
         "no_mod_found": "None importable mod found. Maybe all already imported or not fitting the FS version.",
+        "numeric": "Backups to keep must be an integer.",
         "overwrite": "Overwrite",
         "remove": "Remove",
         "remove_title": "Remove folder",
@@ -106,6 +107,7 @@ dictionary = {
         "sgc_mods_export": "Folder to store mods for export.",
         "sgc_mods_export_missing": "Some mods can't be prepared for export.\nPlease check \'Missing\'.",
         "tt_gaLbMods": "click: select one item | strg + click: multiselect | shift + click: select all between first and second click | strg + click at selected entry to unselect",
+        "to_keep": "Backups to keep",
         "wait_for_import": "Import running. Please wait",
         "yes": "yes"
     },
@@ -175,6 +177,7 @@ dictionary = {
         "no_savegame_files": "Der angegebene Ordner enthält keine savegame Dateien.",
         "no": "nein",
         "no_mod_found": "Kein importierbarer Mod gefunden. Entweder sind alle bereits importiert oder passen nicht zur gewählten LS Version.",
+        "numeric": "Zu behaltende Backups muss eine Zahl sein.",
         "overwrite": "Überschreiben",
         "remove": "Löschen",
         "remove_title": "Lösche Ordner",
@@ -214,6 +217,7 @@ dictionary = {
         "sgc_mods_export": "Ordner in dem die Mods für den Export gespeichert werden sollen.",
         "sgc_mods_export_missing": "Einer oder mehrere Mods konnten nicht für den Eport zur Verfügung gestellt werden.\nBitte \'Fehlend\' prüfen.",
         "tt_gaLbMods": "klick: einen Eintrag auswählen, andere abwählen | strg + klick: mehrere Einträge auswählen | shift + klick: alle Einträge zwischen ersten und letzen Ausgewählten markieren | strg + klick auf markierten EIntrag entfernt Selektion",
+        "to_keep": "Zu behaltende Backups",
         "wait_for_import": "Importiere. Bitte warten",
         "yes": "ja"
     }

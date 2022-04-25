@@ -372,11 +372,17 @@ def disableButtons(window):
 	window['-BACKUPS-'].update(visible = False)
 
 def getBackups(title):
-	backups = []
 	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
 	bak_folder = data[0]['folder'] + '_Backup'
-	# cleanup backupfolder
-	
+	backups = sorted(os.listdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder))
+	c = se.getSettings('backups')
+	if c > 0:
+		to_rem = len(backups) - c - 1
+		backups = backups[:to_rem]
+		# cleanup backupfolder
+		for i in backups:
+			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + bak_folder + os.sep + i)
+	backups = []
 	for i in os.listdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder):
 		if os.path.isdir(se.getSettings('fs_game_data_path') + os.sep + bak_folder + os.sep + i):
 			date = i.split('backup')[1].split('_')[0]

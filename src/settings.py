@@ -200,6 +200,8 @@ def checkPath(p1, p2):
 
 def saveSettings(values):
 	db = TinyDB(settings_json)
+	if values['-N_KEEP-'] == '':
+		values['-N_KEEP-'] = '0'
 	if values['-FS_PATH-'] == '':
 		sg.popup_error(tr.getTrans('empty_fs_path', values['-COMBO-']), title = 'miss_path', location = (50, 50))
 		return False
@@ -218,6 +220,9 @@ def saveSettings(values):
 	elif checkPath(values['-FS_GAME_DATA_PATH-'], values['-ALL_MODS_PATH-']):
 		sg.popup_error(tr.getTrans('illegal_path', values['-COMBO-']).format(values['-FS_GAME_DATA_PATH-']), title = 'miss_path', location = (50, 50))
 		return False
+	elif not values['-N_KEEP-'].isnumeric():
+		sg.popup_error(tr.getTrans('numeric'), title = tr.getTrans('error'), location = (50, 50))
+		return False
 	else:
 		if 'fsl_all_mods_' + vers in values['-ALL_MODS_PATH-']:
 			all_mods_path = values['-ALL_MODS_PATH-']
@@ -228,7 +233,7 @@ def saveSettings(values):
 		except FileExistsError:
 			pass
 	#logger.debug('settings:saveSattings: fs_path: ' + values['-FS_PATH-'] + ' ;fs_game_data_path:' + values['-FS_GAME_DATA_PATH-'] + ' ;all_mods_path:' + all_mods_path + ' ;set_def_vers: ' + str(values['-SET_DEF_LS-']))
-	db.update({'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path}, doc_ids = [1])
+	db.update({'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path, 'backups': int(values['-N_KEEP-'])}, doc_ids = [1])
 	TinyDB(fsl_settings_json).update({'language': values['-COMBO-']}, doc_ids = [1])
 	if values['-SET_DEF_LS-']:
 		TinyDB(fsl_settings_json).update({'def_vers': vers}, doc_ids = [1])
@@ -273,6 +278,7 @@ def guiSettings(lang, init = False):
 	gd = getSettings('fs_game_data_path')
 	am = getSettings('all_mods_path')
 	lang = getFslSettings('language')
+	backups = getSettings('backups')
 
 	if def_vers != '':
 		set_def_check = True
@@ -290,7 +296,7 @@ def guiSettings(lang, init = False):
 
 	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
 				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
-				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = set_def_check)],
+				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = set_def_check, size = (40,1)), sg.Input(backups, key = '-N_KEEP-', size = (5,1)), sg.Text(tr.getTrans('to_keep'), key = '-KEEP-')],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
 				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 
 				[sg.FileBrowse(initial_folder = fs, target = '-FS_PATH-'), sg.Button(def_fs_text, key = '-DEF_FS-', size = (30,1)), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-', size = (30,1)), ],
