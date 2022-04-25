@@ -389,6 +389,22 @@ def getBackups(title):
 def setBackupAsCurrent(title, backup):
 	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
 	folder = data[0]['folder']
+	# check if mods available
+	src_path = se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup' + os.sep + 'savegame1_backup' + backup.split(' ')[0] + '_' + backup.split(' ')[1].replace(':', '-')
+	tree = ET.parse(src_path + os.sep + 'careerSavegame.xml')
+	xml_mods_old = tree.findall('mod')
+	mods = {}
+	for n, i in enumerate(xml_mods_old):
+		name = i.attrib['modName']
+		if name.startswith('pdlc'):
+			continue
+		vers = i.attrib['version']
+		f_name = 'fsl_' + vers + '!' + name + '.zip'
+		if f_name != data[0]['map']:
+			mods[n] = f_name
+		if not os.path.exists(se.getSettings('all_mods_path') + os.sep + f_name) and sg.popup_yes_no(tr.getTrans('mod_not_found').format(f_name, se.getSettings('all_mods_path')), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
+			return False
+	# backup current
 	date = datetime.datetime.now()
 	date_str = date.strftime('%Y') + '-' + date.strftime('%m') + '-' + date.strftime('%d') + '_' + date.strftime('%H') + '-' + date.strftime('%M')
 	dst_path = se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup' + os.sep + 'savegame1_backup' + date_str
@@ -396,10 +412,16 @@ def setBackupAsCurrent(title, backup):
 	src_path = se.getSettings('fs_game_data_path') + os.sep + folder
 	for i in os.listdir(src_path):
 		shutil.copy(src_path + os.sep + i, dst_path)
+	# set backup as current
 	src_path = se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup' + os.sep + 'savegame1_backup' + backup.split(' ')[0] + '_' + backup.split(' ')[1].replace(':', '-')
 	dst_path = se.getSettings('fs_game_data_path') + os.sep + folder
 	for i in os.listdir(src_path):
 		shutil.copy(src_path + os.sep + i, dst_path)
+	# replace mods in games_json to old version
+	TinyDB(se.games_json).update({'mods': mods}, doc_ids = [data[0].doc_id])
+	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+		ga.exportSGC(title)
+	return True
 
 def main():
 	#print('rename folder')
@@ -482,7 +504,7 @@ def main():
 			if values['-BACKUPS-'] != '':
 				# copy backup to sg folder
 				if sg.popup_yes_no(tr.getTrans('sure_start_backup'), title = 'Start backup', location = (50, 50)) == 'Yes':
-					setBackupAsCurrent(values['-COMBO-'], values['-BACKUPS-'])
+					ret = setBackupAsCurrent(values['-COMBO-'], values['-BACKUPS-'])
 				else:
 					ret = False
 			if ret:
