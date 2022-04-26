@@ -21,9 +21,13 @@ def importAllMods(path, rem = False):
 	for i in files:
 		if i.endswith('.zip'):
 			with zipfile.ZipFile(path + os.sep + i) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				version = moddesc.find('version')
-				shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
+				try:
+					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					version = moddesc.find('version')
+					shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
+				except ET.ParseError:
+					sg.popup_error(tr.getTrans('import_failed').format(i), title=tr.getTrans('error'), location = (50, 50))
+					pass
 	if rem == True or sg.popup_yes_no(tr.getTrans('remove_src_folder').format(path), title = tr.getTrans('remove_title'), location = (50, 50)) == 'Yes':
 		try:
 			shutil.rmtree(path)
@@ -53,6 +57,10 @@ def getMods(path):
 						moddesc = None
 						pass
 					except KeyError:
+						moddesc = None
+						pass
+					except ET.ParseError:
+						sg.popup_error(tr.getTrans('import_failed').format(i), title=tr.getTrans('error'), location = (50, 50))
 						moddesc = None
 						pass
 					if moddesc:
@@ -112,7 +120,7 @@ def importMods(path, mods, updateSGs):
 		with zipfile.ZipFile(path + os.sep + i) as z:
 			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 			version = moddesc.find('version')
-			new_name = 'fsl_' + version.text + '!' + i
+			new_name = 'fsl_' + version.text + '!' + i	
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
 			if moddesc.find('maps/map/title/en') != None:
 				break

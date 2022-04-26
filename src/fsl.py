@@ -129,7 +129,17 @@ def validateModsFolder(fs_game_data_folder):
 		for i in os.listdir(path):
 			if i.endswith('.zip'):
 				with zipfile.ZipFile(path + os.sep + i) as z:
-					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					try:
+						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					except ET.ParseError:
+						sg.popup_error(tr.getTrans('import_failed').format(i), title=tr.getTrans('error'), location = (50, 50))
+						try:
+							os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
+						except FileExistsError:
+							pass
+						shutil.copyfile(path + os.sep + i, fs_game_data_folder + 'mods_fsl_bak' + os.sep + i)
+						sg.popup_ok(tr.getTrans('moved').format(fs_game_data_folder + 'mods_fsl_bak'), title = tr.getTrans('error'), location = (50, 50))
+						continue
 					version = moddesc.find('version')
 					k = 'fsl_' + version.text + '!' + i
 					if k not in all_mods:
