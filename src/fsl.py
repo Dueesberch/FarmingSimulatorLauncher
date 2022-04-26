@@ -380,6 +380,7 @@ def disableButtons(window):
 	window['-CHANGE-'].update(disabled = True)
 	window['-REMOVE-'].update(disabled = True)
 	window['-BACKUPS-'].update(visible = False)
+	window['-T_BACKUPS-'].update(visible = False)
 
 def getBackups(title):
 	data = TinyDB(se.games_json).search(Query().name == title.split(':')[0].rstrip())
@@ -488,6 +489,7 @@ def main():
 				[sg.Combo(getSaveGames(), size = (125,10), key = '-COMBO-', enable_events = True)],
 				[sg.Text(tr.getTrans('description'), key = '-DESC_T-', size = (111,1))],
 				[sg.Text(size = (111,1), key = '-DESC-')],
+				[sg.Text('Backups', size = (111,1), key = '-T_BACKUPS-', visible = False)],
 				[sg.Combo('', size = (125,10), key = '-BACKUPS-', enable_events = True, visible = False)],
 				[button_layout],
 				[sg.Text(size = (111,1))],
@@ -511,6 +513,7 @@ def main():
 			data = TinyDB(se.games_json).search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
 			window['-DESC-'].update(value = data[0]['desc'])
 			window['-BACKUPS-'].update(value = '', values = getBackups(values['-COMBO-']), visible = True)
+			window['-T_BACKUPS-'].update(visible = True)
 		elif event == '-COMBO-' and values['-COMBO-'] == '':
 			disableButtons(window)
 			window['-DESC-'].update(value = '')
