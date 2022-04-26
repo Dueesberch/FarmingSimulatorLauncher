@@ -215,6 +215,9 @@ def saveSettings(values):
 	if not os.path.exists(values['-FS_GAME_DATA_PATH-']):
 		sg.popup_error(tr.getTrans('not_found_folder', values['-COMBO-']).format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
 		return False
+	if not os.path.exists(values['-FS_GAME_DATA_PATH-'] + os.sep + 'game.xml'):
+		sg.popup_error(tr.getTrans('invalid_path', values['-COMBO-']).format(values['-FS_GAME_DATA_PATH-']), title = tr.getTrans('miss_path'), line_width = 100, location = (50, 50))
+		return False
 	if values['-ALL_MODS_PATH-'] == '':
 		sg.popup_error(tr.getTrans('empty_all_mods_path', values['-COMBO-']), title = 'miss_path', location = (50, 50))
 		return False
