@@ -195,7 +195,7 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 ### Import
 Über ***Browse*** wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
 
-***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
+***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden.  
 Die Auswahl erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  
