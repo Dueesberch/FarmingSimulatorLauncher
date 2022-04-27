@@ -187,7 +187,6 @@ def init():
 	return ret
 
 def checkPath(p1, p2):
-	print(p1, p2)
 	p2 = p2.replace('\\', '/').split('/')
 	p_temp = ''
 	for i, v in enumerate(p2):
