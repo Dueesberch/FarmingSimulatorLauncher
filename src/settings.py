@@ -187,6 +187,7 @@ def init():
 	return ret
 
 def checkPath(p1, p2):
+	print(p1, p2)
 	p2 = p2.replace('\\', '/').split('/')
 	p_temp = ''
 	for i, v in enumerate(p2):
@@ -195,6 +196,8 @@ def checkPath(p1, p2):
 			if os.path.samefile(p_temp, p1) and p2[i + 1] == 'mods':
 				return True
 		except FileNotFoundError:
+			pass
+		except IndexError:
 			pass
 	return False
 
