@@ -29,14 +29,31 @@ def getMods(l = True):
 	for i in files:
 		if i.endswith('.zip'):
 			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + i) as z:
+#				with open(se.getSettings('all_mods_path') + os.sep + 'getMods.txt', 'w+') as f:
+#					f.write(i + '\n')
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				m = moddesc.find('maps/map/title/en')
+				m = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
+				if m == None:
+					m = moddesc.find('maps/map/title/en')
+				if m == None:
+					m = moddesc.find('maps/map/title/de')
+				if m == None:
+					m = moddesc.find('maps/map/title/fr')
 				if m != None:
 					key = m.text + ' - ' + i.split('!')[0][4:]
 					maps[key] = i
 				else:
-					m = moddesc.find('title/en')
-					key = m.text + ' - ' + i.split('!')[0][4:]
+					m = moddesc.find('title/' + se.getFslSettings('language'))
+					if m == None:
+						m = moddesc.find('title/en')
+					if m == None:
+						m = moddesc.find('title/de')
+					if m == None:
+						m = moddesc.find('title/fr')
+					if m == None:
+						key = i.split('!')[1].replace('.zip', '') + ' - ' +  i.split('!')[0][4:]
+					else:
+						key = m.text + ' - ' + i.split('!')[0][4:]
 					mods[key] = i
 	files = []
 	try:

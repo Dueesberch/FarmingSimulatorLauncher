@@ -153,7 +153,6 @@ def removeMods(mods):
 				break
 		if unused:
 			os.remove(all_mods + os.sep + existing_mods[val])
-			
 
 def getAllMods():
 	global existing_mods
