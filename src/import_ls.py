@@ -111,6 +111,8 @@ def updateSGS(sgs, mod):
 		if add:
 			mods.update({str(len(mods)): mod})
 		TinyDB(se.games_json).update({"mods": mods}, doc_ids = [dataset.doc_id])
+		if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+			ga.exportSGC(sg.split(' : ')[0])
 		# TODO map update
 	return
 
@@ -153,7 +155,6 @@ def removeMods(mods):
 				break
 		if unused:
 			os.remove(all_mods + os.sep + existing_mods[val])
-			
 
 def getAllMods():
 	global existing_mods

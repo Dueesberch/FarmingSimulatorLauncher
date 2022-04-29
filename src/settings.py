@@ -196,6 +196,8 @@ def checkPath(p1, p2):
 				return True
 		except FileNotFoundError:
 			pass
+		except IndexError:
+			pass
 	return False
 
 
