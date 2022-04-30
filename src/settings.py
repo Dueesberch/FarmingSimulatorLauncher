@@ -178,6 +178,10 @@ def init():
 			for i in os.listdir(p):
 				if Path(p + os.sep + i).is_symlink():
 					os.remove(p + os.sep + i)
+		try:
+			getSettings('backups')
+		except KeyError:
+			TinyDB(settings_json).update({'backups': 10}, doc_ids = [1])
 
 	#logger.debug('settings:init:settings_json ' + settings_json)
 #	if os.path.exists(settings_json):
