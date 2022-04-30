@@ -344,7 +344,6 @@ def startSaveGame(name):
 	p_name = (str(fs_path.split('/')[-1].split('.')[0])).lower()
 	loop = True
 	steam_check = True
-	# TODO check if it is necessary to sync, instead of retry copy after ls closed
 	while loop:
 		time.sleep(3)
 		for i in range(3):	# try 3 times to sync

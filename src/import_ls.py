@@ -40,7 +40,9 @@ def getMods(path):
 	try:
 		files = os.listdir(path)
 		for i in files:
-			if i.endswith('.zip'):
+			if i.startswith('fsl_'):
+				continue
+			elif i.endswith('.zip'):
 				with zipfile.ZipFile(path + os.sep + i) as z:
 					try:
 						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
@@ -99,9 +101,9 @@ def getSaveGames():
 
 def updateSGS(sgs, mod):
 	name = mod.split('!')[1]
-	for sg in sgs:
+	for s in sgs:
 		add = True
-		dataset = TinyDB(se.games_json).get((Query().name == sg.split(' : ')[0]))
+		dataset = TinyDB(se.games_json).get((Query().name == s.split(' : ')[0]))
 		mods = dataset['mods']
 		for i in mods.items():
 			if name in i[1]:
@@ -112,8 +114,7 @@ def updateSGS(sgs, mod):
 			mods.update({str(len(mods)): mod})
 		TinyDB(se.games_json).update({"mods": mods}, doc_ids = [dataset.doc_id])
 		if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
-			ga.exportSGC(sg.split(' : ')[0])
-		# TODO map update
+			ga.exportSGC(s.split(' : ')[0])
 	return
 
 def importMods(path, mods, updateSGs):
