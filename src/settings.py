@@ -6,6 +6,8 @@ import PySimpleGUI as sg
 import translation as tr
 import import_ls as im
 import logging as log
+import zipfile
+import xml.etree.ElementTree as ET
 
 from tinydb import TinyDB, Query
 from pathlib import Path
@@ -19,11 +21,16 @@ logger = None
 fs19_internal_maps = {'Ravenport': 'MapUS', 'Felsbrunn': 'MapEU'}
 fs22_internal_maps = {'Elmcreek': 'MapUS', 'Haut-Beyleron': 'MapFR', 'Erlengrat': 'mapAlpine'}
 logo = ''
+langs = ['en', 'de', 'fr', 'ru']
+
 
 def resource_path(relative_path):
 	""" Get absolute path to resource, works for dev and for PyInstaller """
 	base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
 	return os.path.join(base_path, relative_path)
+
+def getLangs():
+	return langs
 
 def init():
 	global settings_json
@@ -156,21 +163,42 @@ def init():
 		os.rename(fsl_config_path + 'settings_ls22.json', fsl_config_path + 'settings_fs22.json')
 
 	if os.path.exists(settings_json):
-		if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls22' in getSettings('all_mods_path'):
-			new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls22', 'fsl_all_mods_fs22')
+		all_mods_path = getSettings('all_mods_path')
+		new_name = 'fsl_all_mods_fs' + vers.replace('fs', '')
+		old_name = 'fsl_all_mods_ls' + vers.replace('fs', '')
+		if os.path.exists(all_mods_path) and old_name in all_mods_path:
+			new_path = all_mods_path.replace(oldname, new_name)
 			try:
-				os.rename(getSettings('all_mods_path'), new_path)
+				os.rename(all_mods_path, new_path)
 			except FileNotFoundError:
 				pass
 			TinyDB(settings_json).update({'all_mods_path': new_path})
 
-		if os.path.exists(getSettings('all_mods_path')) and 'fsl_all_mods_ls19' in getSettings('all_mods_path'):
-			new_path = getSettings('all_mods_path').replace('fsl_all_mods_ls19', 'fsl_all_mods_fs19')
-			try:
-				os.rename(getSettings('all_mods_path'), new_path)
-			except FileNotFoundError:
-				pass
-			TinyDB(settings_json).update({'all_mods_path': new_path})
+		if os.path.exists(all_mods_path) and not os.path.exists(all_mods_path + os.sep + 'mods_db.json'):
+			db = TinyDB(all_mods_path + os.sep + 'mods_db.json')
+			for f in os.listdir(all_mods_path):
+				if not f.startswith('fsl_'):
+					continue
+				elif f.endswith('.zip'):
+					with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
+						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+						#version = moddesc.find('version').text
+						icon = moddesc.find('iconFilename').text
+						for l in langs:
+							name = moddesc.find('title/' + l)
+							lang = l
+							if name != None:
+								break
+						d = db.get(Query().name == name.text)
+						if moddesc.find('maps/map/title/en') != None:
+							mod_type = 'map'
+						else:
+							mod_type = 'mod'
+						if d == None:
+							db.insert({'name': name.text, 'mod_type': mod_type, 'lang': lang, 'files': [f]})
+						else:
+							d['files'].append(f)
+							db.update({'files': d['files']}, doc_ids = [d.doc_id])
 
 		# remove links from mods folder
 		if os.path.exists(getSettings('fs_game_data_path') + os.sep + 'mods'):

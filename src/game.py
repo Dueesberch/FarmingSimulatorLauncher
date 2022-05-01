@@ -26,35 +26,31 @@ def getMods(l = True):
 		pass
 	maps = se.getInternalMaps().copy()
 	mods = {}
-	for i in files:
-		if i.endswith('.zip'):
-			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + i) as z:
-#				with open(se.getSettings('all_mods_path') + os.sep + 'getMods.txt', 'w+') as f:
-#					f.write(i + '\n')
+
+	maps_data = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').search(Query().mod_type == 'map')
+	for m in maps_data:
+		for v in m['files']:
+			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + v) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				m = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
-				if m == None:
-					m = moddesc.find('maps/map/title/en')
-				if m == None:
-					m = moddesc.find('maps/map/title/de')
-				if m == None:
-					m = moddesc.find('maps/map/title/fr')
-				if m != None:
-					key = m.text + ' - ' + i.split('!')[0][4:]
-					maps[key] = i
-				else:
-					m = moddesc.find('title/' + se.getFslSettings('language'))
-					if m == None:
-						m = moddesc.find('title/en')
-					if m == None:
-						m = moddesc.find('title/de')
-					if m == None:
-						m = moddesc.find('title/fr')
-					if m == None:
-						key = i.split('!')[1].replace('.zip', '') + ' - ' +  i.split('!')[0][4:]
-					else:
-						key = m.text + ' - ' + i.split('!')[0][4:]
-					mods[key] = i
+				title = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
+			if title != None:
+				key = title.text + ' - ' + v.split('!')[0].split('_')[1]
+			else:
+				key = m['name'] + ' - ' + v.split('!')[0].split('_')[1]
+			maps[key] = v
+	
+	mods_data = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').search(Query().mod_type == 'mod')
+	for m in mods_data:
+		for v in m['files']:
+			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + v) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				title = moddesc.find('title/' + se.getFslSettings('language'))
+			if title != None:
+				key = title.text + ' - ' + v.split('!')[0].split('_')[1]
+			else:
+				key = m['name'] + ' - ' + v.split('!')[0].split('_')[1]
+			mods[key] = v
+
 	files = []
 	try:
 		files = os.listdir(se.getSettings('fs_game_data_path') + os.sep + 'pdlc')
@@ -115,11 +111,10 @@ def saveSaveGame(values, update):
 				break
 	if dupes != []:
 		f = ''
-		for i in dupes:
-			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + i) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				m = moddesc.find('title/en')
-				f = f + m.text + '\n'
+		for dupe in dupes:
+			for key, value in mods.items():
+				if value == dupe:
+					f = f + key.split(' - ')[0] + '\n'
 		sg.popup_ok(tr.getTrans('dupes_found').format(f), title = tr.getTrans('dupes_title'), location = (50, 50))
 		return False
 

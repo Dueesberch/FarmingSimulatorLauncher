@@ -16,18 +16,12 @@ import pathlib
 existing_mods = {}
 
 def importAllMods(path, rem = False):
-	files = os.listdir(path)
-	all_mods = se.getSettings('all_mods_path')
-	for i in files:
+	mods = []
+	for i in os.listdir(path):
 		if i.endswith('.zip'):
 			with zipfile.ZipFile(path + os.sep + i) as z:
-				try:
-					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-					version = moddesc.find('version')
-					shutil.copyfile(path + os.sep + i, all_mods + os.sep + 'fsl_' + version.text + '!' + i)
-				except ET.ParseError:
-					sg.popup_error(tr.getTrans('import_failed').format(i), title=tr.getTrans('error'), location = (50, 50))
-					pass
+				mods.append[i]
+	importMods(path, mods, False)
 	if rem == True or sg.popup_yes_no(tr.getTrans('remove_src_folder').format(path), title = tr.getTrans('remove_title'), location = (50, 50)) == 'Yes':
 		try:
 			shutil.rmtree(path)
@@ -38,8 +32,7 @@ def getMods(path):
 	mods = []
 	all_mods = os.listdir(se.getSettings('all_mods_path'))
 	try:
-		files = os.listdir(path)
-		for i in files:
+		for i in os.listdir(path):
 			if i.startswith('fsl_'):
 				continue
 			elif i.endswith('.zip'):
@@ -49,6 +42,7 @@ def getMods(path):
 						version = moddesc.find('version')
 						descV = int(moddesc.attrib['descVersion'])
 						f_name = 'fsl_' + version.text + '!' + i
+						# TODO check gegen Wert statt dateinamen - mods-db in all mods ordner - erzeugen in settings wenn nicht vorhanden - bei mod import / löschen eintäge in mod db anpassen
 						if f_name in all_mods:
 							moddesc = None
 						if se.vers == 'fs19' and int(descV / 10) >= 6:
@@ -119,11 +113,27 @@ def updateSGS(sgs, mod):
 
 def importMods(path, mods, updateSGs):
 	all_mods = se.getSettings('all_mods_path')
+	db = TinyDB(all_mods + os.sep + 'mods_db.json')
 	for i in mods:
 		with zipfile.ZipFile(path + os.sep + i) as z:
 			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 			version = moddesc.find('version')
-			new_name = 'fsl_' + version.text + '!' + i	
+			for l in se.getLangs():
+				name = moddesc.find('title/' + l)
+				lang = l
+				if name != None:
+					break
+			d = db.get(Query().name == name.text)
+			if moddesc.find('maps/map/title/en') != None:
+				mod_type = 'map'
+			else:
+				mod_type = 'mod'
+			new_name = 'fsl_' + version.text + '!' + i
+			if d == None:
+				db.insert({'name': name.text, 'mod_type': mod_type, 'lang': lang, 'files': [new_name]})
+			else:
+				d['files'].append(new_name)
+				db.update({'files': d['files']}, doc_ids = [d.doc_id])
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
 			if moddesc.find('maps/map/title/en') != None:
 				break
@@ -156,6 +166,13 @@ def removeMods(mods):
 				break
 		if unused:
 			os.remove(all_mods + os.sep + existing_mods[val])
+			d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == val.split(' - ')[0])
+			files = d['files']
+			if len(files) > 1:
+				files.remove(existing_mods[val])
+				TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': files}, doc_ids = [d.doc_id])
+			else:
+				TinyDB(all_mods + os.sep + 'mods_db.json').remove(doc_ids = [d.doc_id])
 
 def getAllMods():
 	global existing_mods

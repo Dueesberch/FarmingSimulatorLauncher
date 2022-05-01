@@ -121,7 +121,7 @@ dictionary = {
         "cant_rem_mod": "Mod \"{}\" wird noch in \"{}\" benutzt. Kann nicht entfernt werden.",
         "description": "Beschreibung",
         "delete": "Möchtest du das ausgewählte Savegame wirklich löschen? Savegame and Backup Ordner werden gelöscht.",
-        "dupes_found": "Die folgenden Mods wurden in unetrschiedlichen Versionen ausgewählt\n\n{}\nNur eine Version ist möglich.",
+        "dupes_found": "Die folgenden Mods wurden in unterschiedlichen Versionen ausgewählt\n\n{}\nNur eine Version ist möglich.",
         "dupes_title": "Duplicate gefunden",
         "def_fs19": "Standard LS19 Pfad",
         "def_fs22": "Standard LS22 Pfad",

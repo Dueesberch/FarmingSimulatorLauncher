@@ -141,8 +141,13 @@ def validateModsFolder(fs_game_data_folder):
 						sg.popup_ok(tr.getTrans('moved').format(fs_game_data_folder + 'mods_fsl_bak'), title = tr.getTrans('error'), location = (50, 50))
 						continue
 					version = moddesc.find('version')
-					k = 'fsl_' + version.text + '!' + i
-					if k not in all_mods:
+					for l in getLangs():
+						name = moddesc.find('title/' + l)
+						lang = l
+						if name != None:
+							break
+					d = db.get(Query().name == name.text)
+					if d == None or not version in d['versions']:
 						#logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
 						mods[i] = version.text
 			else:
@@ -166,7 +171,6 @@ def checkChanges():
 	lang = se.getFslSettings('language')
 	fs_path = se.getSettings('fs_path')
 	fs_game_data_folder = se.getSettings('fs_game_data_path') + os.sep
-	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	if os.path.exists(fs_game_data_folder + 'mods'):
 		validateModsFolder(fs_game_data_folder)
 		shutil.rmtree(fs_game_data_folder + 'mods')
@@ -259,22 +263,25 @@ def getSaveGames():
 	q = Query()
 	all = TinyDB(se.games_json).all()
 	l = ['']
-	for i in all:
-		n = i['name']
-		m = i['map']
-		if i['map'] not in se.getInternalMaps().values():
+	for game in all:
+		if game['map'] not in se.getInternalMaps().values():
 			try:
-				with zipfile.ZipFile(all_mods_folder + m) as z:
+				with zipfile.ZipFile(all_mods_folder + game['map']) as z:
 					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-					t = moddesc.find('maps/map/title/en')
-					if t != None:
-						l.append(n + ' : ' + t.text)
+					t = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
+					if t == None:
+						d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().mod_type == 'map')
+						for ma in d['files']:
+							if game['map'] in ma:
+								t = d['name']
+					else:
+						t = t.text
+					l.append(game['name'] + ' : ' + t)
 			except FileNotFoundError:
-				l.append(n + ' : ' + tr.getTrans('ghostmap'))
+				l.append(game['name'] + ' : ' + tr.getTrans('ghostmap'))
 				pass
 		else:
-			l.append(n + ' : ' + list(se.getInternalMaps().keys())[list(se.getInternalMaps().values()).index(m)])
-			#l.append(n + ' : ' + m)
+			l.append(game['name'] + ' : ' + list(se.getInternalMaps().keys())[list(se.getInternalMaps().values()).index(game['map'])])
 	return l
 
 def startSaveGame(name):
@@ -298,7 +305,10 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					t = moddesc.find('maps/map/title/en').text
+					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().name == name)
+					for ma in d['files']:
+						if sg_map in ma:
+							t = d['name']
 					pass
 		# change careersavegame.xml mod list
 		xml_map = ET.Element('mod', modName = sg_map.split('!')[-1].replace('.zip', ''), title = t, version = v, required="true", fileHash="0")
@@ -312,8 +322,13 @@ def startSaveGame(name):
 				v = moddesc.find('version').text
 				try:
 					t = moddesc.find('title/' + se.getFslSettings('language')).text
+					#print(t)
 				except AttributeError:
-					t = moddesc.find('title/en').text
+					#print('error')
+					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').all()
+					for mod in d:
+						if mods[i] in mod['files']:
+							t = mod['name']
 					pass
 			# change careersavegame.xml mod list
 			xml_mods.append(ET.Element('mod', modName = mods[i].split('!')[-1].replace('.zip', ''), title = t, version = v, required = "false", fileHash = '0'))
