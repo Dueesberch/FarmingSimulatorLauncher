@@ -305,10 +305,9 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().name == name)
-					for ma in d['files']:
-						if sg_map in ma:
-							t = d['name']
+					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().mod_type == 'map')
+					if sg_map in d['files']:
+						t = d['name']
 					pass
 		# change careersavegame.xml mod list
 		xml_map = ET.Element('mod', modName = sg_map.split('!')[-1].replace('.zip', ''), title = t, version = v, required="true", fileHash="0")
