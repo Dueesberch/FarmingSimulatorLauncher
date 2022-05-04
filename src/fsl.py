@@ -122,8 +122,8 @@ def checkFirstRun():
 def validateModsFolder(fs_game_data_folder):
 	if checksumdir.dirhash(fs_game_data_folder + 'mods') != TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] and TinyDB(se.settings_json).get(doc_id = 1)['mods_hash'] != '':
 		#logger.debug('fsl:checkChanges:mods folder changed')
-		all_mods = os.listdir(se.getSettings('all_mods_path'))
 		mods = {}
+		db = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')
 		#logger.debug('fsl:checkChanges:existing mods ' + str(all_mods))
 		path = fs_game_data_folder + 'mods'
 		for i in os.listdir(path):
@@ -141,13 +141,13 @@ def validateModsFolder(fs_game_data_folder):
 						sg.popup_ok(tr.getTrans('moved').format(fs_game_data_folder + 'mods_fsl_bak'), title = tr.getTrans('error'), location = (50, 50))
 						continue
 					version = moddesc.find('version')
-					for l in getLangs():
+					for l in se.langs:
 						name = moddesc.find('title/' + l)
 						lang = l
 						if name != None:
 							break
 					d = db.get(Query().name == name.text)
-					if d == None or not version in d['versions']:
+					if d == None or not version in d['files'].values():
 						#logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
 						mods[i] = version.text
 			else:
@@ -321,9 +321,7 @@ def startSaveGame(name):
 				v = moddesc.find('version').text
 				try:
 					t = moddesc.find('title/' + se.getFslSettings('language')).text
-					#print(t)
 				except AttributeError:
-					#print('error')
 					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').all()
 					for mod in d:
 						if mods[i] in mod['files']:

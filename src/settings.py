@@ -8,6 +8,8 @@ import import_ls as im
 import logging as log
 import zipfile
 import xml.etree.ElementTree as ET
+import hashlib
+import pathlib
 
 from tinydb import TinyDB, Query
 from pathlib import Path
@@ -174,31 +176,61 @@ def init():
 				pass
 			TinyDB(settings_json).update({'all_mods_path': new_path})
 
-		if os.path.exists(all_mods_path) and not os.path.exists(all_mods_path + os.sep + 'mods_db.json'):
+		if (os.path.exists(all_mods_path) and not os.path.exists(all_mods_path + os.sep + 'mods_db.json')) or (os.path.exists(all_mods_path) and os.stat(all_mods_path + os.sep + 'mods_db.json').st_size == 0):
 			db = TinyDB(all_mods_path + os.sep + 'mods_db.json')
 			for f in os.listdir(all_mods_path):
 				if not f.startswith('fsl_'):
 					continue
 				elif f.endswith('.zip'):
-					with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
-						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-						#version = moddesc.find('version').text
-						icon = moddesc.find('iconFilename').text
-						for l in langs:
-							name = moddesc.find('title/' + l)
-							lang = l
-							if name != None:
+					f_hash = hashlib.md5(pathlib.Path(all_mods_path + os.sep + f).read_bytes()).hexdigest()
+					# check if mod is already duplicated
+					all_mods_hashes = []
+					for mod in db.all():
+						all_mods_hashes = all_mods_hashes + list(mod['files'].values())
+					# if dupllicated - fix configuration
+					if f_hash in all_mods_hashes: # mod vorhanden
+						for mod in db.all():
+							if f_hash in list(mod['files'].values()): # bereits existierende datei
+								sg.popup_ok(tr.getTrans('duplicate_mod_found', lang).format(mod['name']))
+								# replace mod by old
+								if vers == 'fs22':
+									games = TinyDB(fsl_config_path + 'games_fs22.json')
+								if vers == 'fs19':
+									games = TinyDB(fsl_config_path + 'games_fs19.json')
+								for game in games.all():
+									if f in game['mods'].values():
+										mods = game['mods']
+										for number, file_name in mods.items():
+											if file_name == f:
+												for new_file_name, hash_val in mod['files'].items():
+													if hash_val == f_hash:
+														dict_update = {number: new_file_name}
+													mods.update(dict_update)
+													games.update({'mods': mods}, doc_ids = [game.doc_id])
+													# remove duplicated mod
+													os.remove(all_mods_path + os.sep + f)
+													break
 								break
-						d = db.get(Query().name == name.text)
-						if moddesc.find('maps/map/title/en') != None:
-							mod_type = 'map'
-						else:
-							mod_type = 'mod'
-						if d == None:
-							db.insert({'name': name.text, 'mod_type': mod_type, 'lang': lang, 'files': [f]})
-						else:
-							d['files'].append(f)
-							db.update({'files': d['files']}, doc_ids = [d.doc_id])
+					else:
+						with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
+							moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+							icon = moddesc.find('iconFilename').text
+							for l in langs:
+								name = moddesc.find('title/' + l)
+								mod_lang = l
+								if name != None:
+									break
+							d = db.get(Query().name == name.text)
+							if moddesc.find('maps/map/title/en') != None:
+								mod_type = 'map'
+							else:
+								mod_type = 'mod'
+							if d == None:
+								db.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'files': {f: f_hash}})
+							else:
+								d['files'][f] = f_hash
+								db.update({'files': d['files']}, doc_ids = [d.doc_id])
+					
 
 		# remove links from mods folder
 		if os.path.exists(getSettings('fs_game_data_path') + os.sep + 'mods'):

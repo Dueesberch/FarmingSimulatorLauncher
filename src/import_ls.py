@@ -30,7 +30,10 @@ def importAllMods(path, rem = False):
 
 def getMods(path):
 	mods = []
-	all_mods = os.listdir(se.getSettings('all_mods_path'))
+	all_mods = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all()
+	all_mods_hashes = []
+	for mod in all_mods:
+		all_mods_hashes = all_mods_hashes + list(mod['files'].values())
 	try:
 		for i in os.listdir(path):
 			if i.startswith('fsl_'):
@@ -42,8 +45,8 @@ def getMods(path):
 						version = moddesc.find('version')
 						descV = int(moddesc.attrib['descVersion'])
 						f_name = 'fsl_' + version.text + '!' + i
-						# TODO check gegen Wert statt dateinamen - mods-db in all mods ordner - erzeugen in settings wenn nicht vorhanden - bei mod import / löschen eintäge in mod db anpassen
-						if f_name in all_mods:
+						f_hash = hashlib.md5(pathlib.Path(path + os.sep + i).read_bytes()).hexdigest()
+						if str(f_hash) in all_mods_hashes:
 							moddesc = None
 						if se.vers == 'fs19' and int(descV / 10) >= 6:
 							moddesc = None
@@ -129,10 +132,11 @@ def importMods(path, mods, updateSGs):
 			else:
 				mod_type = 'mod'
 			new_name = 'fsl_' + version.text + '!' + i
+			f_hash = hashlib.md5(pathlib.Path(path + os.sep + i).read_bytes()).hexdigest()
 			if d == None:
-				db.insert({'name': name.text, 'mod_type': mod_type, 'lang': lang, 'files': [new_name]})
+				db.insert({'name': name.text, 'mod_type': mod_type, 'lang': lang, 'files': {new_name: f_hash}})
 			else:
-				d['files'].append(new_name)
+				d['files'][new_name] = f_hash
 				db.update({'files': d['files']}, doc_ids = [d.doc_id])
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
 			if moddesc.find('maps/map/title/en') != None:
