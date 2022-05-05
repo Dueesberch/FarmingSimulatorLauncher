@@ -214,6 +214,15 @@ def exportSGC(title):
 		if missing:
 			sg.popup_ok(tr.getTrans('sgc_mods_export_missing'), title = tr.getTrans('error'))
 
+def copySG(title):
+	title = title.split(':')[0].rstrip()
+	new_title = title + ' ' + tr.getTrans('copy')
+	base = TinyDB(se.games_json).get(Query().name == title)
+	folder = hashlib.md5(new_title.encode()).hexdigest()
+	TinyDB(se.games_json).insert({'name': new_title, 'folder': folder, 'desc': base['desc'], 'map': base['map'], 'mods': base['mods']})
+	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'], se.getSettings('fs_game_data_path') + os.sep + folder)
+	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup')
+
 def guiNewSaveGame(title = None):
 	global maps
 	global mods

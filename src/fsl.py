@@ -389,6 +389,7 @@ def disableButtons(window):
 	window['-START-'].update(disabled = True, button_color = ('gray'))
 	window['-CHANGE-'].update(disabled = True)
 	window['-REMOVE-'].update(disabled = True)
+	window['-NEW-'].update(tr.getTrans('new'))
 
 def main():
 	#print('rename folder')
@@ -460,6 +461,7 @@ def main():
 			window['-REMOVE-'].update(disabled = False)
 			data = TinyDB(se.games_json).search(Query().name == values['-COMBO-'].split(':')[0].rstrip())
 			window['-DESC-'].update(value = data[0]['desc'])
+			window['-NEW-'].update(tr.getTrans('copy'))
 		elif event == '-COMBO-' and values['-COMBO-'] == '':
 			disableButtons(window)
 			window['-DESC-'].update(value = '')
@@ -481,8 +483,11 @@ def main():
 			window['-DESC-'].update(value = '')
 			disableButtons(window)
 		elif event == '-NEW-':
+			if values['-COMBO-'] != '':
+				ga.copySG(values['-COMBO-'])
+			else:
+				ga.guiNewSaveGame()
 			window.Hide()
-			ga.guiNewSaveGame()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			disableButtons(window)
 			window.UnHide()
