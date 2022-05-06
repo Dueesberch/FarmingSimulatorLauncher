@@ -3,6 +3,8 @@ import os
 import shutil
 from pathlib import Path
 import hashlib
+import subprocess
+import platform
 
 import PySimpleGUI as sg
 from tinydb import TinyDB, Query
@@ -223,6 +225,9 @@ def copySG(title):
 	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'], se.getSettings('fs_game_data_path') + os.sep + folder)
 	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup')
 
+def getFolder(title):
+	return TinyDB(se.games_json).search(Query().name == title)[0]['folder']
+
 def guiNewSaveGame(title = None):
 	global maps
 	global mods
@@ -241,8 +246,9 @@ def guiNewSaveGame(title = None):
 				],
 				[sg.Text(tr.getTrans('missing'), key = '-MISS_TITLE-', visible = False)],
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
+				[sg.Text('', visible = False)],
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
-				[sg.Text('')],
+				[sg.Text(tr.getTrans('folder')), sg.Button('', key = '-FOLDER-')],
 				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
 	]
 	
@@ -256,6 +262,7 @@ def guiNewSaveGame(title = None):
 		window['-REM_MOD-'].update(visible = True)
 		window['-MISS-'].update(values = addMissingMods(title), visible = True)
 		window['-MAP-'].update(disabled = True)
+		window['-FOLDER-'].update(getFolder(title))
 		markMods(window, title)
 
 	while True:
@@ -277,6 +284,11 @@ def guiNewSaveGame(title = None):
 		elif event == '-MODS-' or event == '-TITLE-' or event == '-DESC-':
 			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 			exp = False
+		elif event == '-FOLDER-':
+			if platform.system() == 'Windows':
+				subprocess.run([os.path.join(os.getenv('WINDIR'), 'explorer.exe'), os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
+			elif platform.system() == 'Darwin':
+				subprocess.run(["/usr/bin/open", os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
 		
 	window.close()
 
