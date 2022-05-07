@@ -127,7 +127,7 @@ def validateModsFolder(fs_game_data_folder):
 		#logger.debug('fsl:checkChanges:existing mods ' + str(all_mods))
 		path = fs_game_data_folder + 'mods'
 		for i in os.listdir(path):
-			if i.endswith('.zip'):
+			if i.endswith('.zip') and not os.path.islink(fs_game_data_folder + 'mods' + os.sep + i):
 				with zipfile.ZipFile(path + os.sep + i) as z:
 					try:
 						moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
