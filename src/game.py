@@ -248,7 +248,7 @@ def guiNewSaveGame(title = None):
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
 				[sg.Text('', visible = False)],
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
-				[sg.Text(tr.getTrans('folder')), sg.Button('', key = '-FOLDER-')],
+				[sg.Text(tr.getTrans('folder'), key = '-FOLDER_TEXT-', visible = False), sg.Button('', key = '-FOLDER-', visible = False)],
 				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
 	]
 	
@@ -262,7 +262,8 @@ def guiNewSaveGame(title = None):
 		window['-REM_MOD-'].update(visible = True)
 		window['-MISS-'].update(values = addMissingMods(title), visible = True)
 		window['-MAP-'].update(disabled = True)
-		window['-FOLDER-'].update(getFolder(title))
+		window['-FOLDER-'].update(getFolder(title), visible = True)
+		window['-FOLDER_TEXT-'].update(visible = True)
 		markMods(window, title)
 
 	while True:
