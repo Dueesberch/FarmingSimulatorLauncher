@@ -237,7 +237,7 @@ def copySG(title):
 	new_title = title + ' ' + tr.getTrans('copy')
 	base = TinyDB(se.games_json).get(Query().name == title)
 	folder = hashlib.md5(new_title.encode()).hexdigest()
-	TinyDB(se.games_json).insert({'name': new_title, 'folder': folder, 'desc': base['desc'], 'map': base['map'], 'mods': base['mods']})
+	TinyDB(se.games_json).insert({'name': new_title, 'folder': folder, 'desc': base['desc'], 'map': base['map'], 'mods': base['mods'], "mode": base['mode'], "direct_start": base['direct_start']})
 	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'], se.getSettings('fs_game_data_path') + os.sep + folder)
 	shutil.copytree(se.getSettings('fs_game_data_path') + os.sep + base['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder + '_Backup')
 

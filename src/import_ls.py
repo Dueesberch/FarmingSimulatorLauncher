@@ -167,7 +167,6 @@ def removeMods(mods):
 			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
 				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
 				unused = False
-				break
 		if unused:
 			os.remove(all_mods + os.sep + existing_mods[val])
 			d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == val.split(' - ')[0])
@@ -209,16 +208,14 @@ def guiImportMods(updateSGs = True):
 		if event == sg.WIN_CLOSED or event=="-EXIT-":
 			break
 		elif event == "-IMPORT-":
-			#window.Hide()
 			importMods(values['-MOD_PATH-'], values['-MODS-'], updateSGs)
-			#window.UnHide()
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-REMOVE-':
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
-		elif event == '-MOD_PATH-':
+		elif event == '-MOD_PATH-' and values['-MOD_PATH-'] != '':
 			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 	window.close()
 	return
@@ -285,7 +282,7 @@ def importSavegame(values):
 	if len(maps) == 0:
 		maps.append(map_title)
 	folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
-	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
+	TinyDB(se.games_json).insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd, "mode": "mp", "direct_start": "no"})
 
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + folder_name)
 	for i in os.listdir(values['-SG_PATH-']):
@@ -345,14 +342,14 @@ def importSGC(path, title):
 	fdata = {"hash": hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest(), "path": path}
 	if TinyDB(se.games_json).get(Query().name == title):
 		doc_id = TinyDB(se.games_json).get(Query().name == TinyDB(path).all()[0]['name']).doc_id
-		TinyDB(se.games_json).update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "imported": fdata}, doc_ids = [doc_id])
+		TinyDB(se.games_json).update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "mode": new['mode'], "direct_start": "no", "imported": fdata}, doc_ids = [doc_id])
 	else:
 		try:
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'])
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'] + '_Backup')
 		except FileExistsError:
 			pass
-		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']})
+		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "mode": new['mode'], "direct_start": "no"})
 
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True

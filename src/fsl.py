@@ -143,11 +143,11 @@ def validateModsFolder(fs_game_data_folder):
 					version = moddesc.find('version')
 					for l in se.langs:
 						name = moddesc.find('title/' + l)
-						lang = l
+						#lang = l
 						if name != None:
 							break
 					d = db.get(Query().name == name.text)
-					if d == None or not version in d['files'].values():
+					if d == None or not hashlib.md5(pathlib.Path(path + os.sep + i).read_bytes()).hexdigest() in d['files'].values():
 						#logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
 						mods[i] = version.text
 			else:
@@ -503,7 +503,6 @@ def main():
 			else:
 				ga.guiNewSaveGame()
 			window.Hide()
-			ga.guiNewSaveGame()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			disableButtons(window)
 			window.UnHide()
