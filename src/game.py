@@ -3,8 +3,6 @@ import os
 import shutil
 from pathlib import Path
 import hashlib
-import subprocess
-import platform
 
 import PySimpleGUI as sg
 from tinydb import TinyDB, Query
@@ -78,7 +76,7 @@ def removeSaveGame(title):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'] + '_Backup')
 	return
 
-def saveSaveGame(values, update):
+def saveSaveGame(values, update, money):
 	global maps
 	global mods
 	db = TinyDB(se.games_json)
@@ -123,6 +121,16 @@ def saveSaveGame(values, update):
 	for i, val in enumerate(values['-MODS-']):
 		modstoadd[str(i)] = mods[val]
 
+	if values['-MP-']:
+		mode = 'mp'
+		direct = 'no'
+	else:
+		mode = 'sp'
+		if values['-DIRECT-']:
+			direct = 'yes'
+		else:
+			direct = 'no'
+
 	if update == -1:
 		try:
 			folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
@@ -136,11 +144,19 @@ def saveSaveGame(values, update):
 	else:
 		folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
 		data = db.get(doc_id = update)
-		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
+		path = se.getSettings('fs_game_data_path') + os.sep + data['folder'] + os.sep + 'farms.xml'
+		farms = ET.parse(path)
+		for farm_l, m in money.items():
+			for farm in farms.getroot():
+				if farm.attrib['name'] == farm_l:
+					farm.set('money', values[farm_l])
+		with open(path, 'wb') as f:
+			farms.write(f)
+		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "mode": mode, "direct_start": direct, "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
-	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+	if mode == 'mp' and sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
 		exportSGC(values['-TITLE-'])
 	return True
 
@@ -228,13 +244,37 @@ def copySG(title):
 def getFolder(title):
 	return TinyDB(se.games_json).search(Query().name == title)[0]['folder']
 
+def getMoney(title):
+	try:
+		path = se.getSettings('fs_game_data_path') + os.sep + getFolder(title) + os.sep + 'farms.xml'
+		farms = ET.parse(path).getroot()
+		money = {}
+		for farm in farms:
+			money[farm.attrib['name']] = int(float(farm.attrib['money']))
+		return money
+	except FileNotFoundError:
+		pass
+		return ''
+
 def guiNewSaveGame(title = None):
 	global maps
 	global mods
 	exp = True
 	maps_keys, mods_keys = getMods()
+	money_layout = []
+	money = {}
+	if title != None:
+		money = getMoney(title)
+		if money != '':
+			for farm, m in money.items():
+				money_layout.append([sg.Text(farm, size = (20,1)), sg.Input(m, size = (50,1), key = farm, enable_events = True)])
+
 	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
 				[sg.Input(key = '-TITLE-', size = (100, 1), enable_events = True)],
+				[	sg.Radio('Multiplayer', '-MODE-', key = '-MP-', default = True, enable_events = True),
+					sg.Radio('Singleplayer', '-MODE-', key = '-SP-', default = False, enable_events = True),
+					sg.Checkbox(tr.getTrans('start_direct'), key = '-DIRECT-', default = False, disabled = True, enable_events = True)
+				],
 				[sg.Text(tr.getTrans('description'), size = (90, 1))],
 				[sg.Input(key = '-DESC-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('map'))],
@@ -248,6 +288,7 @@ def guiNewSaveGame(title = None):
 				[sg.Listbox('', key = '-MISS-', size = (98, 3), select_mode = 'extended', visible = False)],
 				[sg.Text('', visible = False)],
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
+				[money_layout],
 				[sg.Text(tr.getTrans('folder'), key = '-FOLDER_TEXT-', visible = False), sg.Button('', key = '-FOLDER-', visible = False)],
 				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
 	]
@@ -256,14 +297,14 @@ def guiNewSaveGame(title = None):
 
 	update_sg = -1
 	if title != None:
-		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
+		update_sg = TinyDB(se.games_json).get(Query().name == title).doc_id
 		window['-MISS_TITLE-'].update(visible = True)
 		window['-SEL_MOD-'].update(visible = True)
 		window['-REM_MOD-'].update(visible = True)
 		window['-MISS-'].update(values = addMissingMods(title), visible = True)
 		window['-MAP-'].update(disabled = True)
-		window['-FOLDER-'].update(getFolder(title), visible = True)
 		window['-FOLDER_TEXT-'].update(visible = True)
+		window['-FOLDER-'].update(getFolder(title), visible = True)
 		markMods(window, title)
 
 	while True:
@@ -275,7 +316,7 @@ def guiNewSaveGame(title = None):
 			if exp:
 				exportSGC(values['-TITLE-'])
 			else:
-				if saveSaveGame(values, update_sg):
+				if saveSaveGame(values, update_sg, money):
 					break
 		elif event == '-SEL_MOD-':
 			markMods(window, title)
@@ -290,6 +331,17 @@ def guiNewSaveGame(title = None):
 				subprocess.run([os.path.join(os.getenv('WINDIR'), 'explorer.exe'), os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
 			elif platform.system() == 'Darwin':
 				subprocess.run(["/usr/bin/open", os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
+		elif event == '-MP-':
+			window['-DIRECT-'].update(disabled = True, value = False)
+			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+			exp = False
+		elif event == '-SP-':
+			window['-DIRECT-'].update(disabled = False)
+			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+			exp = False
+		else:
+			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+			exp = False
 		
 	window.close()
 

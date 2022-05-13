@@ -171,6 +171,7 @@ def checkChanges():
 	lang = se.getFslSettings('language')
 	fs_path = se.getSettings('fs_path')
 	fs_game_data_folder = se.getSettings('fs_game_data_path') + os.sep
+	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	if os.path.exists(fs_game_data_folder + 'mods'):
 		validateModsFolder(fs_game_data_folder)
 		shutil.rmtree(fs_game_data_folder + 'mods')
@@ -180,7 +181,11 @@ def checkChanges():
 			#logger.debug('fsl:checkChanges:savegame folder changed')
 			date = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
 			layout = [	[sg.Text(tr.getTrans('sg_changed').format(date))],
-						[sg.Button(tr.getTrans('new'), size = (14, 1), key = '-NEW-'), sg.Button(tr.getTrans('backup'), size = (14, 1), key = '-BACKUP-'), sg.Button(tr.getTrans('overwrite'), size = (14, 1), key = '-OVERWRITE-'), sg.Button(tr.getTrans('cancel'), size = (14, 1), key = '-CANCEL-')]
+						[	sg.Button(tr.getTrans('new'), size = (14, 1), key = '-NEW-'),
+							sg.Button(tr.getTrans('backup'), size = (14, 1), key = '-BACKUP-'), 
+							sg.Button(tr.getTrans('overwrite'), size = (14, 1), key = '-OVERWRITE-'), 
+							sg.Button(tr.getTrans('remove'), size = (14, 1), key = '-REMOVE-'), 
+							sg.Button(tr.getTrans('cancel'), size = (14, 1), key = '-CANCEL-')]
 					]
 			window = sg.Window(tr.getTrans('different'), layout, finalize = True, location = (50, 50), disable_close = True)
 			while True:
@@ -237,6 +242,8 @@ def checkChanges():
 					if saved:
 						break
 					window.UnHide()
+				elif event == '-REMOVE-':
+					break
 			window.close()
 		if os.path.exists(fs_game_data_folder + 'savegameBackup'):
 			shutil.rmtree(fs_game_data_folder + 'savegameBackup')
@@ -270,10 +277,10 @@ def getSaveGames():
 					moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
 					if t == None:
-						d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().mod_type == 'map')
-						for ma in d['files']:
-							if game['map'] in ma:
-								t = d['name']
+						d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').search(Query().mod_type == 'map')
+						for m in d:
+							if game['map'] in m['files']:
+								t = m['name']
 					else:
 						t = t.text
 					l.append(game['name'] + ' : ' + t)
@@ -305,9 +312,11 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').get(Query().mod_type == 'map')
-					if sg_map in d['files']:
-						t = d['name']
+					print('error')
+					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').search(Query().mod_type == 'map')
+					for map in d:
+						if sg_map in map['files']:
+							t = map['name']
 					pass
 		# change careersavegame.xml mod list
 		xml_map = ET.Element('mod', modName = sg_map.split('!')[-1].replace('.zip', ''), title = t, version = v, required="true", fileHash="0")
@@ -351,9 +360,15 @@ def startSaveGame(name):
 	shutil.copytree(fs_game_data_folder + savegame, fs_game_data_folder + 'savegame1')
 	shutil.copytree(fs_game_data_folder + savegame + '_Backup', fs_game_data_folder + 'savegameBackup')
 	TinyDB(se.settings_json).update({'last_sg': name, 'sg_hash': '', 'sgb_hash': '', 'mods_hash': checksumdir.dirhash(fs_game_data_folder + 'mods')}, doc_ids = [1])
-	fs_path = se.getSettings('fs_path')
-	subprocess.run("\"" + fs_path + "\"", shell = True)
-	p_name = (str(fs_path.split('/')[-1].split('.')[0])).lower()
+	skipStartVideos  = ''
+	direct = ''
+	if se.getSettings('intro') == 'skip':
+		skipStartVideos  = ' -skipStartVideos'
+	if TinyDB(se.games_json).get((q.name == name))['mode'] == "sp" and TinyDB(se.games_json).get((q.name == name))['direct_start'] == "yes":
+		direct = ' -autoStartSavegameId 1'
+	fs_path = "\"" + os.path.normpath(se.getSettings('fs_path')) + "\"" + skipStartVideos  + direct
+	subprocess.call(fs_path, shell = True)
+	p_name = (str(fs_path.split('\\')[-1].split('.')[0])).lower()
 	loop = True
 	steam_check = True
 	while loop:
@@ -419,11 +434,11 @@ def main():
 	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
 	new_rel = False
-	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 	try:
+		response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 		if response['tag_name'] > FSL_Version:
 			new_rel = True
-	except KeyError:
+	except Exception as e:
 		pass
 
 	button_layout = [	[sg.Button(button_text = tr.getTrans('new'), key='-NEW-', size=(14, 1)),
@@ -488,6 +503,7 @@ def main():
 			else:
 				ga.guiNewSaveGame()
 			window.Hide()
+			ga.guiNewSaveGame()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
 			disableButtons(window)
 			window.UnHide()

@@ -145,6 +145,9 @@ def init():
 	if os.path.exists(fsl_config_path + 'games_ls22.json'):
 		os.rename(fsl_config_path + 'games_ls22.json', fsl_config_path + 'games_fs22.json')
 
+	# add keys mode, direct_start to game_json
+	
+	# add key intro to settings
 	
 	# replace map names for internal maps
 	if vers == 'fs19':
@@ -153,6 +156,13 @@ def init():
 	if vers == 'fs22':
 		for key, value in fs22_internal_maps.items():
 			TinyDB(games_json).update({'map': value}, Query()['map'] == key)
+	
+	d = TinyDB(games_json).all()
+	for s in d:
+		try:
+			TinyDB(games_json).get(Query().name == s['name'])['mode']
+		except KeyError:
+			TinyDB(games_json).update({'mode': 'mp', 'direct_start': 'no'}, doc_ids = [s.doc_id])
 
 	#logger.debug('settings:init:games_json ' + games_json)
 #	if os.path.exists(games_json):
@@ -230,7 +240,11 @@ def init():
 							else:
 								d['files'][f] = f_hash
 								db.update({'files': d['files']}, doc_ids = [d.doc_id])
-					
+		try:
+			TinyDB(settings_json).get(doc_id = 1)['intro']
+		except KeyError:
+			TinyDB(settings_json).update({"intro": "run"}, doc_ids = [1])
+			pass
 
 		# remove links from mods folder
 		if os.path.exists(getSettings('fs_game_data_path') + os.sep + 'mods'):
@@ -243,6 +257,10 @@ def init():
 #	if os.path.exists(settings_json):
 #		with open(settings_json, 'r') as f:
 #			logger.debug('setting:init: ' + f.readline())
+
+	if not os.path.exists(fsl_config_path) and ret == True:
+		#logger.debug('settings:init:create fsl config folder')
+		os.makedirs(fsl_config_path)
 	
 	return ret
 
@@ -300,6 +318,10 @@ def saveSettings(values):
 		TinyDB(fsl_settings_json).update({'def_vers': vers}, doc_ids = [1])
 	else:
 		TinyDB(fsl_settings_json).update({'def_vers': ''}, doc_ids = [1])
+	if values['-SKIP-']:
+		TinyDB(settings_json).update({'intro': 'skip'}, doc_ids = [1])
+	else:
+		TinyDB(settings_json).update({'intro': 'run'}, doc_ids = [1])
 	return True
 
 def getInternalMaps():
@@ -331,6 +353,14 @@ def checkInit(lang, init):
 		if not os.path.exists(fsl_settings_json):
 			TinyDB(fsl_settings_json).insert({'language': lang, 'def_vers': ''})
 
+def def_check():
+	checks = {'remember': False, 'skip_intro': False}
+	if def_vers != '':
+		checks['remember'] = True
+	if TinyDB(settings_json).get(doc_id = 1)['intro'] == 'skip':
+		checks['skip_intro'] = True
+	return checks
+
 def guiSettings(lang, init = False):
 	io = True
 	checkInit(lang, init)
@@ -356,7 +386,8 @@ def guiSettings(lang, init = False):
 
 	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
 				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
-				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = set_def_check)],
+				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = def_check()['remember'])],
+				[sg.Checkbox(tr.getTrans('skip_intro'), key = '-SKIP-', default = def_check()['skip_intro'])],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
 				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 
 				[sg.FileBrowse(initial_folder = fs, target = '-FS_PATH-'), sg.Button(def_fs_text, key = '-DEF_FS-', size = (30,1)), sg.Button(def_fs_steam_text, key = '-DEF_FS_STEAM-', size = (30,1)), ],
