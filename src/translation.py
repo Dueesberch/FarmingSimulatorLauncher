@@ -2,6 +2,7 @@ import settings as se
 
 dictionary = {
     "en": {
+        "analyze": "Analyze files for import. Please wait.",
         "at_null": "Start at null",
         "backup": "Backup",
         "backup_folders_title": "Backup Folder",
@@ -32,7 +33,7 @@ dictionary = {
         "error": "Error",
         "exe_not_found": "{} not found",
         "export": "Export",
-        "exportsg": "Export savegame configuration?",
+        "exportsg": "Export savegame configuration \"{}\"?",
         "existing_mods": "Already imported mods",
         "exists": "Exists",
         "farm_manager": "Farm manager",
@@ -120,6 +121,7 @@ dictionary = {
         "yes": "yes"
     },
     "de": {
+        "analyze": "Suche Dateien für den Import. Einen Moment bitte.",
         "at_null": "Bei Null starten",
         "backup": "Sichern",
         "backup_folders_title": "Backup Ordner",
@@ -150,7 +152,7 @@ dictionary = {
         "error": "Fehler",
         "exe_not_found": "{} nicht gefunden",
         "export": "Export",
-        "exportsg": "Savegamekonfiguration exportieren?",
+        "exportsg": "Savegamekonfiguration \"{}\" exportieren?",
         "exists": "Vorhanden",
         "farm_manager": "Farm manager",
         "file_not_found": "Datei nicht gefunden",

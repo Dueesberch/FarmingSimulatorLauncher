@@ -29,6 +29,7 @@ def importAllMods(path, rem = False):
 			pass
 
 def getMods(path):
+	window = sg.Window(tr.getTrans('import'), [[sg.Text(tr.getTrans('analyze'))]], finalize = True, location = (50, 50), disable_close = True)
 	mods = []
 	all_mods = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all()
 	all_mods_hashes = []
@@ -68,6 +69,7 @@ def getMods(path):
 		pass
 	if not mods:
 		sg.popup_ok(tr.getTrans('no_mod_found'), title = '')
+	window.close()
 	return mods
 
 def getSaveGames():
@@ -96,7 +98,7 @@ def getSaveGames():
 			l.append(n + ' : ' + m)
 	return l
 
-def updateSGS(sgs, mod):
+def updateSGS(sgs, mod, export = False):
 	name = mod.split('!')[1]
 	for s in sgs:
 		add = True
@@ -110,13 +112,14 @@ def updateSGS(sgs, mod):
 		if add:
 			mods.update({str(len(mods)): mod})
 		TinyDB(se.games_json).update({"mods": mods}, doc_ids = [dataset.doc_id])
-		if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+		if export and sg.popup_yes_no(tr.getTrans('exportsg').format(s.split(' : ')[0])) == 'Yes':
 			ga.exportSGC(s.split(' : ')[0])
 	return
 
 def importMods(path, mods, updateSGs):
 	all_mods = se.getSettings('all_mods_path')
 	db = TinyDB(all_mods + os.sep + 'mods_db.json')
+	changed_sgc = {}
 	for i in mods:
 		with zipfile.ZipFile(path + os.sep + i) as z:
 			moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
@@ -155,8 +158,13 @@ def importMods(path, mods, updateSGs):
 						if event == '-OK-':
 							if len(values['-SGS-']) > 0:
 								updateSGS(values['-SGS-'], new_name)
+								for sgc in values['-SGS-']:
+									changed_sgc[sgc] = ''
 							window.close()
 							break
+	for sgc in list(changed_sgc.keys()):
+		if sg.popup_yes_no(tr.getTrans('exportsg').format(sgc.split(' : ')[0])) == 'Yes':
+			ga.exportSGC(sgc.split(' : ')[0])
 
 def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')

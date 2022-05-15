@@ -245,10 +245,10 @@ def checkChanges():
 				elif event == '-REMOVE-':
 					break
 			window.close()
-		if os.path.exists(fs_game_data_folder + 'savegameBackup'):
-			shutil.rmtree(fs_game_data_folder + 'savegameBackup')
-		if os.path.exists(fs_game_data_folder + 'savegame1'):
-			shutil.rmtree(fs_game_data_folder + 'savegame1')
+	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
+	if os.path.exists(fs_game_data_folder + 'savegame1'):
+		shutil.rmtree(fs_game_data_folder + 'savegame1')
 
 	data = TinyDB(se.games_json).all()
 	for i in data:
