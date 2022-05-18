@@ -421,6 +421,7 @@ def main():
 		pyi_splash.close()
 	except:
 		pass
+	
 	if not se.init():
 		sys.exit()
 
