@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<careerSavegame revision="2" valid="true">
+    <settings>
+        <savegameName>Mein Spielstand</savegameName>
+        <creationDate>2022-05-11</creationDate>
+        <mapId>MapUS</mapId>
+        <mapTitle>Elmcreek</mapTitle>
+        <saveDateFormatted>11.05.2022</saveDateFormatted>
+        <saveDate>2022-05-11</saveDate>
+        <resetVehicles>false</resetVehicles>
+        <trafficEnabled>true</trafficEnabled>
+        <stopAndGoBraking>true</stopAndGoBraking>
+        <trailerFillLimit>false</trailerFillLimit>
+        <automaticMotorStartEnabled>true</automaticMotorStartEnabled>
+        <growthMode>1</growthMode>
+        <plannedDaysPerPeriod>1</plannedDaysPerPeriod>
+        <fruitDestruction>true</fruitDestruction>
+        <plowingRequiredEnabled>false</plowingRequiredEnabled>
+        <stonesEnabled>true</stonesEnabled>
+        <weedsEnabled>true</weedsEnabled>
+        <limeRequired>true</limeRequired>
+        <isSnowEnabled>true</isSnowEnabled>
+        <fuelUsage>1</fuelUsage>
+        <helperBuyFuel>true</helperBuyFuel>
+        <helperBuySeeds>true</helperBuySeeds>
+        <helperBuyFertilizer>true</helperBuyFertilizer>
+        <helperSlurrySource>2</helperSlurrySource>
+        <helperManureSource>2</helperManureSource>
+        <densityMapRevision>3</densityMapRevision>
+        <terrainTextureRevision>1</terrainTextureRevision>
+        <terrainLodTextureRevision>2</terrainLodTextureRevision>
+        <splitShapesRevision>2</splitShapesRevision>
+        <tipCollisionRevision>2</tipCollisionRevision>
+        <placementCollisionRevision>2</placementCollisionRevision>
+        <navigationCollisionRevision>2</navigationCollisionRevision>
+        <mapDensityMapRevision>1</mapDensityMapRevision>
+        <mapTerrainTextureRevision>1</mapTerrainTextureRevision>
+        <mapTerrainLodTextureRevision>1</mapTerrainLodTextureRevision>
+        <mapSplitShapesRevision>2</mapSplitShapesRevision>
+        <mapTipCollisionRevision>2</mapTipCollisionRevision>
+        <mapPlacementCollisionRevision>2</mapPlacementCollisionRevision>
+        <mapNavigationCollisionRevision>3</mapNavigationCollisionRevision>
+        <difficulty>1</difficulty>
+        <economicDifficulty>1</economicDifficulty>
+        <dirtInterval>3</dirtInterval>
+        <timeScale>5.000000</timeScale>
+        <autoSaveInterval>15.000000</autoSaveInterval>
+    </settings>
+    <guidedTour active="false" currentStepIndex="0" state=""/>
+    <map>
+        <foundHelpIcons>00000000000000000000</foundHelpIcons>
+    </map>
+    <statistics>
+        <money>100000</money>
+        <playTime>0.368832</playTime>
+    </statistics>
+    <slotSystem slotUsage="1269"/>
+    <mapsSplitShapeFileIds count="1">
+        <id id="0"/>
+    </mapsSplitShapeFileIds>
+</careerSavegame>

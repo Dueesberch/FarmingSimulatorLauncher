@@ -107,8 +107,40 @@ def createFarmlandXML(data_path, game_path, new_farmer = False):
 			pass
 	tree = ET.ElementTree(root)
 	ET.indent(tree)
-	ET.dump(tree)
-	tree.write(game_path + os.sep + 'farmland.xml')
+	tree.write(game_path + os.sep + 'farmland.xml', xml_declaration = True, encoding = "UTF-8")
+
+def setSavegameSettings():
+	layout = [	[	sg.Radio(tr.getTrans('new_farmer'), '-LEVEL-', key = '-NEW_FARMER-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('farm_manager'), '-LEVEL-', key = '-FARM_MANAGER-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('at_null'), '-LEVEL-', key = '-AT_NULL-', default = False, enable_events = True)
+				],
+				[sg.Text(tr.getText('start_stop')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('auto_motor')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('plowing_requ')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('fuel_use')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_fuel')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_seeds')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_fertilizer')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_slurry')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_manure')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('difficulty')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('eco_difficulty')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('money')), sg.Input()],
+	]
+	stopAndGoBraking = 'false'
+	automaticMotorStartEnabled = 'false'
+	plowingRequiredEnabled = 'true'
+	fuelUsage = '2'
+	helperBuyFuel = 'false'
+	helperBuySeeds = 'false'
+	helperBuyFertilizer = 'false'
+	helperSlurrySource = '1'
+	helperManureSource = '1'
+	difficulty = '1'
+	economicDifficulty = '1'
+	money = '500000'
+
+	return {}
 
 def saveSaveGame(values, update, money):
 	global maps
@@ -171,51 +203,83 @@ def saveSaveGame(values, update, money):
 			p = se.getSettings('fs_game_data_path') + os.sep + folder_name
 			os.mkdir(p)			
 			#os.mkdir(p + '_Backup')
-			#db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "mode": mode, "direct_start": direct, "map": maps[values['-MAP-']], "mods": modstoadd})
+			#db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 			# create / add files to sg folder
 			if values['-MAP-'] in se.getInternalMaps():
-				data_path = se.getSettings('fs_path').replace('FarmingSimulator2022.exe', '').replace('FarmingSimulator2019.exe', '') + 'data' + os.sep + 'maps' + os.sep + maps[values['-MAP-']] + os.sep
-				for f in required_files:
-					shutil.copyfile(data_path + 'data' + os.sep + f, p + os.sep + f)
-				careersavegame = ET.parse(se.resource_path('careerSavegame.xml'))
-				careersavegame.find('settings/savegameName').text = values['-TITLE-']
-				careersavegame.find('settings/creationDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
-				careersavegame.find('settings/saveDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
-				careersavegame.find('settings/saveDateFormatted').text = datetime.datetime.now().strftime('%d.%m.%Y')
-				careersavegame.find('settings/mapId').text = maps[values['-MAP-']]
-				careersavegame.find('settings/mapTitle').text = values['-MAP-']
-				root = ET.Element('items')
-				ET.ElementTree(root)
-				tree.write(p + os.sep + 'items.xml')
-				if values['-NEW_FARMER-']:
-					createFarmlandXML(data_path, p, True)
-				elif values['-FARM_MANAGER-']:
-					careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
-					careersavegame.find('settings/fuelUsage').text = '2'
-					careersavegame.find('settings/difficulty').text = '2'
-					careersavegame.find('settings/economicDifficulty').text = '2'
-					careersavegame.find('statistics/money').text = '1500000'
-					careersavegame.find('statistics/playTime').text = '0.100000'
-					careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
-					createFarmlandXML(data_path, p)
-				elif values['-AT_NULL-']:
-					careersavegame.find('settings/stopAndGoBraking').text = 'false'
-					careersavegame.find('settings/automaticMotorStartEnabled').text = 'false'
-					careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
-					careersavegame.find('settings/fuelUsage').text = '2'
-					careersavegame.find('settings/helperBuyFuel').text = 'false'
-					careersavegame.find('settings/helperBuySeeds').text = 'false'
-					careersavegame.find('settings/helperBuyFertilizer').text = 'false'
-					careersavegame.find('settings/helperSlurrySource').text = '1'
-					careersavegame.find('settings/helperManureSource').text = '1'
-					careersavegame.find('settings/difficulty').text = '1'
-					careersavegame.find('settings/economicDifficulty').text = '1'
-					careersavegame.find('statistics/money').text = '500000'
-					careersavegame.find('statistics/playTime').text = '0.100000'
-					careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
-					createFarmlandXML(data_path, p)
-			shutil.rmtree(p)
+				base_path = se.getSettings('fs_path').replace('FarmingSimulator2022.exe', '').replace('FarmingSimulator2019.exe', '')
+				data_path = base_path + 'data' + os.sep + 'maps' + os.sep + maps[values['-MAP-']] + os.sep
+				defaultvehicles_xml = base_path + 'vehicles.xml'
+				defaultplaceables_xml = base_path + 'placeables.xml'
+				defaultitems_xml= base_path + 'items.xml'
+			else:
+				with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + maps[values['-MAP-']]) as z:
+					moddesc_xml = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+					map_xml_path = moddesc_xml.find('maps/map').attrib['configFilename']
+					data_path = os.path.split(map_xml_path) + os.sep + 'data'
+					defaultvehicles_xml = moddesc_xml.find('maps/map').attrib['defaultVehiclesXMLFilename']
+					defaultplaceables_xml = moddesc_xml.find('maps/map').attrib['defaultPlaceablesXMLFilename']
+					defaultitems_xml= moddesc_xml.find('maps/map').attrib['defaultItemsXMLFilename']
+					map_i3d = ET.fromstring(z.read(map_xml_path)).find('filename').text
+					i3d_files = ET.fromstring(z.read(map_i3d)).find('Files')
+					for f in i3d_files:
+						if f.attrib['fileId'] == '1':
+							dem_file = f.attrib['filename']
+							break
+
+				shutil.rmtree(p)
+				return False
+
+			for f in required_files:
+				shutil.copyfile(data_path + 'data' + os.sep + f, p + os.sep + f)
+			shutil.copyfile(se.resource_path('careerSavegame.xml'), p + os.sep + 'careerSavegame.xml')
+			careersavegame = ET.parse(p + os.sep + 'careerSavegame.xml')
+			careersavegame.find('settings/savegameName').text = values['-TITLE-']
+			careersavegame.find('settings/creationDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
+			careersavegame.find('settings/saveDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
+			careersavegame.find('settings/saveDateFormatted').text = datetime.datetime.now().strftime('%d.%m.%Y')
+			careersavegame.find('settings/mapId').text = maps[values['-MAP-']]
+			careersavegame.find('settings/mapTitle').text = values['-MAP-']
+			careersavegame.write(p + os.sep + 'careerSavegame.xml', xml_declaration = True, encoding = "UTF-8")
+
+			root = ET.Element('items')
+			tree = ET.ElementTree(root)
+			tree.write(p + os.sep + 'items.xml', xml_declaration = True, encoding = "UTF-8")
+
+			if values['-NEW_FARMER-']:
+				createFarmlandXML(data_path, p, True)
+				# create placeables
+				# create items.xml
+				# create vehicle.xml
+			elif values['-FARM_MANAGER-']:
+				careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
+				careersavegame.find('settings/fuelUsage').text = '2'
+				careersavegame.find('settings/difficulty').text = '2'
+				careersavegame.find('settings/economicDifficulty').text = '2'
+				careersavegame.find('statistics/money').text = '1500000'
+				careersavegame.find('statistics/playTime').text = '0.100000'
+				careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
+				createFarmlandXML(data_path, p)
+			elif values['-AT_NULL-']:
+				careersavegame.find('settings/stopAndGoBraking').text = 'false'
+				careersavegame.find('settings/automaticMotorStartEnabled').text = 'false'
+				careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
+				careersavegame.find('settings/fuelUsage').text = '2'
+				careersavegame.find('settings/helperBuyFuel').text = 'false'
+				careersavegame.find('settings/helperBuySeeds').text = 'false'
+				careersavegame.find('settings/helperBuyFertilizer').text = 'false'
+				careersavegame.find('settings/helperSlurrySource').text = '1'
+				careersavegame.find('settings/helperManureSource').text = '1'
+				careersavegame.find('settings/difficulty').text = '1'
+				careersavegame.find('settings/economicDifficulty').text = '1'
+				careersavegame.find('statistics/money').text = '500000'
+				careersavegame.find('statistics/playTime').text = '0.100000'
+				careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
+				createFarmlandXML(data_path, p)
+
+# ------------ dev -----------------
+			#shutil.rmtree(p)
 			return False
+# ------------ dev -----------------
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
@@ -229,8 +293,8 @@ def saveSaveGame(values, update, money):
 				if farm.attrib['name'] == farm_l:
 					farm.set('money', values[farm_l])
 		with open(path, 'wb') as f:
-			farms.write(f)
-		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "mode": mode, "direct_start": direct, "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
+			farms.write(f, xml_declaration = True, encoding = "UTF-8")
+		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
@@ -344,14 +408,10 @@ def guiNewSaveGame(title = None):
 
 	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
 				[sg.Input(key = '-TITLE-', size = (100, 1), enable_events = True)],
-				[	sg.Radio('Multiplayer', '-MODE-', key = '-MP-', default = True, enable_events = True),
-					sg.Radio('Singleplayer', '-MODE-', key = '-SP-', default = False, enable_events = True),
-					sg.Checkbox(tr.getTrans('start_direct'), key = '-DIRECT-', default = False, disabled = True, enable_events = True)
-				],
-				[	sg.Radio(tr.getTrans('new_farmer'), '-LEVEL-', key = '-NEW_FARMER-', default = False, enable_events = True, disabled = True),
-					sg.Radio(tr.getTrans('farm_manager'), '-LEVEL-', key = '-FARM_MANAGER-', default = True, enable_events = True),
-					sg.Radio(tr.getTrans('at_null'), '-LEVEL-', key = '-AT_NULL-', default = False, enable_events = True)
-				],
+#				[	sg.Radio('Multiplayer', '-MODE-', key = '-MP-', default = True, enable_events = True),
+#					sg.Radio('Singleplayer', '-MODE-', key = '-SP-', default = False, enable_events = True),
+#					sg.Checkbox(tr.getTrans('start_direct'), key = '-DIRECT-', default = False, disabled = True, enable_events = True)
+#				],
 				[sg.Text(tr.getTrans('description'), size = (90, 1))],
 				[sg.Input(key = '-DESC-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('map'))],
@@ -383,14 +443,14 @@ def guiNewSaveGame(title = None):
 		window['-FOLDER_TEXT-'].update(visible = True)
 		window['-FOLDER-'].update(getFolder(title), visible = True)
 		markMods(window, title)
-		mode = TinyDB(se.games_json).get(Query().name == title)['mode']
-		direct = TinyDB(se.games_json).get(Query().name == title)['direct_start']
-		if mode == 'sp':
-			window['-MP-'].update(value = False)
-			window['-SP-'].update(value = True)
-			window['-DIRECT-'].update(disabled = False)
-		if direct == 'yes' and mode == 'sp':
-			window['-DIRECT-'].update(value = True)
+#		mode = TinyDB(se.games_json).get(Query().name == title)['mode']
+#		direct = TinyDB(se.games_json).get(Query().name == title)['direct_start']
+#		if mode == 'sp':
+#			window['-MP-'].update(value = False)
+#			window['-SP-'].update(value = True)
+#			window['-DIRECT-'].update(disabled = False)
+#		if direct == 'yes' and mode == 'sp':
+#			window['-DIRECT-'].update(value = True)
 	else:
 		window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 		exp = False
@@ -419,17 +479,17 @@ def guiNewSaveGame(title = None):
 				subprocess.run([os.path.join(os.getenv('WINDIR'), 'explorer.exe'), os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
 			elif platform.system() == 'Darwin':
 				subprocess.run(["/usr/bin/open", os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
-		elif event == '-MP-':
-			window['-DIRECT-'].update(disabled = True, value = False)
-			window['-NEW_FARMER-'].update(disabled = True)
-			window['-FARM_MANAGER-'].update(value = True)
-			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
-			exp = False
-		elif event == '-SP-':
-			window['-DIRECT-'].update(disabled = False)
-			window['-NEW_FARMER-'].update(disabled = False, value = True)
-			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
-			exp = False
+#		elif event == '-MP-':
+#			window['-DIRECT-'].update(disabled = True, value = False)
+#			window['-NEW_FARMER-'].update(disabled = True)
+#			window['-FARM_MANAGER-'].update(value = True)
+#			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+#			exp = False
+#		elif event == '-SP-':
+#			window['-DIRECT-'].update(disabled = False)
+#			window['-NEW_FARMER-'].update(disabled = False, value = True)
+#			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+#			exp = False
 		else:
 			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 			exp = False

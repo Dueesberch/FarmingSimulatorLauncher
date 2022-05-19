@@ -157,13 +157,6 @@ def init():
 		for key, value in fs22_internal_maps.items():
 			TinyDB(games_json).update({'map': value}, Query()['map'] == key)
 	
-	d = TinyDB(games_json).all()
-	for s in d:
-		try:
-			TinyDB(games_json).get(Query().name == s['name'])['mode']
-		except KeyError:
-			TinyDB(games_json).update({'mode': 'mp', 'direct_start': 'no'}, doc_ids = [s.doc_id])
-
 	#logger.debug('settings:init:games_json ' + games_json)
 #	if os.path.exists(games_json):
 #		with open(games_json, 'r') as f:

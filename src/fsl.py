@@ -355,7 +355,7 @@ def startSaveGame(name):
 		for i in xml_mods:
 			tree.getroot().append(i)
 		with open(fs_game_data_folder + savegame + os.sep + 'careerSavegame.xml', 'wb') as f:
-			tree.write(f)
+			tree.write(f, xml_declaration = True, encoding = "UTF-8")
 	shutil.copytree(fs_game_data_folder + savegame, fs_game_data_folder + 'savegame1')
 	shutil.copytree(fs_game_data_folder + savegame + '_Backup', fs_game_data_folder + 'savegameBackup')
 	TinyDB(se.settings_json).update({'last_sg': name, 'sg_hash': '', 'sgb_hash': '', 'mods_hash': checksumdir.dirhash(fs_game_data_folder + 'mods')}, doc_ids = [1])
@@ -363,8 +363,6 @@ def startSaveGame(name):
 	direct = ''
 	if se.getSettings('intro') == 'skip':
 		skipStartVideos  = ' -skipStartVideos'
-	if TinyDB(se.games_json).get((q.name == name))['mode'] == "sp" and TinyDB(se.games_json).get((q.name == name))['direct_start'] == "yes":
-		direct = ' -autoStartSavegameId 1'
 	fs_path = "\"" + os.path.normpath(se.getSettings('fs_path')) + "\"" + skipStartVideos  + direct
 	subprocess.call(fs_path, shell = True)
 	p_name = (str(fs_path.split('\\')[-1].split('.')[0])).lower()
