@@ -115,16 +115,16 @@ def setSavegameSettings():
 					sg.Radio(tr.getTrans('at_null'), '-LEVEL-', key = '-AT_NULL-', default = False, enable_events = True)
 				],
 				[sg.Text(tr.getText('start_stop')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('auto_motor')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('plowing_requ')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('fuel_use')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_fuel')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_seeds')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_fertilizer')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_slurry')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_manure')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('difficulty')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('eco_difficulty')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('auto_motor')), sg.Radio(tr.getTrans('yes'), '-AUTOMOTOR-', default = True, enable_events = True), sg.Radio('-AUTOMOTOR-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('plowing_requ')), sg.Radio(tr.getTrans('yes'), '-PLOWREQU-', default = True, enable_events = True), sg.Radio('-PLOWREQU-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('fuel_use')), sg.Radio(tr.getTrans('yes'), '-FUELUSE-', default = True, enable_events = True), sg.Radio('-FUELUSE-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_fuel')), sg.Radio(tr.getTrans('yes'), '-H_FUEL-', default = True, enable_events = True), sg.Radio('-H_FUEL-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_seeds')), sg.Radio(tr.getTrans('yes'), '-H_SEED-', default = True, enable_events = True), sg.Radio('-H_SEED-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_fertilizer')), sg.Radio(tr.getTrans('yes'), '-H_FERTI-', default = True, enable_events = True), sg.Radio('-H_FERTI-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_slurry')), sg.Radio(tr.getTrans('yes'), '-H_SLURRY-', default = True, enable_events = True), sg.Radio('-H_SLURRY-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('helper_manure')), sg.Radio(tr.getTrans('yes'), '-H_MANURE-', default = True, enable_events = True), sg.Radio('-H_MANURE-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('difficulty')), sg.Radio(tr.getTrans('yes'), '-DIFFI-', default = True, enable_events = True), sg.Radio('-DIFFI-', default = True, enable_events = True)],
+				[sg.Text(tr.getText('eco_difficulty')), sg.Radio(tr.getTrans('yes'), '-ECO-', default = True, enable_events = True), sg.Radio('-ECO-', default = True, enable_events = True)],
 				[sg.Text(tr.getText('money')), sg.Input()],
 	]
 	stopAndGoBraking = 'false'
@@ -245,6 +245,8 @@ def saveSaveGame(values, update, money):
 			tree = ET.ElementTree(root)
 			tree.write(p + os.sep + 'items.xml', xml_declaration = True, encoding = "UTF-8")
 
+			
+
 			if values['-NEW_FARMER-']:
 				createFarmlandXML(data_path, p, True)
 				# create placeables
@@ -323,7 +325,6 @@ def markMods(window, title):
 			if val == data[0]['map']:
 				window['-MAP-'].update(key)
 				break
-		#window['-MAP-'].update(sg_map)
 		selected = []
 		for i in data[0]['mods']:
 			for key, val in mods.items():
@@ -408,10 +409,6 @@ def guiNewSaveGame(title = None):
 
 	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
 				[sg.Input(key = '-TITLE-', size = (100, 1), enable_events = True)],
-#				[	sg.Radio('Multiplayer', '-MODE-', key = '-MP-', default = True, enable_events = True),
-#					sg.Radio('Singleplayer', '-MODE-', key = '-SP-', default = False, enable_events = True),
-#					sg.Checkbox(tr.getTrans('start_direct'), key = '-DIRECT-', default = False, disabled = True, enable_events = True)
-#				],
 				[sg.Text(tr.getTrans('description'), size = (90, 1))],
 				[sg.Input(key = '-DESC-', size = (100, 1), enable_events = True)],
 				[sg.Text(tr.getTrans('map'))],
@@ -471,17 +468,6 @@ def guiNewSaveGame(title = None):
 				subprocess.run([os.path.join(os.getenv('WINDIR'), 'explorer.exe'), os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
 			elif platform.system() == 'Darwin':
 				subprocess.run(["/usr/bin/open", os.path.normpath(se.getSettings('fs_game_data_path') + os.sep + getFolder(title))])
-#		elif event == '-MP-':
-#			window['-DIRECT-'].update(disabled = True, value = False)
-#			window['-NEW_FARMER-'].update(disabled = True)
-#			window['-FARM_MANAGER-'].update(value = True)
-#			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
-#			exp = False
-#		elif event == '-SP-':
-#			window['-DIRECT-'].update(disabled = False)
-#			window['-NEW_FARMER-'].update(disabled = False, value = True)
-#			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
-#			exp = False
 		else:
 			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 			exp = False
