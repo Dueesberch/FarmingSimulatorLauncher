@@ -443,14 +443,6 @@ def guiNewSaveGame(title = None):
 		window['-FOLDER_TEXT-'].update(visible = True)
 		window['-FOLDER-'].update(getFolder(title), visible = True)
 		markMods(window, title)
-#		mode = TinyDB(se.games_json).get(Query().name == title)['mode']
-#		direct = TinyDB(se.games_json).get(Query().name == title)['direct_start']
-#		if mode == 'sp':
-#			window['-MP-'].update(value = False)
-#			window['-SP-'].update(value = True)
-#			window['-DIRECT-'].update(disabled = False)
-#		if direct == 'yes' and mode == 'sp':
-#			window['-DIRECT-'].update(value = True)
 	else:
 		window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 		exp = False
