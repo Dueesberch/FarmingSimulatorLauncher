@@ -16,6 +16,8 @@ import logging as log
 
 import xml.etree.ElementTree as ET
 
+from PIL import Image
+
 mods = {}
 maps = {}
 
@@ -93,54 +95,290 @@ def removeSaveGame(title):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'] + '_Backup')
 	return
 
-def createFarmlandXML(data_path, game_path, new_farmer = False):
-	farmland = ET.parse(data_path + 'farmlands.xml')
-	farmlands = farmland.find('farmlands')
+def createFarmlandXML(farmland_xml, game_path, level):
+	farmlands = farmland_xml.find('farmlands')
 	root = ET.Element('farmlands')
 	for land in farmlands:
 		default = 'false'
-		try:
-			default = land.attrib['defaultFarmProperty']
-			ET.SubElement(root, 'farmland', id = land.attrib['id'], farmId = '1')
-		except KeyError:
+		if level == 'nf' or level == 'c_w':
+			try:
+				default = land.attrib['defaultFarmProperty']
+				ET.SubElement(root, 'farmland', id = land.attrib['id'], farmId = '1')
+			except KeyError:
+				ET.SubElement(root, 'farmland', id = land.attrib['id'], farmId = '0')
+				pass
+		else:
 			ET.SubElement(root, 'farmland', id = land.attrib['id'], farmId = '0')
-			pass
 	tree = ET.ElementTree(root)
 	ET.indent(tree)
 	tree.write(game_path + os.sep + 'farmland.xml', xml_declaration = True, encoding = "UTF-8")
 
-def setSavegameSettings():
-	layout = [	[	sg.Radio(tr.getTrans('new_farmer'), '-LEVEL-', key = '-NEW_FARMER-', default = False, enable_events = True),
-					sg.Radio(tr.getTrans('farm_manager'), '-LEVEL-', key = '-FARM_MANAGER-', default = True, enable_events = True),
-					sg.Radio(tr.getTrans('at_null'), '-LEVEL-', key = '-AT_NULL-', default = False, enable_events = True)
-				],
-				[sg.Text(tr.getText('start_stop')), sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', default = True, enable_events = True), sg.Radio('-STARTSTOP-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('auto_motor')), sg.Radio(tr.getTrans('yes'), '-AUTOMOTOR-', default = True, enable_events = True), sg.Radio('-AUTOMOTOR-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('plowing_requ')), sg.Radio(tr.getTrans('yes'), '-PLOWREQU-', default = True, enable_events = True), sg.Radio('-PLOWREQU-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('fuel_use')), sg.Radio(tr.getTrans('yes'), '-FUELUSE-', default = True, enable_events = True), sg.Radio('-FUELUSE-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_fuel')), sg.Radio(tr.getTrans('yes'), '-H_FUEL-', default = True, enable_events = True), sg.Radio('-H_FUEL-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_seeds')), sg.Radio(tr.getTrans('yes'), '-H_SEED-', default = True, enable_events = True), sg.Radio('-H_SEED-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_fertilizer')), sg.Radio(tr.getTrans('yes'), '-H_FERTI-', default = True, enable_events = True), sg.Radio('-H_FERTI-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_slurry')), sg.Radio(tr.getTrans('yes'), '-H_SLURRY-', default = True, enable_events = True), sg.Radio('-H_SLURRY-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('helper_manure')), sg.Radio(tr.getTrans('yes'), '-H_MANURE-', default = True, enable_events = True), sg.Radio('-H_MANURE-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('difficulty')), sg.Radio(tr.getTrans('yes'), '-DIFFI-', default = True, enable_events = True), sg.Radio('-DIFFI-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('eco_difficulty')), sg.Radio(tr.getTrans('yes'), '-ECO-', default = True, enable_events = True), sg.Radio('-ECO-', default = True, enable_events = True)],
-				[sg.Text(tr.getText('money')), sg.Input()],
-	]
-	stopAndGoBraking = 'false'
-	automaticMotorStartEnabled = 'false'
-	plowingRequiredEnabled = 'true'
-	fuelUsage = '2'
-	helperBuyFuel = 'false'
-	helperBuySeeds = 'false'
-	helperBuyFertilizer = 'false'
-	helperSlurrySource = '1'
-	helperManureSource = '1'
-	difficulty = '1'
-	economicDifficulty = '1'
-	money = '500000'
+def createVehiclesXML(vehicles_xml, dem_file, game_path, level):
+	root = ET.Element('vehicles')
+	c = 1
+	for v in vehicles_xml:
+		if v.tag == 'vehicle' and not 'train' in v.attrib['filename']: 
+			try:
+				xPosition = v.attrib['xPosition']
+				zPosition = v.attrib['zPosition']
+				yOffset = v.attrib['yOffset']
+				child = ET.SubElement(root, 'vehicle', filename = v.attrib['filename'], id = str(c), isAbsolute = 'true', age = "0.000000", farmId = v.attrib['farmId'], propertyState = '1', operatingTime = "0.000000")
+				with Image.open(dem_file, 'r') as im:
+					w, h = im.size
+					png_x = (float(w) / 2) + (float(xPosition) / 2)
+					png_y = (float(h) / 2) + (float(zPosition) / 2)
+					map_h = im.getpixel((png_x, png_y)) / 256 + float(yOffset)
+					pos = xPosition + ' ' + str(map_h) + ' ' + zPosition
+					rot = '0 ' + v.attrib['yRotation'] + ' 0'
+					ET.SubElement(child, 'component', index = '1', position = pos, rotation = rot)
+				for v_child in v:
+					child.append(v_child)
+			except KeyError:
+				child = ET.SubElement(root, 'vehicle', filename = v.attrib['filename'], id = str(c), isAbsolute = v.attrib['isAbsolute'], age = "0.000000", farmId = v.attrib['farmId'], propertyState = v.attrib['propertyState'], operatingTime = "0.000000")
+				for com in v:
+					if com.tag == 'component':
+						ET.SubElement(child, 'component', index = com.attrib['index'], position = com.attrib['position'], rotation = com.attrib['rotation'])
+			c = c + 1
+	tree = ET.ElementTree(root)
+	ET.indent(tree)
+	tree.write(game_path + os.sep + 'vehicles.xml', xml_declaration = True, encoding = "UTF-8")
 
-	return {}
+def createItemsXML(items_xml, game_path, level):
+	root = ET.Element('items')
+	c = 0
+	for i in items_xml:
+		ET.dump(i)
+		c = c + 1
+	tree = ET.ElementTree(root)
+	ET.indent(tree)
+	tree.write(game_path + os.sep + 'items.xml', xml_declaration = True, encoding = "UTF-8")
+
+def createPlaceablesXML(placeables_xml, game_path, level, map = None):
+	root = ET.Element('placeables')
+	c = 1
+	if map != None:
+		map = map.split('!')[1].replace('.zip', '') 
+	for p in placeables_xml:
+		attribs = {}
+		filename = p.attrib['filename']
+		if map == None or not '$mapdir$' in filename:
+			attribs['filename'] = p.attrib['filename']
+		else:
+			attribs['modName'] = map
+			attribs['filename'] = filename.replace('$mapdir$', '$moddir$' + map)
+		attribs['id'] = str(c)
+		attribs['position'] = p.attrib['position']
+		attribs['rotation'] = p.attrib['rotation']
+		attribs['age'] = "0.000000"
+		if 'mapBoundId' in p.attrib:
+			attribs['mapBoundId'] = p.attrib['mapBoundId']
+		if 'farmId' in p.attrib:
+			attribs['farmId'] = p.attrib['farmId']
+		child = ET.SubElement(root, 'placeable')
+		for at, val in attribs.items():
+			child.set(at, val)
+		for subchild in p:
+			child.append(subchild)
+		c = c + 1
+	tree = ET.ElementTree(root)
+	ET.indent(tree)
+	tree.write(game_path + os.sep + 'placeables.xml', xml_declaration = True, encoding = "UTF-8")
+
+def setSavegameSettings():
+	layout = [	[	sg.Radio(tr.getTrans('new_farmer'), '-LEVEL-', key = '-NEW_FARMER-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('farm_manager'), '-LEVEL-', key = '-FARM_MANAGER-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('at_null'), '-LEVEL-', key = '-AT_NULL-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('custom'), '-LEVEL-', key = '-CUSTOM-', default = False, enable_events = True),
+					sg.Checkbox(tr.getTrans('start_vehicles'), key = '-STARTVEHICLES-', disabled = True)
+				],
+				[	sg.Text(tr.getTrans('start_stop')),
+					sg.Radio(tr.getTrans('yes'), '-STARTSTOP-', key = '-STARTSTOP_Y-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-STARTSTOP-', key = '-STARTSTOP_N-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('auto_motor')),
+					sg.Radio(tr.getTrans('yes'), '-AUTOMOTOR-', key = '-AUTOMOTOR_Y-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-AUTOMOTOR-', key = '-AUTOMOTOR_N-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('plowing_requ')),
+					sg.Radio(tr.getTrans('yes'), '-PLOWREQU-', key = '-PLOWREQU_Y-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-PLOWREQU-', key = '-PLOWREQU_N-', default = True, enable_events = True)],
+				[	sg.Text(tr.getTrans('fuel_use')),
+					sg.Radio(tr.getTrans('less'), '-FUELUSE-', key = '-FUELUSE_L-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('normal'), '-FUELUSE-', key = '-FUELUSE_N-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('many'), '-FUELUSE-', key = '-FUELUSE_H-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('helper_fuel')),
+					sg.Radio(tr.getTrans('yes'), '-H_FUEL-', key = '-H_FUEL_Y-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-H_FUEL-', key = '-H_FUEL_N-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('helper_seeds')),
+					sg.Radio(tr.getTrans('yes'), '-H_SEED-', key = '-H_SEED_Y-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-H_SEED-', key = '-H_SEED_N-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('helper_fertilizer')),
+					sg.Radio(tr.getTrans('yes'), '-H_FERTI-', key = '-H_FERTI_Y-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('no'), '-H_FERTI-', key = '-H_FERTI_N-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('helper_slurry')),
+					sg.Radio(tr.getTrans('no'), '-H_SLURRY-', key = '-H_SLURRY_1-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('yes'), '-H_SLURRY-', key = '-H_SLURRY_2-', default = True, enable_events = True)],
+					#sg.Radio(tr.getTrans('many'), '-H_SLURRY-', key = '-H_SLURRY_3-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('helper_manure')),
+					sg.Radio(tr.getTrans('no'), '-H_MANURE-', key = '-H_MANURE_1-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('yes'), '-H_MANURE-', key = '-H_MANURE_2-', default = True, enable_events = True)],
+					#sg.Radio(tr.getTrans('many'), '-H_MANURE-', key = '-H_MANURE_3-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('difficulty')),
+					sg.Radio(tr.getTrans('simple'), '-DIFFI-', key = '-DIFFI_S-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('normal'), '-DIFFI-', key = '-DIFFI_N-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('hard'), '-DIFFI-', key = '-DIFFI_H-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('eco_difficulty')),
+					sg.Radio(tr.getTrans('simple'), '-ECO-', key = '-ECO_S-', default = True, enable_events = True),
+					sg.Radio(tr.getTrans('normal'), '-ECO-', key = '-ECO_N-', default = False, enable_events = True),
+					sg.Radio(tr.getTrans('hard'), '-ECO-', key = '-ECO_H-', default = False, enable_events = True)],
+				[	sg.Text(tr.getTrans('money')),
+					sg.Input('100000', key = '-MONEY-', enable_events = True)],
+				[	sg.Button(tr.getTrans('done'), key = '-SAVE-')]
+	]
+	sg_settings = {}
+
+	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50), disable_close = True)
+
+	while True:
+		event, values = window.read()
+		#print(event, values)
+		if event == sg.WIN_CLOSED or event == '-EXIT-':
+			sg_settings = {}
+			break
+		elif event == '-NEW_FARMER-':
+			window['-STARTVEHICLES-'].update(disabled = True)
+			window['-STARTVEHICLES-'].update(False)			
+			
+			window['-STARTSTOP_Y-'].update(value = True)
+			window['-AUTOMOTOR_Y-'].update(value = True)
+			window['-PLOWREQU_N-'].update(value = True)
+			window['-FUELUSE_L-'].update(value = True)
+			window['-H_FUEL_Y-'].update(value = True)
+			window['-H_SEED_Y-'].update(value = True)
+			window['-H_FERTI_Y-'].update(value = True)
+			window['-H_SLURRY_2-'].update(value = True)
+			window['-H_MANURE_2-'].update(value = True)
+			window['-DIFFI_N-'].update(value = True)
+			window['-ECO_N-'].update(value = True)
+			window['-MONEY-'].update(value = '100000')
+
+		elif event == '-FARM_MANAGER-':
+			window['-STARTVEHICLES-'].update(disabled = True)
+			window['-STARTVEHICLES-'].update(False)
+
+			window['-STARTSTOP_Y-'].update(value = True)
+			window['-AUTOMOTOR_Y-'].update(value = True)
+			window['-PLOWREQU_Y-'].update(value = True)
+			window['-FUELUSE_N-'].update(value = True)
+			window['-H_FUEL_Y-'].update(value = True)
+			window['-H_SEED_Y-'].update(value = True)
+			window['-H_FERTI_Y-'].update(value = True)
+			window['-H_SLURRY_2-'].update(value = True)
+			window['-H_MANURE_2-'].update(value = True)
+			window['-DIFFI_N-'].update(value = True)
+			window['-ECO_N-'].update(value = True)
+			window['-MONEY-'].update(value = '1500000')
+
+		elif event == '-AT_NULL-':
+			window['-STARTVEHICLES-'].update(disabled = True)
+			window['-STARTVEHICLES-'].update(False)
+
+			window['-STARTSTOP_N-'].update(value = True)
+			window['-AUTOMOTOR_N-'].update(value = True)
+			window['-PLOWREQU_Y-'].update(value = True)
+			window['-FUELUSE_H-'].update(value = True)
+			window['-H_FUEL_N-'].update(value = True)
+			window['-H_SEED_N-'].update(value = True)
+			window['-H_FERTI_N-'].update(value = True)
+			window['-H_SLURRY_1-'].update(value = True)
+			window['-H_MANURE_1-'].update(value = True)
+			window['-DIFFI_H-'].update(value = True)
+			window['-ECO_H-'].update(value = True)
+			window['-MONEY-'].update(value = '500000')
+
+		elif event == '-SAVE-':
+			if values['-NEW_FARMER-']:
+				sg_settings['level'] = 'nf'
+			elif values['-FARM_MANAGER-']:
+				sg_settings['level'] = 'fm'
+			elif values['-AT_NULL-']:
+				sg_settings['level'] = 'an'
+			else:
+				if values['-STARTVEHICLES-']:
+					sg_settings['level'] = 'c_w'
+				else:
+					sg_settings['level'] = 'c_wo'
+
+			if values['-STARTSTOP_Y-']:
+				sg_settings['stopAndGoBraking'] = 'true'
+			else:
+				sg_settings['stopAndGoBraking'] = 'false'
+
+			if values['-AUTOMOTOR_Y-']:
+				sg_settings['automaticMotorStartEnabled'] = 'true'
+			else:
+				sg_settings['automaticMotorStartEnabled'] = 'false'
+
+			if values['-PLOWREQU_Y-']:
+				sg_settings['plowingRequiredEnabled'] = 'true'
+			else:
+				sg_settings['plowingRequiredEnabled'] = 'false'
+
+			if values['-FUELUSE_L-']:
+				sg_settings['fuelUsage'] = '1'
+			elif values['-FUELUSE_L-']:
+				sg_settings['fuelUsage'] = '2'
+			else:
+				sg_settings['fuelUsage'] = '3'
+
+			if values['-H_FUEL_Y-']:
+				sg_settings['helperBuyFuel'] = 'true'
+			else:
+				sg_settings['helperBuyFuel'] = 'false'
+
+			if values['-H_SEED_Y-']:
+				sg_settings['helperBuySeeds'] = 'true'
+			else:
+				sg_settings['helperBuySeeds'] = 'false'
+
+			if values['-H_FERTI_Y-']:
+				sg_settings['helperBuyFertilizer'] = 'true'
+			else:
+				sg_settings['helperBuyFertilizer'] = 'false'
+
+			if values['-H_SLURRY_1-']:
+				sg_settings['helperSlurrySource'] = '1'
+			elif values['-H_SLURRY_2-']:
+				sg_settings['helperSlurrySource'] = '2'
+			else:
+				sg_settings['helperSlurrySource'] = '3'
+
+			if values['-H_MANURE_1-']:
+				sg_settings['helperManureSource'] = '1'
+			elif values['-H_SLURRY_2-']:
+				sg_settings['helperManureSource'] = '2'
+			else:
+				sg_settings['helperManureSource'] = '3'
+
+			if values['-DIFFI_S-']:
+				sg_settings['difficulty'] = '1'
+			elif values['-DIFFI_N-']:
+				sg_settings['difficulty'] = '2'
+			else:
+				sg_settings['difficulty'] = '3'
+
+			if values['-ECO_S-']:
+				sg_settings['economicDifficulty'] = '1'
+			elif values['-ECO_N-']:
+				sg_settings['economicDifficulty'] = '2'
+			else:
+				sg_settings['economicDifficulty'] = '3'
+
+			sg_settings['money'] = values['-MONEY-']
+			break
+		else:
+			window['-CUSTOM-'].update(value = True)
+			window['-STARTVEHICLES-'].update(disabled = False)
+	window.close()
+	return sg_settings
 
 def saveSaveGame(values, update, money):
 	global maps
@@ -187,16 +425,6 @@ def saveSaveGame(values, update, money):
 	for i, val in enumerate(values['-MODS-']):
 		modstoadd[str(i)] = mods[val]
 
-	if values['-MP-']:
-		mode = 'mp'
-		direct = 'no'
-	else:
-		mode = 'sp'
-		if values['-DIRECT-']:
-			direct = 'yes'
-		else:
-			direct = 'no'
-
 	if update == -1:
 		try:
 			folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
@@ -205,78 +433,88 @@ def saveSaveGame(values, update, money):
 			#os.mkdir(p + '_Backup')
 			#db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 			# create / add files to sg folder
+			sg_settings = setSavegameSettings()
+
 			if values['-MAP-'] in se.getInternalMaps():
 				base_path = se.getSettings('fs_path').replace('FarmingSimulator2022.exe', '').replace('FarmingSimulator2019.exe', '')
-				data_path = base_path + 'data' + os.sep + 'maps' + os.sep + maps[values['-MAP-']] + os.sep
-				defaultvehicles_xml = base_path + 'vehicles.xml'
-				defaultplaceables_xml = base_path + 'placeables.xml'
-				defaultitems_xml= base_path + 'items.xml'
+				data_path = base_path + 'data/maps/' + maps[values['-MAP-']] + '/'
+				for f in required_files:
+					shutil.copyfile(data_path + 'data' + os.sep + f, p + os.sep + f)
+				
+				dem_file = data_path + 'data/map_dem.png'
+
+				defaultvehicles_xml = data_path + 'vehicles.xml'
+				createVehiclesXML(ET.parse(defaultvehicles_xml).findall('vehicle'), dem_file, p, sg_settings['level'])
+				
+				defaultplaceables_xml = data_path + 'placeables.xml'
+				createPlaceablesXML(ET.parse(defaultplaceables_xml).findall('placeable'), p, sg_settings['level'])
+				
+				defaultitems_xml = data_path + 'items.xml'
+				createItemsXML(ET.parse(defaultitems_xml).findall('item'), p, sg_settings['level'])
+				
+				defaultfarmlands_xml = data_path + 'farmlands.xml'
+				createFarmlandXML(ET.parse(defaultfarmlands_xml), p, sg_settings['level'])
+
+				mapId = maps[values['-MAP-']]
+
 			else:
 				with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + maps[values['-MAP-']]) as z:
 					moddesc_xml = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 					map_xml_path = moddesc_xml.find('maps/map').attrib['configFilename']
-					data_path = os.path.split(map_xml_path) + os.sep + 'data'
-					defaultvehicles_xml = moddesc_xml.find('maps/map').attrib['defaultVehiclesXMLFilename']
-					defaultplaceables_xml = moddesc_xml.find('maps/map').attrib['defaultPlaceablesXMLFilename']
-					defaultitems_xml= moddesc_xml.find('maps/map').attrib['defaultItemsXMLFilename']
+					data_path = os.path.split(map_xml_path)[0] + '/'
+					for f in required_files:
+						try:
+							with open(p + os.sep + f, 'wb') as out:
+								out.write(z.read(data_path + 'data/' + f))
+						except KeyError:
+							os.remove(p + os.sep + f)
+					
 					map_i3d = ET.fromstring(z.read(map_xml_path)).find('filename').text
 					i3d_files = ET.fromstring(z.read(map_i3d)).find('Files')
 					for f in i3d_files:
 						if f.attrib['fileId'] == '1':
 							dem_file = f.attrib['filename']
 							break
+					
+					defaultvehicles_xml = moddesc_xml.find('maps/map').attrib['defaultVehiclesXMLFilename']
+					dem_png_extracted = z.extract(data_path + dem_file, path = se.fsl_config_path)
+					createVehiclesXML(ET.fromstring(z.read(defaultvehicles_xml).decode('utf8').strip()), se.fsl_config_path + os.sep + data_path + os.sep + dem_file, p, sg_settings['level'])
+					
+					defaultplaceables_xml = moddesc_xml.find('maps/map').attrib['defaultPlaceablesXMLFilename']
+					createPlaceablesXML(ET.fromstring(z.read(defaultplaceables_xml).decode('utf8').strip()), p, sg_settings['level'], maps[values['-MAP-']])
+					
+					defaultitems_xml= moddesc_xml.find('maps/map').attrib['defaultItemsXMLFilename']
+					createItemsXML(ET.fromstring(z.read(defaultitems_xml).decode('utf8').strip()), p, sg_settings['level'])
+					
+					defaultfarmlands_xml = ET.fromstring(z.read(data_path + 'map.xml').decode('utf8').strip()).find('farmlands').attrib['filename']
+					createFarmlandXML(ET.fromstring(z.read(defaultfarmlands_xml).decode('utf8').strip()), p, sg_settings['level'])
 
-				shutil.rmtree(p)
-				return False
+					mapId = maps[values['-MAP-']].split('!')[1].replace('.zip', '.SampleModMap')
 
-			for f in required_files:
-				shutil.copyfile(data_path + 'data' + os.sep + f, p + os.sep + f)
 			shutil.copyfile(se.resource_path('careerSavegame.xml'), p + os.sep + 'careerSavegame.xml')
 			careersavegame = ET.parse(p + os.sep + 'careerSavegame.xml')
 			careersavegame.find('settings/savegameName').text = values['-TITLE-']
 			careersavegame.find('settings/creationDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
 			careersavegame.find('settings/saveDate').text = datetime.datetime.now().strftime('%Y-%m-%d')
 			careersavegame.find('settings/saveDateFormatted').text = datetime.datetime.now().strftime('%d.%m.%Y')
-			careersavegame.find('settings/mapId').text = maps[values['-MAP-']]
+			careersavegame.find('settings/mapId').text = mapId
 			careersavegame.find('settings/mapTitle').text = values['-MAP-']
+			careersavegame.find('settings/stopAndGoBraking').text = sg_settings['stopAndGoBraking']
+			careersavegame.find('settings/automaticMotorStartEnabled').text = sg_settings['automaticMotorStartEnabled']
+			careersavegame.find('settings/plowingRequiredEnabled').text = sg_settings['plowingRequiredEnabled']
+			careersavegame.find('settings/fuelUsage').text = sg_settings['fuelUsage']
+			careersavegame.find('settings/helperBuyFuel').text = sg_settings['helperBuyFuel']
+			careersavegame.find('settings/helperBuySeeds').text = sg_settings['helperBuySeeds']
+			careersavegame.find('settings/helperBuyFertilizer').text = sg_settings['helperBuyFertilizer']
+			careersavegame.find('settings/helperSlurrySource').text = sg_settings['helperSlurrySource']
+			careersavegame.find('settings/helperManureSource').text = sg_settings['helperManureSource']
+			careersavegame.find('settings/difficulty').text = sg_settings['difficulty']
+			careersavegame.find('settings/economicDifficulty').text = sg_settings['economicDifficulty']
+			careersavegame.find('statistics/money').text = sg_settings['money']
+			careersavegame.find('statistics/playTime').text = '0.100000'
+			careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
 			careersavegame.write(p + os.sep + 'careerSavegame.xml', xml_declaration = True, encoding = "UTF-8")
 
-			root = ET.Element('items')
-			tree = ET.ElementTree(root)
-			tree.write(p + os.sep + 'items.xml', xml_declaration = True, encoding = "UTF-8")
-
-			
-
-			if values['-NEW_FARMER-']:
-				createFarmlandXML(data_path, p, True)
-				# create placeables
-				# create items.xml
-				# create vehicle.xml
-			elif values['-FARM_MANAGER-']:
-				careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
-				careersavegame.find('settings/fuelUsage').text = '2'
-				careersavegame.find('settings/difficulty').text = '2'
-				careersavegame.find('settings/economicDifficulty').text = '2'
-				careersavegame.find('statistics/money').text = '1500000'
-				careersavegame.find('statistics/playTime').text = '0.100000'
-				careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
-				createFarmlandXML(data_path, p)
-			elif values['-AT_NULL-']:
-				careersavegame.find('settings/stopAndGoBraking').text = 'false'
-				careersavegame.find('settings/automaticMotorStartEnabled').text = 'false'
-				careersavegame.find('settings/plowingRequiredEnabled').text = 'true'
-				careersavegame.find('settings/fuelUsage').text = '2'
-				careersavegame.find('settings/helperBuyFuel').text = 'false'
-				careersavegame.find('settings/helperBuySeeds').text = 'false'
-				careersavegame.find('settings/helperBuyFertilizer').text = 'false'
-				careersavegame.find('settings/helperSlurrySource').text = '1'
-				careersavegame.find('settings/helperManureSource').text = '1'
-				careersavegame.find('settings/difficulty').text = '1'
-				careersavegame.find('settings/economicDifficulty').text = '1'
-				careersavegame.find('statistics/money').text = '500000'
-				careersavegame.find('statistics/playTime').text = '0.100000'
-				careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
-				createFarmlandXML(data_path, p)
 
 # ------------ dev -----------------
 			#shutil.rmtree(p)
@@ -300,7 +538,7 @@ def saveSaveGame(values, update, money):
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
-	if mode == 'mp' and sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
 		exportSGC(values['-TITLE-'])
 	return True
 

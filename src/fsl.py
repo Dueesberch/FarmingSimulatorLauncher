@@ -431,7 +431,6 @@ def main():
 	sg.popup_quick_message(tr.getTrans('fsl_init'), auto_close_duration = 5, location = (50, 50))
 
 	new_rel = False
-	response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 	try:
 		response = requests.get('https://api.github.com/repos/Dueesberch/FarmingSimulatorLauncher/releases/latest').json()
 		if response['tag_name'] > FSL_Version:
@@ -499,6 +498,7 @@ def main():
 			if values['-COMBO-'] != '':
 				ga.copySG(values['-COMBO-'])
 			else:
+				window.Hide()
 				ga.guiNewSaveGame()
 			window.Hide()
 			window['-COMBO-'].update(value = '', values = getSaveGames())
