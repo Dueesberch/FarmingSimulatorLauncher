@@ -143,11 +143,11 @@ def validateModsFolder(fs_game_data_folder):
 					version = moddesc.find('version')
 					for l in se.langs:
 						name = moddesc.find('title/' + l)
-						lang = l
+						#lang = l
 						if name != None:
 							break
 					d = db.get(Query().name == name.text)
-					if d == None or not version in d['files'].values():
+					if d == None or not hashlib.md5(pathlib.Path(path + os.sep + i).read_bytes()).hexdigest() in d['files'].values():
 						#logger.debug('fsl:checkChanges:changed / new mod ' + i + ' ' + version.text + ' ' + k)
 						mods[i] = version.text
 			else:
@@ -171,6 +171,7 @@ def checkChanges():
 	lang = se.getFslSettings('language')
 	fs_path = se.getSettings('fs_path')
 	fs_game_data_folder = se.getSettings('fs_game_data_path') + os.sep
+	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	if os.path.exists(fs_game_data_folder + 'mods'):
 		validateModsFolder(fs_game_data_folder)
 		shutil.rmtree(fs_game_data_folder + 'mods')
@@ -244,10 +245,10 @@ def checkChanges():
 				elif event == '-REMOVE-':
 					break
 			window.close()
-		if os.path.exists(fs_game_data_folder + 'savegameBackup'):
-			shutil.rmtree(fs_game_data_folder + 'savegameBackup')
-		if os.path.exists(fs_game_data_folder + 'savegame1'):
-			shutil.rmtree(fs_game_data_folder + 'savegame1')
+	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
+		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
+	if os.path.exists(fs_game_data_folder + 'savegame1'):
+		shutil.rmtree(fs_game_data_folder + 'savegame1')
 
 	data = TinyDB(se.games_json).all()
 	for i in data:
@@ -417,6 +418,7 @@ def main():
 		pyi_splash.close()
 	except:
 		pass
+	
 	if not se.init():
 		sys.exit()
 

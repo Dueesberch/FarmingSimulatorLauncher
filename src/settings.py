@@ -250,6 +250,10 @@ def init():
 #	if os.path.exists(settings_json):
 #		with open(settings_json, 'r') as f:
 #			logger.debug('setting:init: ' + f.readline())
+
+	if not os.path.exists(fsl_config_path) and ret == True:
+		#logger.debug('settings:init:create fsl config folder')
+		os.makedirs(fsl_config_path)
 	
 	return ret
 

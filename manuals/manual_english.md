@@ -22,7 +22,8 @@ The safest way is to use FSL to start the game, manage savegames and mods. Shoul
 
 The FSL isn't a design highlight. The focus was mor on functionality. That is mostly visible at MacOS. Unfortunately, it isn't possible to show a splash screen at MacOS. So it takes a while until you see the FSL window appear. Be patient. 
 
-<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**
+<span style="color:red">**Attention: FSL must be started with administrator rights at windows, otherwise the required file and folder operations aren't possible.**</span> See **Recommendation - Get administrator rights**  
+<span style="color:red">**Attention: FSL must be extracted after Download. To start hold Ctrl and click. Select Open. At the Warning window click open.**</span>
 <div style="page-break-after: always;"></div>
 
 ## General
@@ -62,7 +63,7 @@ During the import or creation it is possible to give a small description which w
 ## First start
 At the first start the required path's must be set. See **FSL settings**  
 Afterwards FSL is looking for the `mod` folder. The mods can be imported then.  
-Is the import accepted all found `mods` will be imported into an fsl-all-mods folder.  
+Is the import accepted all found `mods` will be imported into an fsl-all-mods folder. FSL needs the mod version. Therefore the `moddesc.xml` is read. If the `moddesc.xml` wrong the import is rejected.  
 <span style="color:red"> !!! The original mods folder will be deleted after the import. That is necessary because FSL is creating an empty mods folder at game start which will held only required mods. !!!</span>  
 Finally it is possible to select additional mods folder and import mods from there. See **Import mods**
 
@@ -152,10 +153,13 @@ It is possible to change the used mods at the ***Mods*** list. Already used mods
 The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
-***Shift + mouse click*** All entries between the last selected one and the new one will be selected.
+***Shift + mouse click*** All entries between the last selected one and the new one will be selected.  
+
+<div style="page-break-after: always;"></div>
 
 ***Export*** will create a ``SAVEGAMENAME.fsl_sgc`` file and store at the selected folder.  
-That file can be imported then. See **Import savegame configuration**
+That file can be imported then. See **Import savegame configuration**  
+Additionally it is possible to create a folder with all for the savegame required mods to upload these to an eg dedi server.  
 
 If the title, the description or the mod list changed, the export button will switch to save.
 ***Save*** will store the changed configuration and it is possible to export then.
@@ -184,7 +188,7 @@ At the **Mods** window the mods will be managed. It is possible to import new mo
 ### Import
 With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
-***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
+***To import*** list all found mods and can be selected here. FSL needs the mod version. Therefore the `moddesc.xml` is read. If the `moddesc.xml` wrong the mod isn't listed.  
 The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  
@@ -234,7 +238,8 @@ at Windows and
 `~/Library/Application Support/FarmingSimulator2019`  
 at MacOS. At FS22 the button is ***Default FS22 savegame folder path*** and the path is set accordingly.  
 
-The path set at ***Select folder at all mods*** is used to create the fsl-all-mods folder. At that folder all imported mods will be stored. Please be aware that there is enough disk space.
+The path set at ***Select folder at all mods*** is used to create the fsl-all-mods folder. At that folder all imported mods will be stored. Please be aware that there is enough disk space.  
+<span style='color:red'>Beside check that the folder isn't inside the `My Games/FarmingSimulator20XX/mods/` folder. That folder is reset always when FSL stars and the fsl_all_mods folder will be deleted.</span>
 See **Recommendation - Share mods**
 
 ***Save*** take the settings and close the window.  
