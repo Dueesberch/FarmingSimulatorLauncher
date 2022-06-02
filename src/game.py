@@ -460,8 +460,9 @@ def saveSaveGame(values, update, money):
 			os.mkdir(p)			
 			os.mkdir(p + '_Backup')
 			db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
+
 			# create / add files to sg folder
-			sg_settings = setSavegameSettings()
+			""" sg_settings = setSavegameSettings()
 
 			if values['-MAP-'] in se.getInternalMaps():
 				base_path = se.getSettings('fs_path').replace('FarmingSimulator2022.exe', '').replace('FarmingSimulator2019.exe', '')
@@ -578,7 +579,7 @@ def saveSaveGame(values, update, money):
 			careersavegame.find('statistics/money').text = sg_settings['money']
 			careersavegame.find('statistics/playTime').text = '0.100000'
 			careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
-			careersavegame.write(p + os.sep + 'careerSavegame.xml', xml_declaration = True, encoding = "UTF-8")
+			careersavegame.write(p + os.sep + 'careerSavegame.xml', xml_declaration = True, encoding = "UTF-8")"""
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
@@ -686,10 +687,13 @@ def getFolder(title):
 
 def getMoney(title):
 	path = se.getSettings('fs_game_data_path') + os.sep + getFolder(title) + os.sep + 'farms.xml'
-	farms = ET.parse(path).getroot()
-	money = {}
-	for farm in farms:
-		money[farm.attrib['name']] = int(float(farm.attrib['money']))
+	try:
+		farms = ET.parse(path).getroot()
+		money = {}
+		for farm in farms:
+			money[farm.attrib['name']] = int(float(farm.attrib['money']))
+	except FileNotFoundError:
+		money = {'no data': 0}
 	return money
 
 def guiNewSaveGame(title = None):
@@ -701,8 +705,11 @@ def guiNewSaveGame(title = None):
 	money = {}
 	if title != None:
 		money = getMoney(title)
-		for farm, m in money.items():
-			money_layout.append([sg.Text(farm, size = (20,1)), sg.Input(m, size = (50,1), key = farm, enable_events = True)])
+		if list(money.keys())[0] == 'no data':
+			money_layout.append([sg.Text('')])
+		else:
+			for farm, m in money.items():
+				money_layout.append([sg.Text(farm, size = (20,1)), sg.Input(m, size = (50,1), key = farm, enable_events = True)])
 
 	layout = [  [sg.Text(tr.getTrans('sg_title'), size = (90, 1))],
 				[sg.Input(key = '-TITLE-', size = (100, 1), enable_events = True)],

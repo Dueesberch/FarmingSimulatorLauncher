@@ -102,6 +102,27 @@ def importMods(path, mods, updateSGs):
 			version = moddesc.find('version')
 			new_name = 'fsl_' + version.text + '!' + i
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
+			
+			f_hash = hashlib.md5(pathlib.Path(all_mods + os.sep + new_name).read_bytes()).hexdigest()
+			with zipfile.ZipFile(all_mods + os.sep + new_name) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				icon = moddesc.find('iconFilename').text
+				for l in se.getLangs():
+					name = moddesc.find('title/' + l)
+					mod_lang = l
+					if name != None:
+						break
+				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
+				if moddesc.find('maps/map/title/en') != None:
+					mod_type = 'map'
+				else:
+					mod_type = 'mod'
+				if d == None:
+					TinyDB(all_mods + os.sep + 'mods_db.json').insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'files': {f: f_hash}})
+				else:
+					d['files'][new_name] = f_hash
+					TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
+
 			if moddesc.find('maps/map/title/en') != None:
 				break
 			else:
