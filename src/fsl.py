@@ -311,7 +311,6 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					print('error')
 					d = TinyDB(all_mods_folder + os.sep + 'mods_db.json').search(Query().mod_type == 'map')
 					for map in d:
 						if sg_map in map['files']:

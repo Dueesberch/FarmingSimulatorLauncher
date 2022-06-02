@@ -137,7 +137,10 @@ dictionary = {
         "simple": "Einfach",
         "hard": "Schwierig",
         "start_vehicles": "Start equipment",
-        "done": "Done"
+        "done": "Done",
+        "playername": "Playername",
+        "broken_map": "The used map \"{}\" seems to be brocken. You can try to create a new savegame inside FS and import afterwards.",
+        "broken_map_title": "Map brocken"
     },
     "de": {
         "at_null": "Bei Null starten",
@@ -275,7 +278,10 @@ dictionary = {
         "simple": "Einfach",
         "hard": "Schwer",
         "start_vehicles": "Startequipment",
-        "done": "Fertig"
+        "done": "Fertig",
+        "playername": "Spielername",
+        "broken_map": "Die verwendete Map \"{}\" scheint defekte Dateien zu beinhalten. Du kannst versuchen ein neues Spiel direkt in LS zu erzeugen, und dieses dann importieren.",
+        "broken_map_title": "Map defekt"
     }
 }
 

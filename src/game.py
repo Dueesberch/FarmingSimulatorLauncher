@@ -13,6 +13,8 @@ from tinydb.operations import delete
 import translation as tr
 import settings as se
 import logging as log
+import re
+from random import randint
 
 import xml.etree.ElementTree as ET
 
@@ -34,6 +36,8 @@ required_files = [	'densityMap_fruits.gdm',
 					'infoLayer_stubbleShredLevel.grle',
 					'infoLayer_tipCollisionGenerated.grle',
 					'infoLayer_weed.grle']
+
+fruits = ['WHEAT', 'MAIZE', 'SUGARBEET', 'BARLEY', 'OAT', 'CANOLA', 'SUNFLOWER', 'SOYBEAN', 'SORGHUM', 'POTATO']
 
 def getMods(l = True):
 	global mods
@@ -84,10 +88,10 @@ def getMods(l = True):
 	else:
 		return maps, mods
 
-def removeSaveGame(title):
+def removeSaveGame(title, request = True):
 	q = Query()
 	exists = TinyDB(se.games_json).get((q.name == title.split(' : ')[0].rstrip()))
-	if sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
+	if not request or sg.popup_yes_no(tr.getTrans('delete'), title = tr.getTrans('remove'), location = (50, 50)) == "Yes":
 		TinyDB(se.games_json).remove(doc_ids = [exists.doc_id])
 		if os.path.exists(se.getSettings('fs_game_data_path') + os.sep + exists['folder']):
 			shutil.rmtree(se.getSettings('fs_game_data_path') + os.sep + exists['folder'])
@@ -117,7 +121,9 @@ def createVehiclesXML(vehicles_xml, dem_file, game_path, level):
 	root = ET.Element('vehicles')
 	c = 1
 	for v in vehicles_xml:
-		if v.tag == 'vehicle' and not 'train' in v.attrib['filename']: 
+		if v.tag == 'vehicle' and 'defaultFarmProperty' in v.attrib and level != 'nf' and level != 'c_w':
+			continue
+		elif v.tag == 'vehicle' and not 'train' in v.attrib['filename']:
 			try:
 				xPosition = v.attrib['xPosition']
 				zPosition = v.attrib['zPosition']
@@ -184,6 +190,27 @@ def createPlaceablesXML(placeables_xml, game_path, level, map = None):
 	ET.indent(tree)
 	tree.write(game_path + os.sep + 'placeables.xml', xml_declaration = True, encoding = "UTF-8")
 
+def createFarmXML(game_path, money, nick):
+	root = ET.Element('farms')
+	farm = ET.SubElement(root, 'farm', farmId = "1", name = nick + " Farm", color = "1", loan = "0.000000", money = money)
+	players = ET.SubElement(farm, 'players')
+	ET.SubElement(players, 'player', uniqueUserId = "player", farmManager = "true", lastNickname = nick, buyVehicle = "true", sellVehicle = "true", buyPlaceable = "true",\
+		sellPlaceable = "true", manageContracts = "true", tradeAnimals = "true", createFields = "true", landscaping = "true", hireAssistant="true", resetVehicle="true",\
+		manageProductions = "true", manageRights = "true", transferMoney = "true", updateFarm = "true", manageContracting = "true")
+	tree = ET.ElementTree(root)
+	ET.indent(tree)
+	tree.write(game_path + os.sep + 'farms.xml', xml_declaration = True, encoding = "UTF-8")
+
+def createFieldsXML(map_i3d, game_path):
+	root = ET.Element('fields')
+	m = re.findall('TransformGroup name="field[0-9]+', map_i3d)
+	for field in range(1, len(m) + 1):
+		ET.SubElement(root, 'field', id = str(field), plannedFruit = fruits[randint(0, len(fruits) - 1)])
+	ET.SubElement(root, 'lastHandledFieldIndex').text = str(randint(0, len(fruits) - 1))
+	tree = ET.ElementTree(root)
+	ET.indent(tree)
+	tree.write(game_path + os.sep + 'fields.xml', xml_declaration = True, encoding = "UTF-8")
+
 def setSavegameSettings():
 	layout = [	[	sg.Radio(tr.getTrans('new_farmer'), '-LEVEL-', key = '-NEW_FARMER-', default = True, enable_events = True),
 					sg.Radio(tr.getTrans('farm_manager'), '-LEVEL-', key = '-FARM_MANAGER-', default = False, enable_events = True),
@@ -216,11 +243,9 @@ def setSavegameSettings():
 				[	sg.Text(tr.getTrans('helper_slurry')),
 					sg.Radio(tr.getTrans('no'), '-H_SLURRY-', key = '-H_SLURRY_1-', default = False, enable_events = True),
 					sg.Radio(tr.getTrans('yes'), '-H_SLURRY-', key = '-H_SLURRY_2-', default = True, enable_events = True)],
-					#sg.Radio(tr.getTrans('many'), '-H_SLURRY-', key = '-H_SLURRY_3-', default = False, enable_events = True)],
 				[	sg.Text(tr.getTrans('helper_manure')),
 					sg.Radio(tr.getTrans('no'), '-H_MANURE-', key = '-H_MANURE_1-', default = False, enable_events = True),
 					sg.Radio(tr.getTrans('yes'), '-H_MANURE-', key = '-H_MANURE_2-', default = True, enable_events = True)],
-					#sg.Radio(tr.getTrans('many'), '-H_MANURE-', key = '-H_MANURE_3-', default = False, enable_events = True)],
 				[	sg.Text(tr.getTrans('difficulty')),
 					sg.Radio(tr.getTrans('simple'), '-DIFFI-', key = '-DIFFI_S-', default = True, enable_events = True),
 					sg.Radio(tr.getTrans('normal'), '-DIFFI-', key = '-DIFFI_N-', default = False, enable_events = True),
@@ -231,6 +256,8 @@ def setSavegameSettings():
 					sg.Radio(tr.getTrans('hard'), '-ECO-', key = '-ECO_H-', default = False, enable_events = True)],
 				[	sg.Text(tr.getTrans('money')),
 					sg.Input('100000', key = '-MONEY-', enable_events = True)],
+				[	sg.Text(tr.getTrans('playername')),
+					sg.Input('Horst', key = '-NICK-')],
 				[	sg.Button(tr.getTrans('done'), key = '-SAVE-')]
 	]
 	sg_settings = {}
@@ -373,6 +400,7 @@ def setSavegameSettings():
 				sg_settings['economicDifficulty'] = '3'
 
 			sg_settings['money'] = values['-MONEY-']
+			sg_settings['nick'] = values['-NICK-']
 			break
 		else:
 			window['-CUSTOM-'].update(value = True)
@@ -430,8 +458,8 @@ def saveSaveGame(values, update, money):
 			folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
 			p = se.getSettings('fs_game_data_path') + os.sep + folder_name
 			os.mkdir(p)			
-			#os.mkdir(p + '_Backup')
-			#db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
+			os.mkdir(p + '_Backup')
+			db.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd})
 			# create / add files to sg folder
 			sg_settings = setSavegameSettings()
 
@@ -454,6 +482,11 @@ def saveSaveGame(values, update, money):
 				
 				defaultfarmlands_xml = data_path + 'farmlands.xml'
 				createFarmlandXML(ET.parse(defaultfarmlands_xml), p, sg_settings['level'])
+
+				map_i3d_str = ''
+				with open(data_path + 'map.i3d', 'r') as f:
+					map_i3d_str = f.read().rstrip()
+				createFieldsXML(map_i3d_str, p)
 
 				mapId = maps[values['-MAP-']]
 
@@ -478,18 +511,50 @@ def saveSaveGame(values, update, money):
 					
 					defaultvehicles_xml = moddesc_xml.find('maps/map').attrib['defaultVehiclesXMLFilename']
 					dem_png_extracted = z.extract(data_path + dem_file, path = se.fsl_config_path)
-					createVehiclesXML(ET.fromstring(z.read(defaultvehicles_xml).decode('utf8').strip()), se.fsl_config_path + os.sep + data_path + os.sep + dem_file, p, sg_settings['level'])
+					try:
+						createVehiclesXML(ET.fromstring(z.read(defaultvehicles_xml).decode('utf8').strip()), se.fsl_config_path + os.sep + data_path + os.sep + dem_file, p, sg_settings['level'])
+					except ET.ParseError:
+						sg.popup(tr.getTrans('broken_map').format(values['-MAP-']), title = tr.getTrans('broken_map_title'), location = (50, 50))
+						shutil.rmtree(p)
+						shutil.rmtree(p + '_Backup')
+						removeSaveGame(values['-TITLE-'], False)
+						return False
 					
 					defaultplaceables_xml = moddesc_xml.find('maps/map').attrib['defaultPlaceablesXMLFilename']
-					createPlaceablesXML(ET.fromstring(z.read(defaultplaceables_xml).decode('utf8').strip()), p, sg_settings['level'], maps[values['-MAP-']])
+					try:
+						createPlaceablesXML(ET.fromstring(z.read(defaultplaceables_xml).decode('utf8').strip()), p, sg_settings['level'], maps[values['-MAP-']])
+					except ET.ParseError:
+						sg.popup(tr.getTrans('broken_map').format(values['-MAP-']), title = tr.getTrans('broken_map_title'), location = (50, 50))
+						shutil.rmtree(p)
+						shutil.rmtree(p + '_Backup')
+						removeSaveGame(values['-TITLE-'], False)
+						return False
 					
 					defaultitems_xml= moddesc_xml.find('maps/map').attrib['defaultItemsXMLFilename']
-					createItemsXML(ET.fromstring(z.read(defaultitems_xml).decode('utf8').strip()), p, sg_settings['level'])
+					try:
+						createItemsXML(ET.fromstring(z.read(defaultitems_xml).decode('utf8').strip()), p, sg_settings['level'])
+					except ET.ParseError:
+						sg.popup(tr.getTrans('broken_map').format(values['-MAP-']), title = tr.getTrans('broken_map_title'), location = (50, 50))
+						shutil.rmtree(p)
+						shutil.rmtree(p + '_Backup')
+						removeSaveGame(values['-TITLE-'], False)
+						return False
 					
 					defaultfarmlands_xml = ET.fromstring(z.read(data_path + 'map.xml').decode('utf8').strip()).find('farmlands').attrib['filename']
-					createFarmlandXML(ET.fromstring(z.read(defaultfarmlands_xml).decode('utf8').strip()), p, sg_settings['level'])
+					try:
+						createFarmlandXML(ET.fromstring(z.read(defaultfarmlands_xml).decode('utf8').strip()), p, sg_settings['level'])
+					except ET.ParseError:
+						sg.popup(tr.getTrans('broken_map').format(values['-MAP-']), title = tr.getTrans('broken_map_title'), location = (50, 50))
+						shutil.rmtree(p)
+						shutil.rmtree(p + '_Backup')
+						removeSaveGame(values['-TITLE-'], False)
+						return False
+
+					createFieldsXML(z.read(data_path + 'map.i3d').decode('utf8').strip(), p)
 
 					mapId = maps[values['-MAP-']].split('!')[1].replace('.zip', '.SampleModMap')
+
+			createFarmXML(p, sg_settings['money'], sg_settings['nick'])
 
 			shutil.copyfile(se.resource_path('careerSavegame.xml'), p + os.sep + 'careerSavegame.xml')
 			careersavegame = ET.parse(p + os.sep + 'careerSavegame.xml')
@@ -514,12 +579,6 @@ def saveSaveGame(values, update, money):
 			careersavegame.find('statistics/playTime').text = '0.100000'
 			careersavegame.find('slotSystem').attrib['slotUsage'] = '1161'
 			careersavegame.write(p + os.sep + 'careerSavegame.xml', xml_declaration = True, encoding = "UTF-8")
-
-
-# ------------ dev -----------------
-			#shutil.rmtree(p)
-			return False
-# ------------ dev -----------------
 		except FileExistsError:
 			sg.popup(str(se.getSettings('fs_game_data_path') + os.sep) + values['-TITLE-'] + '\n' + tr.getTrans('ssg_folder_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
@@ -691,8 +750,10 @@ def guiNewSaveGame(title = None):
 			if exp:
 				exportSGC(values['-TITLE-'])
 			else:
+				window.Hide()
 				if saveSaveGame(values, update_sg, money):
 					break
+				window.UnHide()
 		elif event == '-SEL_MOD-':
 			markMods(window, title)
 		elif event == '-REM_MOD-':
