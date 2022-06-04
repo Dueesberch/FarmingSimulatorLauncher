@@ -155,7 +155,7 @@ def validateModsFolder(fs_game_data_folder):
 		for i in mods:
 			if sg.popup_yes_no(tr.getTrans('found_new_mod').format(i), location = (50, 50), title = tr.getTrans('new_mod')) == 'Yes':
 				#logger.debug('fsl:checkChanges:import mod ' + i + ' ' + mods[i])
-				im.importMods(path, [i], True)
+				im.importMods(path, [i], True, True)
 			else:
 				try:
 					os.mkdir(fs_game_data_folder + 'mods_fsl_bak')
@@ -257,6 +257,7 @@ def checkChanges():
 			hash_n = hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest()
 			if os.path.exists(path) and hash_n != i['imported']['hash']:
 				if sg.popup_yes_no(tr.getTrans('import_sgc_init').format(i['name'], path), title = 'import', location = (50, 50)) == 'Yes':
+					print(path, i['name'])
 					im.importSGC(path, i['name'])
 		except KeyError:
 			pass

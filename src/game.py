@@ -598,7 +598,7 @@ def saveSaveGame(values, update, money):
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'] + '_Backup', se.getSettings('fs_game_data_path') + os.sep + folder_name + '_Backup')
-	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
+	if sg.popup_yes_no(tr.getTrans('exportsg').format(values['-TITLE-'])) == 'Yes':
 		exportSGC(values['-TITLE-'])
 	return True
 
