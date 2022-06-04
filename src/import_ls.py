@@ -166,7 +166,6 @@ def removeMods(mods):
 			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
 				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
 				unused = False
-				break
 		if unused:
 			with zipfile.ZipFile(all_mods + os.sep + existing_mods[val]) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
@@ -178,7 +177,10 @@ def removeMods(mods):
 						break
 				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
 				d['files'].pop(existing_mods[val])
-				TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
+				if d['files'] == {}:
+					TinyDB(all_mods + os.sep + 'mods_db.json').remove(doc_ids = [d.doc_id])
+				else:
+					TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
 			os.remove(all_mods + os.sep + existing_mods[val])
 
 def getAllMods():
@@ -198,7 +200,6 @@ def markUnusedMods(window):
 	for dataset in datasets:
 		used = used + list(dataset['mods'].values())
 		used.append(dataset['map'])
-	print(used)
 	used = list(dict.fromkeys(used))
 	all_files = list(mods.values())
 	unused = []

@@ -256,7 +256,7 @@ def checkChanges():
 			path = i['imported']['path']
 			hash_n = hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest()
 			if os.path.exists(path) and hash_n != i['imported']['hash']:
-				if sg.popup_yes_no(tr.getTrans('import_sgc_init').format(i['name'], path), title = 'import', location = (50, 50)) == 'Yes':
+				if sg.popup_yes_no(tr.getTrans('import_sgc_init').format(i['name'], path), title = 'Import', location = (50, 50)) == 'Yes':
 					print(path, i['name'])
 					im.importSGC(path, i['name'])
 		except KeyError:

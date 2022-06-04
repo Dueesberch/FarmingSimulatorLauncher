@@ -10,6 +10,8 @@ import zipfile
 import xml.etree.ElementTree as ET
 import hashlib
 import pathlib
+import shutil
+import re
 
 from tinydb import TinyDB, Query
 from pathlib import Path
@@ -354,6 +356,39 @@ def def_check():
 		checks['skip_intro'] = True
 	return checks
 
+def resetFSL():
+	if sg.popup_yes_no(tr.getTrans('reset_popup'), title = 'Reset', location = (50, 50)) == 'Yes':
+		sg.popup_ok(tr.getTrans('reset_thanks'), title = '', location =(50, 50))
+		all_mods_path = getSettings('all_mods_path')
+
+		# move mods - keep latest version
+		mods_folder = getSettings('fs_game_data_path') + os.sep + 'mods'
+		os.mkdir(mods_folder)
+		for mod in TinyDB(all_mods_path + os.sep + 'mods_db.json').all():
+			latest = sorted(mod['files'].keys())[-1]
+			shutil.move(all_mods_path + os.sep + latest, mods_folder + os.sep + latest.split('!')[1])
+		shutil.rmtree(all_mods_path)
+		
+		# move savegames if not empty
+		c = 1
+		sgb_folder = getSettings('fs_game_data_path') + os.sep + 'savegame_Backups'
+		os.mkdir(sgb_folder)
+		for sga in TinyDB(games_json):
+			if len(os.listdir(getSettings('fs_game_data_path') + os.sep + sga['folder'])) != 0:
+				while os.path.exists(getSettings('fs_game_data_path') + os.sep + 'savegame' + str(c)):
+					c = c + 1
+				os.rename(getSettings('fs_game_data_path') + os.sep + sga['folder'], getSettings('fs_game_data_path') + os.sep + 'savegame' + str(c))
+				b_folder = getSettings('fs_game_data_path') + os.sep + sga['folder'] + '_Backup'
+				for b in os.listdir(b_folder):
+					shutil.move(b_folder + os.sep + b, sgb_folder + os.sep + b.replace('savegame1', 'savegame' + str(c)))
+				shutil.rmtree(b_folder)
+				c = c + 1
+		# rm FSL settings for current fs version
+		os.remove(fsl_config_path + os.sep + 'games_' + vers + '.json')
+		os.remove(fsl_config_path + os.sep + 'settings_' + vers + '.json')
+
+		sys.exit()
+
 def guiSettings(lang, init = False):
 	io = True
 	checkInit(lang, init)
@@ -390,6 +425,7 @@ def guiSettings(lang, init = False):
 				[sg.Text(tr.getTrans('get_all_mods_path'), key = '-ALL_MODS_PATH_TEXT-')], 
 				[sg.Input(am, key = '-ALL_MODS_PATH-', size = (100, 1))],
 				[sg.FolderBrowse(initial_folder = am, target = '-ALL_MODS_PATH-')],
+				[sg.Button(tr.getTrans('reset_default'), key = '-RESET-', size = (50,1))],
 				[	sg.Button(tr.getTrans('save'), key = '-SAVE-', size = (14, 1)),
 					sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))
 				]
@@ -455,5 +491,7 @@ def guiSettings(lang, init = False):
 				window['-FS_GAME_DATA_PATH-'].update(os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games/FarmingSimulator2022')
 			elif platform.system() == 'Darwin':
 				window['-FS_GAME_DATA_PATH-'].update(os.path.expanduser('~') + '/Library/Application Support/FarmingSimulator2022')
+		elif event == '-RESET-':
+			resetFSL()
 	window.close()
 	return io
