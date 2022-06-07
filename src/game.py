@@ -613,7 +613,7 @@ def addMissingMods(title):
 			missing.append(f + ' : ' + v)
 	return missing
 
-def markMods(window, title):
+def markMods(window, title, selected_MODS):
 		data = TinyDB(se.games_json).search((Query().name == title))
 		window['-TITLE-'].update(title)
 		window['-DESC-'].update(data[0]['desc'])
@@ -630,6 +630,7 @@ def markMods(window, title):
 					selected.append(key)
 					break
 		window.Element('-MODS-').SetValue(selected)
+		selected_MODS.append(selected)
 		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
 
 def remMissingMods(values):
@@ -701,8 +702,10 @@ def guiNewSaveGame(title = None):
 	global mods
 	exp = True
 	maps_keys, mods_keys = getMods()
+	print(mods)
 	money_layout = []
 	money = {}
+	selected_MODS = []
 	if title != None:
 		money = getMoney(title)
 		if list(money.keys())[0] == 'no data':
@@ -718,7 +721,7 @@ def guiNewSaveGame(title = None):
 				[sg.Text(tr.getTrans('map'))],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
-				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'), enable_events = True)],
+				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'), enable_events = True), sg.Image('', key = '-MODS_IMG-', size = (256, 256))],
 				[	sg.Button(tr.getTrans('export'), key = '-EXPORT_SAVE-', size = (14, 1)),
 					sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (20, 1), visible = False)
 				],
@@ -743,11 +746,12 @@ def guiNewSaveGame(title = None):
 		window['-MAP-'].update(disabled = True)
 		window['-FOLDER_TEXT-'].update(visible = True)
 		window['-FOLDER-'].update(getFolder(title), visible = True)
-		markMods(window, title)
+		markMods(window, title, selected_MODS)
 	else:
 		window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 		exp = False
 
+	print(selected_MODS)
 	while True:
 		event, values = window.read()
 		#print(event, values)
@@ -767,6 +771,12 @@ def guiNewSaveGame(title = None):
 			remMissingMods(values)
 			window['-MISS-'].update(addMissingMods(title))
 		elif event == '-MODS-' or event == '-TITLE-' or event == '-DESC-':
+			for i in values['-MODS-']:
+				if not i in selected_MODS:
+					for d in TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all():
+						if mods[i] in d['files']:
+							window['-MODS_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + d['img'] + '.png', size = (256, 256))
+			selected_MODS = values['-MODS-']
 			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 			exp = False
 		elif event == '-FOLDER-':

@@ -244,7 +244,10 @@ def init():
 							else:
 								d['files'][f] = f_hash
 								db.update({'files': d['files']}, doc_ids = [d.doc_id])
-						Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon).save(all_mods_path + os.sep + 'images' + os.sep + img_name + '.png')
+						im = Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
+						size = 256, 256
+						im.thumbnail(size, Image.ANTIALIAS)
+						im.save(all_mods_path + os.sep + 'images' + os.sep + img_name + '.png')
 						shutil.rmtree(all_mods_path + os.sep + 'images' + os.sep + 'tmp')
 		try:
 			TinyDB(settings_json).get(doc_id = 1)['intro']
