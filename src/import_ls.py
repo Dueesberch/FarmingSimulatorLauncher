@@ -2,7 +2,7 @@ import PySimpleGUI as sg
 import settings as se
 import translation as tr
 import game as ga
-
+from PIL import Image
 import os
 import zipfile
 import xml.etree.ElementTree as ET
@@ -120,8 +120,10 @@ def importMods(path, mods, updateSGs, rem = False):
 			with zipfile.ZipFile(all_mods + os.sep + new_name) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				icon = moddesc.find('iconFilename').text
+				z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp.dds')
 				for l in se.getLangs():
 					name = moddesc.find('title/' + l)
+					Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp.dds').save(all_mods_path + os.sep + 'images' + os.sep + hashlib.md5(name.text.encode()).hexdigest() + '.png')
 					mod_lang = l
 					if name != None:
 						break

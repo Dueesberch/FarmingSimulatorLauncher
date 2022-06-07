@@ -12,7 +12,7 @@ import hashlib
 import pathlib
 import shutil
 import re
-
+from PIL import Image
 from tinydb import TinyDB, Query
 from pathlib import Path
 
@@ -220,8 +220,16 @@ def init():
 						with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
 							moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 							icon = moddesc.find('iconFilename').text
+							try:
+								z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+							except KeyError:
+								if '.png' in icon:
+									icon = icon.replace('.png', '.dds')
+									z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+									pass
 							for l in langs:
 								name = moddesc.find('title/' + l)
+								img_name = hashlib.md5(name.text.encode()).hexdigest()
 								mod_lang = l
 								if name != None:
 									break
@@ -230,11 +238,14 @@ def init():
 								mod_type = 'map'
 							else:
 								mod_type = 'mod'
+
 							if d == None:
-								db.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'files': {f: f_hash}})
+								db.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'img': img_name, 'files': {f: f_hash}})
 							else:
 								d['files'][f] = f_hash
 								db.update({'files': d['files']}, doc_ids = [d.doc_id])
+						Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon).save(all_mods_path + os.sep + 'images' + os.sep + img_name + '.png')
+						shutil.rmtree(all_mods_path + os.sep + 'images' + os.sep + 'tmp')
 		try:
 			TinyDB(settings_json).get(doc_id = 1)['intro']
 		except KeyError:
