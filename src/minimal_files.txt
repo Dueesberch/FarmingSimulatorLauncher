@@ -1,0 +1,23 @@
+generiert
+careerSavegame.xml
+
+in maps
+collectibles.xml
+items.xml
+placeables.xml
+vehicles.xml
+
+in maps/data
+densityMap_fruits.gdm
+densityMap_ground.gdm
+densityMap_height.gdm
+densityMap_stones.gdm
+densityMap_weed.gdm
+infoLayer_limeLevel.grle
+infoLayer_placementCollisionGenerated.grle
+infoLayer_plowLevel.grle
+infoLayer_rollerLevel.grle
+infoLayer_sprayLevel.grle
+infoLayer_stubbleShredLevel.grle
+infoLayer_tipCollisionGenerated.grle
+infoLayer_weed.grle

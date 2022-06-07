@@ -62,7 +62,7 @@ Unter Beschreibung wird die während des Anlegens der Savegamekonfiguration eing
 ## Erster Start
 Beim ersten Start müssen zuerst die Pfade gesetzt werden. Siehe **FSL Einstellungen**.  
 Danach sucht FSL im angegebenen Ordner nach dem `mods`-Ordner. Dieser kann dann importiert werden. 
-Wird der Import durchgeführt werden zuerst die Mods aus dem `mods` Ordner in den FSL Alle-Mods-Ordner importiert.  
+Wird der Import durchgeführt werden zuerst die Mods aus dem `mods` Ordner in den FSL Alle-Mods-Ordner importiert. FSL benötigt die Versionsnummer des Mods und liest dafür die `moddesc.xml` aus. Ist Diese fehlerhaft, wird der Mod nicht importiert.  
 <span style="color:red"> !!! Der orginale mods Ordner wird nach dem Import gelöscht. Dies ist nötig, da FSL bei jedem Spielstart einen mods Ordner erzeugt, der nur die benötigten Mods enthält. !!!</span>  
 Danach können weitere Mods aus anderen Ordnern importiert werden. Siehe **Mods importieren**  
 
@@ -195,7 +195,7 @@ Hierüber werden die in FSL verfügbaren Mods verwaltet. Es können neue Mods im
 ### Import
 Über ***Browse*** wird der Ordner ausgwählt, in dem nach Mods gesucht werden soll.  
 
-***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. Achtung: Es findet keine Unterscheidung der LS Versionen statt.  
+***Zum Import*** listet alle gefundenen Mods auf und es können alle zu importierenden Mods ausgewählt werden. FSL benötigt die Versionsnummer des Mods und liest dafür die `moddesc.xml` aus. Ist Diese fehlerhaft, wird der Mod nicht aufgelistet.  
 Die Auswahl erfolgt über die Tastenkombinationen:  
 ***Mausklick*** Es wird lediglich der angeklickte Eintrag ausgewählt. Andere bereits ausgewählte Einträge werden abgewählt.  
 ***Strg + Mausklick*** Es wird der angeklickte Eintrag zusätzlich zu den bereits Ausgwählten ausgewählt. Wird mit dieser Kombination auf einen bereits ausgewählten Eintrag geklickt, wird die Auswahl für diesen Eintrag aufgehoben.  

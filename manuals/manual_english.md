@@ -63,7 +63,7 @@ During the import or creation it is possible to give a small description which w
 ## First start
 At the first start the required path's must be set. See **FSL settings**  
 Afterwards FSL is looking for the `mod` folder. The mods can be imported then.  
-Is the import accepted all found `mods` will be imported into an fsl-all-mods folder.  
+Is the import accepted all found `mods` will be imported into an fsl-all-mods folder. FSL needs the mod version. Therefore the `moddesc.xml` is read. If the `moddesc.xml` wrong the import is rejected.  
 <span style="color:red"> !!! The original mods folder will be deleted after the import. That is necessary because FSL is creating an empty mods folder at game start which will held only required mods. !!!</span>  
 Finally it is possible to select additional mods folder and import mods from there. See **Import mods**
 
@@ -188,7 +188,7 @@ At the **Mods** window the mods will be managed. It is possible to import new mo
 ### Import
 With ***Browse*** the folder where FSL shall look for mods can be selected here.  
 
-***To import*** list all found mods and can be selected here. Attention: FSL doesn't differ between FS versions.  
+***To import*** list all found mods and can be selected here. FSL needs the mod version. Therefore the `moddesc.xml` is read. If the `moddesc.xml` wrong the mod isn't listed.  
 The selection is done by:  
 ***mouse click*** Only the clicked entry will be selected. Al already selected entries will be unselected.  
 ***Ctrl + mouse click*** The selected entry will be additionally selected to the already selected.  

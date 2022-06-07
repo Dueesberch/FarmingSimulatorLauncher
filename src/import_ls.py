@@ -13,7 +13,6 @@ import logging as log
 import pysed
 import hashlib
 import pathlib
-import copy
 
 existing_mods = {}
 
@@ -65,6 +64,7 @@ def getMods(path):
 		sg.popup_ok(tr.getTrans('no_mod_found'), title = '')
 	return mods
 
+
 def getSaveGames():
 	""" get stored save games
 	read the according games_lsxx.json and extract maps
@@ -87,7 +87,6 @@ def getSaveGames():
 				l.append(n + ' : ' + tr.getTrans('ghostmap'))
 				pass
 		else:
-			m = list(se.getInternalMaps().keys())[list(se.getInternalMaps().values()).index(m)]
 			l.append(n + ' : ' + m)
 	return l
 
@@ -108,7 +107,7 @@ def updateSGS(sgs, mod):
 		# TODO map update
 	return
 
-def importMods(path, mods, updateSGs):
+def importMods(path, mods, updateSGs, rem = False):
 	all_mods = se.getSettings('all_mods_path')
 	for i in mods:
 		with zipfile.ZipFile(path + os.sep + i) as z:
@@ -116,6 +115,27 @@ def importMods(path, mods, updateSGs):
 			version = moddesc.find('version')
 			new_name = 'fsl_' + version.text + '!' + i
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
+			
+			f_hash = hashlib.md5(pathlib.Path(all_mods + os.sep + new_name).read_bytes()).hexdigest()
+			with zipfile.ZipFile(all_mods + os.sep + new_name) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				icon = moddesc.find('iconFilename').text
+				for l in se.getLangs():
+					name = moddesc.find('title/' + l)
+					mod_lang = l
+					if name != None:
+						break
+				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
+				if moddesc.find('maps/map/title/en') != None:
+					mod_type = 'map'
+				else:
+					mod_type = 'mod'
+				if d == None:
+					TinyDB(all_mods + os.sep + 'mods_db.json').insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'files': {new_name: f_hash}})
+				else:
+					d['files'][new_name] = f_hash
+					TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
+
 			if moddesc.find('maps/map/title/en') != None:
 				break
 			else:
@@ -134,6 +154,8 @@ def importMods(path, mods, updateSGs):
 								updateSGS(values['-SGS-'], new_name)
 							window.close()
 							break
+		if sg.popup_yes_no(tr.getTrans('rem_source').format(path + os.sep + i), title = tr.getTrans('remove_title'), location = (50, 50)) == 'Yes' or rem:
+			os.remove(path + os.sep +i)
 
 def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')
@@ -144,19 +166,47 @@ def removeMods(mods):
 			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
 				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
 				unused = False
-				break
 		if unused:
+			with zipfile.ZipFile(all_mods + os.sep + existing_mods[val]) as z:
+				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+				icon = moddesc.find('iconFilename').text
+				for l in se.getLangs():
+					name = moddesc.find('title/' + l)
+					mod_lang = l
+					if name != None:
+						break
+				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
+				d['files'].pop(existing_mods[val])
+				if d['files'] == {}:
+					TinyDB(all_mods + os.sep + 'mods_db.json').remove(doc_ids = [d.doc_id])
+				else:
+					TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
 			os.remove(all_mods + os.sep + existing_mods[val])
-			
 
 def getAllMods():
 	global existing_mods
 	m = ga.getMods(False)
 	existing_mods = m[0]
 	existing_mods.update(m[1])
-	for i in list(se.getInternalMaps()):
+	for i in list(se.getInternalMaps().keys()):
 		del existing_mods[i]
 	return list(sorted(existing_mods.keys()))
+
+def markUnusedMods(window):
+	datasets = TinyDB(se.games_json).all() 
+	maps, mods = ga.getMods(False)
+	mods.update(maps)
+	used = []
+	for dataset in datasets:
+		used = used + list(dataset['mods'].values())
+		used.append(dataset['map'])
+	used = list(dict.fromkeys(used))
+	all_files = list(mods.values())
+	unused = []
+	for mod in all_files:
+		if not mod in used:
+			unused.append(list(mods.keys())[list(mods.values()).index(mod)])
+	window.Element('-MODS_INST-').SetValue(unused)
 
 def guiImportMods(updateSGs = True):
 	importable_mods_layout =	[	
@@ -170,7 +220,7 @@ def guiImportMods(updateSGs = True):
 					[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
 					[sg.Text(tr.getTrans('existing_mods'))],
 					[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
-					[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (96, 1))],
+					[sg.Button(tr.getTrans('unused_mods'), key = '-UNUSED-', size = (47, 1)), sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (47, 1))],
 					[sg.Text('')],
 					[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
 				]
@@ -193,30 +243,9 @@ def guiImportMods(updateSGs = True):
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-MOD_PATH-':
-			mods = getMods(values['-MOD_PATH-'])
-			importable_mods_layout2 =	[	
-										]
-
-			layout2 =    [	[sg.Text(tr.getTrans('get_mod_path'))],
-							[sg.Input('', key = '-MOD_PATH-', size = (110, 1), enable_events = True)],
-							[sg.FolderBrowse(initial_folder = se.getSettings('fs_game_data_path'), target = '-MOD_PATH-', size = (96,1))],
-							[sg.Text(tr.getTrans('importable_mods'))],
-							[ importable_mods_layout2, sg.Image('icon_robertF2800.dds')],
-							[sg.Button(tr.getTrans('import'), key = '-IMPORT-', size = (96, 1))],
-							[sg.Text(tr.getTrans('existing_mods'))],
-							[sg.Listbox(getAllMods(),  key = '-MODS_INST-', size = (108, 10), select_mode = 'extended')],
-							[sg.Button(tr.getTrans('remove'), key = '-REMOVE-', size = (96, 1))],
-							[sg.Text('')],
-							[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
-						]
-			row = []
-			for c, i in enumerate(mods):
-				row.append(sg.Checkbox(i, key = '-MOD_' + str(c) + '-', size = (32, 1)))
-				if (c/2 - int(c/2)) == 0 or c == len(mods)-1:
-					importable_mods_layout2.append(row)
-					row = []
-			window.close()
-			window = sg.Window(tr.getTrans('import'), layout2, finalize = True, location = (50, 50))
+			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
+		elif event == '-UNUSED-':
+			markUnusedMods(window)
 	window.close()
 	return
 
@@ -349,7 +378,7 @@ def importSGC(path, title):
 			os.mkdir(se.getSettings('fs_game_data_path') + os.sep + new['folder'] + '_Backup')
 		except FileExistsError:
 			pass
-		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods']})
+		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "imported": fdata})
 
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
