@@ -380,7 +380,7 @@ def resetFSL():
 		
 		# move savegames if not empty
 		c = 1
-		sgb_folder = getSettings('fs_game_data_path') + os.sep + 'savegame_Backups'
+		sgb_folder = getSettings('fs_game_data_path') + os.sep + 'savegameBackups'
 		os.mkdir(sgb_folder)
 		for sga in TinyDB(games_json):
 			if len(os.listdir(getSettings('fs_game_data_path') + os.sep + sga['folder'])) != 0:
@@ -424,7 +424,7 @@ def guiSettings(lang, init = False):
 
 	layout = [	[sg.Text(tr.getTrans('set_lang'), key = '-SET_LANG-')],
 				[sg.Combo(values = tr.getLangs(), size = (98,5), default_value = lang, key = '-COMBO-', enable_events = True)],
-				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = def_check()['remember'])],
+				[sg.Checkbox(tr.getTrans('remember'), key = '-SET_DEF_LS-', default = def_check()['remember']), sg.Input(backups, key = '-N_KEEP-', size = (5,1)), sg.Text(tr.getTrans('to_keep'), key = '-KEEP-')],
 				[sg.Checkbox(tr.getTrans('skip_intro'), key = '-SKIP-', default = def_check()['skip_intro'])],
 				[sg.Text(tr.getTrans('get_fs_path'), key = '-FS_PATH_TEXT-')], 
 				[sg.Input(fs, key = '-FS_PATH-', size = (100, 1))], 

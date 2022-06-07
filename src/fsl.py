@@ -443,8 +443,8 @@ def setBackupAsCurrent(title, backup):
 		f_name = 'fsl_' + vers + '!' + name + '.zip'
 		if f_name != data[0]['map']:
 			mods[n] = f_name
-		if not os.path.exists(se.getSettings('all_mods_path') + os.sep + f_name) and sg.popup_yes_no(tr.getTrans('mod_not_found').format(f_name, se.getSettings('all_mods_path')), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
-			return False
+		#if not os.path.exists(se.getSettings('all_mods_path') + os.sep + f_name) and sg.popup_yes_no(tr.getTrans('mod_not_found').format(f_name, se.getSettings('all_mods_path')), title = tr.getTrans('ssg_title_empty'), location = (50, 50)) == 'No':
+		#	return False
 	# backup current
 	date = datetime.datetime.now()
 	date_str = date.strftime('%Y') + '-' + date.strftime('%m') + '-' + date.strftime('%d') + '_' + date.strftime('%H') + '-' + date.strftime('%M')
