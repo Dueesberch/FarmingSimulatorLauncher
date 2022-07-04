@@ -57,9 +57,9 @@ def getMods(l = True):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				title = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
 			if title != None:
-				key = title.text + ' - ' + v.split('!')[0].split('_')[1]
+				key = title.text + ' - ' + v.split('!')[0].replace('fsl_', '')
 			else:
-				key = m['name'] + ' - ' + v.split('!')[0].split('_')[1]
+				key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
 			maps[key] = v
 	
 	mods_data = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').search(Query().mod_type == 'mod')
@@ -69,9 +69,9 @@ def getMods(l = True):
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				title = moddesc.find('title/' + se.getFslSettings('language'))
 			if title != None:
-				key = title.text + ' - ' + v.split('!')[0].split('_')[1]
+				key = title.text + ' - ' + v.split('!')[0].replace('fsl_', '')
 			else:
-				key = m['name'] + ' - ' + v.split('!')[0].split('_')[1]
+				key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
 			mods[key] = v
 
 	files = []
@@ -587,13 +587,14 @@ def saveSaveGame(values, update, money):
 		folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
 		data = db.get(doc_id = update)
 		path = se.getSettings('fs_game_data_path') + os.sep + data['folder'] + os.sep + 'farms.xml'
-		farms = ET.parse(path)
-		for farm_l, m in money.items():
-			for farm in farms.getroot():
-				if farm.attrib['name'] == farm_l:
-					farm.set('money', values[farm_l])
-		with open(path, 'wb') as f:
-			farms.write(f, xml_declaration = True, encoding = "UTF-8")
+		if os.path.exists(path):
+			farms = ET.parse(path)
+			for farm_l, m in money.items():
+				for farm in farms.getroot():
+					if farm.attrib['name'] == farm_l:
+						farm.set('money', values[farm_l])
+			with open(path, 'wb') as f:
+				farms.write(f, xml_declaration = True, encoding = "UTF-8")
 		db.update({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[values['-MAP-']], "mods": modstoadd}, doc_ids = [update])
 		if data['name'] != se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']:
 			os.rename(se.getSettings('fs_game_data_path') + os.sep + data['folder'], se.getSettings('fs_game_data_path') + os.sep + folder_name)
@@ -613,12 +614,12 @@ def addMissingMods(title):
 			missing.append(f + ' : ' + v)
 	return missing
 
-def markMods(window, title, selected_MODS):
+def markMods(window, title):
 		data = TinyDB(se.games_json).search((Query().name == title))
 		window['-TITLE-'].update(title)
 		window['-DESC-'].update(data[0]['desc'])
 		if data[0]['map'] not in se.getInternalMaps().values():
-			window['-MAP-'].update(tr.getTrans('map_not_found').format(data[0]['map'].split('!')[1], data[0]['map'].split('!')[0].split('_')[1]))
+			window['-MAP-'].update(tr.getTrans('map_not_found').format(data[0]['map'].split('!')[1], data[0]['map'].split('!')[0].replace('fsl_', '')))
 		for key, val in maps.items():
 			if val == data[0]['map']:
 				window['-MAP-'].update(key)
@@ -630,7 +631,6 @@ def markMods(window, title, selected_MODS):
 					selected.append(key)
 					break
 		window.Element('-MODS-').SetValue(selected)
-		selected_MODS.append(selected)
 		update_sg = TinyDB(se.games_json).get((Query().name == title)).doc_id
 
 def remMissingMods(values):
@@ -667,7 +667,8 @@ def exportSGC(title):
 		missing = False
 		for key, value in data['mods'].items():
 			try:
-				shutil.copyfile(se.getSettings('all_mods_path') + os.sep + value, path + os.sep + value.split('!')[1])
+				if not 'dlc' in value:
+					shutil.copyfile(se.getSettings('all_mods_path') + os.sep + value, path + os.sep + value.split('!')[1])
 			except FileNotFoundError:
 				missing = True
 				pass
@@ -702,7 +703,6 @@ def guiNewSaveGame(title = None):
 	global mods
 	exp = True
 	maps_keys, mods_keys = getMods()
-	print(mods)
 	money_layout = []
 	money = {}
 	selected_MODS = []
@@ -721,7 +721,7 @@ def guiNewSaveGame(title = None):
 				[sg.Text(tr.getTrans('map'))],
 				[sg.Combo(maps_keys, key = '-MAP-', size = (98, 1))],
 				[sg.Text('Mods')],
-				[sg.Listbox(mods_keys, key = '-MODS-',size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods'), enable_events = True), sg.Image('', key = '-MODS_IMG-', size = (256, 256))],
+				[sg.Listbox(mods_keys, key = '-MODS-', size = (98, 15), select_mode = 'extended', tooltip = tr.getTrans('tt_gaLbMods')), sg.Image('', key = '-MODS_IMG-', size = (256, 256))],
 				[	sg.Button(tr.getTrans('export'), key = '-EXPORT_SAVE-', size = (14, 1)),
 					sg.Button(tr.getTrans('select_mods'), key = '-SEL_MOD-', size = (20, 1), visible = False)
 				],
@@ -731,7 +731,7 @@ def guiNewSaveGame(title = None):
 				[sg.Button(tr.getTrans('remove'), key = '-REM_MOD-', size = (87, 1), visible = False)],
 				[money_layout],
 				[sg.Text(tr.getTrans('folder'), key = '-FOLDER_TEXT-', visible = False), sg.Button('', key = '-FOLDER-', visible = False)],
-				[sg.Button(tr.getTrans('cancel'), key = '-EXIT-', size = (14, 1))]
+				[sg.Button(tr.getTrans('exit'), key = '-EXIT-', size = (14, 1))]
 	]
 	
 	window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50))
@@ -746,12 +746,14 @@ def guiNewSaveGame(title = None):
 		window['-MAP-'].update(disabled = True)
 		window['-FOLDER_TEXT-'].update(visible = True)
 		window['-FOLDER-'].update(getFolder(title), visible = True)
-		markMods(window, title, selected_MODS)
+		markMods(window, title)
+		key, val = window.read(timeout=0)
+		selected_MODS = val['-MODS-']
 	else:
 		window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 		exp = False
 
-	print(selected_MODS)
+	window['-MODS-'].bind('<ButtonPress-1>', 'lClick')
 	while True:
 		event, values = window.read()
 		#print(event, values)
@@ -770,7 +772,10 @@ def guiNewSaveGame(title = None):
 		elif event == '-REM_MOD-':
 			remMissingMods(values)
 			window['-MISS-'].update(addMissingMods(title))
-		elif event == '-MODS-' or event == '-TITLE-' or event == '-DESC-':
+		elif event == '-TITLE-' or event == '-DESC-':
+			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
+			exp = False
+		elif event == '-MODS-lClick':
 			for i in values['-MODS-']:
 				if not i in selected_MODS:
 					for d in TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all():

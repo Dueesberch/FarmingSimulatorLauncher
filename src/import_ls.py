@@ -57,12 +57,18 @@ def getMods(path):
 						moddesc = None
 						pass
 					if moddesc:
-						z.extract(icon, se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp')
+						try:
+							z.extract(icon, se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp')
+						except KeyError:
+							if '.png' in icon:
+								icon = icon.replace('.png', '.dds')
+								z.extract(icon, se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp')
+								pass						
 						mods.append(i)
-				im = Image.open(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
-				size = 256, 256
-				im.thumbnail(size, Image.ANTIALIAS)
-				im.save(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i.split('/')[-1] + '.png')
+						im = Image.open(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
+						size = 256, 256
+						im.thumbnail(size, Image.ANTIALIAS)
+						im.save(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i.split('/')[-1] + '.png')
 	except FileNotFoundError:
 		pass
 	if not mods:
@@ -125,7 +131,13 @@ def importMods(path, mods, updateSGs, rem = False):
 			with zipfile.ZipFile(all_mods + os.sep + new_name) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				icon = moddesc.find('iconFilename').text
-				z.extract(icon, all_mods + os.sep + 'images' + os.sep + 'tmp')
+				try:
+					z.extract(icon, all_mods + os.sep + 'images' + os.sep + 'tmp')
+				except KeyError:
+					if '.png' in icon:
+						icon = icon.replace('.png', '.dds')
+						z.extract(icon, all_mods + os.sep + 'images' + os.sep + 'tmp')
+						pass
 				for l in se.getLangs():
 					name = moddesc.find('title/' + l)
 					img_name = hashlib.md5(name.text.encode()).hexdigest()
@@ -248,16 +260,14 @@ def guiImportMods(updateSGs = True):
 				pass
 			break
 		elif event == "-IMPORT-":
-			#window.Hide()
 			importMods(values['-MOD_PATH-'], values['-MODS-'], updateSGs)
-			#window.UnHide()
 			window['-MOD_PATH-'].update('')
 			window['-MODS-'].update(values = '')
 			window['-MODS_INST-'].update(getAllMods())
 		elif event == '-REMOVE-':
 			removeMods(values['-MODS_INST-'])
 			window['-MODS_INST-'].update(getAllMods())
-		elif event == '-MOD_PATH-':
+		elif event == '-MOD_PATH-' and not values['-MOD_PATH-'] == '':
 			window['-MODS-'].update(values = getMods(values['-MOD_PATH-']))
 		elif event == '-UNUSED-':
 			markUnusedMods(window)
