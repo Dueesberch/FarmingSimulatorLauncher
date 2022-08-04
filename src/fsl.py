@@ -127,6 +127,8 @@ def validateModsFolder(fs_game_data_folder):
 		db = TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')
 		#logger.debug('fsl:checkChanges:existing mods ' + str(all_mods))
 		path = fs_game_data_folder + 'mods'
+		if not os.path.exists(path):
+			return
 		for i in os.listdir(path):
 			if i.endswith('.zip') and not os.path.islink(fs_game_data_folder + 'mods' + os.sep + i):
 				with zipfile.ZipFile(path + os.sep + i) as z:
@@ -249,7 +251,10 @@ def checkChanges():
 	if os.path.exists(fs_game_data_folder + 'savegameBackup'):
 		shutil.rmtree(fs_game_data_folder + 'savegameBackup')
 	if os.path.exists(fs_game_data_folder + 'savegame1'):
-		shutil.rmtree(fs_game_data_folder + 'savegame1')
+		try:
+			shutil.rmtree(fs_game_data_folder + 'savegame1')
+		except PermissionError:
+			pass
 
 	data = TinyDB(se.games_json).all()
 	for i in data:

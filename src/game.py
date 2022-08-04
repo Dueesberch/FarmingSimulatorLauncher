@@ -696,6 +696,8 @@ def getMoney(title):
 			money[farm.attrib['name']] = int(float(farm.attrib['money']))
 	except FileNotFoundError:
 		money = {'no data': 0}
+	if money == {}:
+		money = {'no data': 0}
 	return money
 
 def guiNewSaveGame(title = None):
@@ -780,7 +782,10 @@ def guiNewSaveGame(title = None):
 				if not i in selected_MODS:
 					for d in TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all():
 						if mods[i] in d['files']:
-							window['-MODS_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + d['img'] + '.png', size = (256, 256))
+							try:
+								window['-MODS_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + d['img'] + '.png', size = (256, 256))
+							except Exception:
+								pass
 			selected_MODS = values['-MODS-']
 			window['-EXPORT_SAVE-'].update(tr.getTrans('save'))
 			exp = False

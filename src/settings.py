@@ -15,6 +15,7 @@ import re
 from PIL import Image
 from tinydb import TinyDB, Query
 from pathlib import Path
+import traceback
 
 fsl_config_path = ''
 settings_json = ''
@@ -25,7 +26,7 @@ logger = None
 fs19_internal_maps = {'Ravenport': 'MapUS', 'Felsbrunn': 'MapEU'}
 fs22_internal_maps = {'Elmcreek': 'MapUS', 'Haut-Beyleron': 'MapFR', 'Erlengrat': 'mapAlpine'}
 logo = ''
-langs = ['en', 'de', 'fr', 'ru']
+langs = ['', 'en', 'de', 'fr', 'ru']
 
 
 def resource_path(relative_path):
@@ -182,73 +183,84 @@ def init():
 			TinyDB(settings_json).update({'all_mods_path': new_path})
 
 		if (os.path.exists(all_mods_path) and not os.path.exists(all_mods_path + os.sep + 'mods_db.json')) or (os.path.exists(all_mods_path) and os.stat(all_mods_path + os.sep + 'mods_db.json').st_size == 0):
+			w = sg.Window('', no_titlebar = True, layout = [[sg.Text('Create mods database. Please wait')]], finalize = True, location = (50, 50))
 			db = TinyDB(all_mods_path + os.sep + 'mods_db.json')
 			for f in os.listdir(all_mods_path):
-				if not f.startswith('fsl_'):
-					continue
-				elif f.endswith('.zip'):
-					f_hash = hashlib.md5(pathlib.Path(all_mods_path + os.sep + f).read_bytes()).hexdigest()
-					# check if mod is already duplicated
-					all_mods_hashes = []
-					for mod in db.all():
-						all_mods_hashes = all_mods_hashes + list(mod['files'].values())
-					# if dupllicated - fix configuration
-					if f_hash in all_mods_hashes: # mod vorhanden
+				try:
+					if not f.startswith('fsl_'):
+						continue
+					elif f.endswith('.zip'):
+						f_hash = hashlib.md5(pathlib.Path(all_mods_path + os.sep + f).read_bytes()).hexdigest()
+						# check if mod is already duplicated
+						all_mods_hashes = []
 						for mod in db.all():
-							if f_hash in list(mod['files'].values()): # bereits existierende datei
-								sg.popup_ok(tr.getTrans('duplicate_mod_found', lang).format(mod['name']))
-								# replace mod by old
-								if vers == 'fs22':
-									games = TinyDB(fsl_config_path + 'games_fs22.json')
-								if vers == 'fs19':
-									games = TinyDB(fsl_config_path + 'games_fs19.json')
-								for game in games.all():
-									if f in game['mods'].values():
-										mods = game['mods']
-										for number, file_name in mods.items():
-											if file_name == f:
-												for new_file_name, hash_val in mod['files'].items():
-													if hash_val == f_hash:
-														dict_update = {number: new_file_name}
-													mods.update(dict_update)
-													games.update({'mods': mods}, doc_ids = [game.doc_id])
-													# remove duplicated mod
-													os.remove(all_mods_path + os.sep + f)
-													break
-								break
-					else:
-						with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
-							moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-							icon = moddesc.find('iconFilename').text
-							try:
-								z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
-							except KeyError:
-								if '.png' in icon:
-									icon = icon.replace('.png', '.dds')
-									z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
-									pass
-							for l in langs:
-								name = moddesc.find('title/' + l)
-								img_name = hashlib.md5(name.text.encode()).hexdigest()
-								mod_lang = l
-								if name != None:
+							all_mods_hashes = all_mods_hashes + list(mod['files'].values())
+						# if dupllicated - fix configuration
+						if f_hash in all_mods_hashes: # mod vorhanden
+							for mod in db.all():
+								if f_hash in list(mod['files'].values()): # bereits existierende datei
+									sg.popup_ok(tr.getTrans('duplicate_mod_found', lang).format(mod['name']))
+									# replace mod by old
+									if vers == 'fs22':
+										games = TinyDB(fsl_config_path + 'games_fs22.json')
+									if vers == 'fs19':
+										games = TinyDB(fsl_config_path + 'games_fs19.json')
+									for game in games.all():
+										if f in game['mods'].values():
+											mods = game['mods']
+											for number, file_name in mods.items():
+												if file_name == f:
+													for new_file_name, hash_val in mod['files'].items():
+														if hash_val == f_hash:
+															dict_update = {number: new_file_name}
+														mods.update(dict_update)
+														games.update({'mods': mods}, doc_ids = [game.doc_id])
+														# remove duplicated mod
+														os.remove(all_mods_path + os.sep + f)
+														break
 									break
-							d = db.get(Query().name == name.text)
-							if moddesc.find('maps/map/title/en') != None:
-								mod_type = 'map'
-							else:
-								mod_type = 'mod'
+						else:
+							with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
+								moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
+								icon = moddesc.find('iconFilename').text
+								try:
+									z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+								except KeyError:
+									if '.png' in icon:
+										icon = icon.replace('.png', '.dds')
+										z.extract(icon, all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+										pass
+								for idx, l in enumerate(getLangs()):
+									if not idx + 1 == len(getLangs()):
+										name = moddesc.find('title/' + l)
+									else:
+										name = moddesc.find('title')
+									if name != None:
+										img_name = hashlib.md5(name.text.encode()).hexdigest()
+										mod_lang = l
+										break
+								d = db.get(Query().name == name.text)
+								if moddesc.find('maps/map/title/en') != None:
+									mod_type = 'map'
+								else:
+									mod_type = 'mod'
 
-							if d == None:
-								db.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'img': img_name, 'files': {f: f_hash}})
-							else:
-								d['files'][f] = f_hash
-								db.update({'files': d['files']}, doc_ids = [d.doc_id])
-						im = Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
-						size = 256, 256
-						im.thumbnail(size, Image.ANTIALIAS)
-						im.save(all_mods_path + os.sep + 'images' + os.sep + img_name + '.png')
-						shutil.rmtree(all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+								if d == None:
+									db.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'img': img_name, 'files': {f: f_hash}})
+								else:
+									d['files'][f] = f_hash
+									db.update({'files': d['files']}, doc_ids = [d.doc_id])
+							try:
+								im = Image.open(all_mods_path + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
+								size = 256, 256
+								im.thumbnail(size, Image.ANTIALIAS)
+								im.save(all_mods_path + os.sep + 'images' + os.sep + img_name + '.png')
+							except Exception:
+								pass
+							shutil.rmtree(all_mods_path + os.sep + 'images' + os.sep + 'tmp')
+				except Exception:
+					sg.popup_error('Problem with mod \"{}\" \n\n{}'.format(f, traceback.format_exc(), title = 'Error', location = (50, 50)))
+			w.close()
 		try:
 			TinyDB(settings_json).get(doc_id = 1)['intro']
 		except KeyError:

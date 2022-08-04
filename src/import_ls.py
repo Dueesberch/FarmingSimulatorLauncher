@@ -65,10 +65,13 @@ def getMods(path):
 								z.extract(icon, se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp')
 								pass						
 						mods.append(i)
-						im = Image.open(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
-						size = 256, 256
-						im.thumbnail(size, Image.ANTIALIAS)
-						im.save(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i.split('/')[-1] + '.png')
+						try:
+							im = Image.open(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
+							size = 256, 256
+							im.thumbnail(size, Image.ANTIALIAS)
+							im.save(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i.split('/')[-1] + '.png')
+						except NotImplementedError:
+							pass
 	except FileNotFoundError:
 		pass
 	if not mods:
@@ -128,6 +131,7 @@ def importMods(path, mods, updateSGs, rem = False):
 			shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
 			
 			f_hash = hashlib.md5(pathlib.Path(all_mods + os.sep + new_name).read_bytes()).hexdigest()
+			print(i)
 			with zipfile.ZipFile(all_mods + os.sep + new_name) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				icon = moddesc.find('iconFilename').text
@@ -138,11 +142,14 @@ def importMods(path, mods, updateSGs, rem = False):
 						icon = icon.replace('.png', '.dds')
 						z.extract(icon, all_mods + os.sep + 'images' + os.sep + 'tmp')
 						pass
-				for l in se.getLangs():
-					name = moddesc.find('title/' + l)
-					img_name = hashlib.md5(name.text.encode()).hexdigest()
-					mod_lang = l
+				for idx, l in enumerate(se.getLangs()):
+					if not idx + 1 == len(se.getLangs()):
+						name = moddesc.find('title/' + l)
+					else:
+						name = moddesc.find('title')
 					if name != None:
+						img_name = hashlib.md5(name.text.encode()).hexdigest()
+						mod_lang = l
 						break
 				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
 				if moddesc.find('maps/map/title/en') != None:
@@ -154,10 +161,13 @@ def importMods(path, mods, updateSGs, rem = False):
 				else:
 					d['files'][new_name] = f_hash
 					TinyDB(all_mods + os.sep + 'mods_db.json').update({'files': d['files']}, doc_ids = [d.doc_id])
-			im = Image.open(all_mods + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
-			size = 256, 256
-			im.thumbnail(size, Image.ANTIALIAS)
-			im.save(all_mods + os.sep + 'images' + os.sep + img_name + '.png')
+			try:
+				im = Image.open(all_mods + os.sep + 'images' + os.sep + 'tmp' + os.sep + icon)
+				size = 256, 256
+				im.thumbnail(size, Image.ANTIALIAS)
+				im.save(all_mods + os.sep + 'images' + os.sep + img_name + '.png')
+			except NotImplementedError:
+				pass
 
 			if moddesc.find('maps/map/title/en') != None:
 				break
@@ -193,10 +203,13 @@ def removeMods(mods):
 			with zipfile.ZipFile(all_mods + os.sep + existing_mods[val]) as z:
 				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 				icon = moddesc.find('iconFilename').text
-				for l in se.getLangs():
-					name = moddesc.find('title/' + l)
-					mod_lang = l
+				for idx, l in enumerate(se.getLangs()):
+					if not idx + 1 == len(se.getLangs()):
+						name = moddesc.find('title/' + l)
+					else:
+						name = moddesc.find('title')
 					if name != None:
+						mod_lang = l
 						break
 				d = TinyDB(all_mods + os.sep + 'mods_db.json').get(Query().name == name.text)
 				d['files'].pop(existing_mods[val])
@@ -274,14 +287,20 @@ def guiImportMods(updateSGs = True):
 		elif event == '-MODS-':
 			for i in values['-MODS-']:
 				if not i in selected_MODS:
-					window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i + '.png', size = (256, 256))
+					try:
+						window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + 'tmp' + os.sep + i + '.png', size = (256, 256))
+					except Exception:
+						pass
 			selected_MODS = values['-MODS-']
 		elif event == '-MODS_INST-':
 			for i in values['-MODS_INST-']:
 				if not i in selected_MODS_INST:
 					for d in TinyDB(se.getSettings('all_mods_path') + os.sep + 'mods_db.json').all():
 						if existing_mods[i] in d['files']:
-							window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + d['img'] + '.png', size = (256, 256))
+							try:
+								window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + d['img'] + '.png', size = (256, 256))
+							except Exception:
+								pass
 			selected_MODS_INST = values['-MODS_INST-']
 	window.close()
 	return
@@ -404,6 +423,8 @@ def getBackupFolder(path):
 	return l
 
 def importSGC(path, title):
+	if path == '':
+		return False
 	new = TinyDB(path).all()[0]
 	fdata = {"hash": hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest(), "path": path}
 	if TinyDB(se.games_json).get(Query().name == title):
@@ -416,6 +437,7 @@ def importSGC(path, title):
 		except FileExistsError:
 			pass
 		TinyDB(se.games_json).insert({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "imported": fdata})
+	return True
 
 def guiImportSG(path = '', rem = False, overwrite = False):
 	ret = True
@@ -481,8 +503,8 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 				break
 			w.close()
 		elif event == '-IMPORT_SGC-':
-			importSGC(values['-SGC_PATH-'], values['-I_TITLE-'])
-			break
+			if importSGC(values['-SGC_PATH-'], values['-I_TITLE-']):
+				break
 		elif event == '-SGC_PATH-':
 			window['-I_TITLE-'].update(TinyDB(values['-SGC_PATH-']).all()[0]['name'])
 			if TinyDB(se.games_json).get(Query().name == TinyDB(values['-SGC_PATH-']).all()[0]['name']):
