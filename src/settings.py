@@ -67,7 +67,7 @@ def init():
 	fsl_settings_json = fsl_config_path + 'fsl_settings.json'
 
 	if os.path.exists(fsl_settings_json):
-		with TinyDB(pathlib.Path(fsl_settings_json), storage=BetterJSONStorage) as db_fsl_settings:
+		with TinyDB(pathlib.Path(fsl_settings_json)) as db_fsl_settings:
 			def_vers = db_fsl_settings.get(doc_id = 1)['def_vers']
 			lang = db_fsl_settings.get(doc_id = 1)['language']
 	else:
@@ -132,7 +132,7 @@ def init():
 						continue
 					elif f.endswith('.zip'):
 						f_hash = hashlib.md5(pathlib.Path(all_mods_path + os.sep + f).read_bytes()).hexdigest()
-						with TinyDB(pathlib.Path(all_mods_path + os.sep + 'mods_db.json'), access_mode = "r+", storage = BetterJSONStorage) as db_mods:
+						with TinyDB(pathlib.Path(all_mods_path + os.sep + 'mods_db.json'), access_mode = "r+") as db_mods:
 							with zipfile.ZipFile(all_mods_path + os.sep + f) as z:
 								moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
 								if moddesc.find('title/' + lang) != None:
@@ -245,14 +245,14 @@ def saveSettings(values, rebuild_mod_db):
 		except FileExistsError:
 			pass
 	
-	with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+", storage = BetterJSONStorage) as db_fsl_settings:
+	with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+") as db_fsl_settings:
 		db_fsl_settings.update({'language': values['-COMBO-']}, doc_ids = [1])
 		if values['-SET_DEF_FS-']:
 			db_fsl_settings.update({'def_vers': vers}, doc_ids = [1])
 		else:
 			db_fsl_settings.update({'def_vers': ''}, doc_ids = [1])
 
-	with TinyDB(pathlib.Path(settings_json), access_mode = "r+", storage = BetterJSONStorage) as db_settings:
+	with TinyDB(pathlib.Path(settings_json), access_mode = "r+") as db_settings:
 		db_settings.update({'fs_path': values['-FS_PATH-'], 'fs_game_data_path': values['-FS_GAME_DATA_PATH-'], 'all_mods_path': all_mods_path, 'backups': int(values['-N_KEEP-'])}, doc_ids = [1])
 		if values['-SKIP-']:
 			db_settings.update({'intro': 'skip'}, doc_ids = [1])
@@ -274,39 +274,39 @@ def getInternalMaps():
 		return fs19_internal_maps
 
 def updateSettings(settings_list):
-	with TinyDB(pathlib.Path(settings_json), access_mode = "r+", storage = BetterJSONStorage) as db:
+	with TinyDB(pathlib.Path(settings_json), access_mode = "r+") as db:
 		db.update(settings_list, doc_ids = [1])
 
 def getSettings(key):
-	with TinyDB(pathlib.Path(settings_json), storage = BetterJSONStorage) as db_settings:
+	with TinyDB(pathlib.Path(settings_json)) as db_settings:
 		settings = db_settings.get(doc_id = 1)[key]
 	return settings
 
 def updateFSLSettings(fsl_settings_list):
-	with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+", storage = BetterJSONStorage) as db_fsl_settings:
+	with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+") as db_fsl_settings:
 		db_fsl_settings.update(fsl_settings_list, doc_ids = [1])
 
 def getFslSettings(key):
-	with TinyDB(pathlib.Path(fsl_settings_json), storage = BetterJSONStorage) as db_fsl_settings:
+	with TinyDB(pathlib.Path(fsl_settings_json)) as db_fsl_settings:
 		fsl_setting = db_fsl_settings.get(doc_id = 1)[key]
 	return fsl_setting
 
 def checkInit(lang, init):
 	if init:
-		with TinyDB(pathlib.Path(settings_json), access_mode = "r+", storage = BetterJSONStorage) as db_settings:
+		with TinyDB(pathlib.Path(settings_json), access_mode = "r+") as db_settings:
 			if platform.system() == 'Windows':
 				db_settings.insert({'fs_path': 'C:/Program Files (x86)', 'fs_game_data_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'all_mods_path': os.path.expanduser('~').replace('\\', '/') + '/Documents/My Games', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': '', 'intro': 'run', 'backups': 10})
 			elif platform.system() == 'Darwin':
 				db_settings.insert({'fs_path': '/Applications', 'fs_game_data_path': os.path.expanduser('~') + '/Library/Application Support/', 'all_mods_path': os.path.expanduser('~') + '/Library/Application Support/', 'last_sg': '', 'sg_hash': '', 'sgb_hash': '', 'mods_hash': '', 'intro': 'run', 'backups': 10})
 		if not os.path.exists(fsl_settings_json):
-			with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+", storage=BetterJSONStorage) as db_fsl_settings:
+			with TinyDB(pathlib.Path(fsl_settings_json), access_mode = "r+") as db_fsl_settings:
 				db_fsl_settings.insert({'language': lang, 'def_vers': ''})
 
 def def_check():
 	checks = {'remember': False, 'skip_intro': False}
 	if def_vers != '':
 		checks['remember'] = True
-	with TinyDB(pathlib.Path(settings_json), storage = BetterJSONStorage) as db_settings:
+	with TinyDB(pathlib.Path(settings_json)) as db_settings:
 		if db_settings.get(doc_id = 1)['intro'] == 'skip':
 			checks['skip_intro'] = True
 	return checks
@@ -320,7 +320,7 @@ def resetFSL():
 		mods_folder = getSettings('fs_game_data_path') + os.sep + 'mods'
 		os.mkdir(mods_folder)
 
-		with TinyDB(pathlib.Path(all_mods_path + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+		with TinyDB(pathlib.Path(all_mods_path + os.sep + 'mods_db.json')) as db_mods:
 			for mod in db_mods.all():
 				latest = sorted(mod['files'].keys())[-1]
 				shutil.move(all_mods_path + os.sep + latest, mods_folder + os.sep + latest.split('!')[1])
@@ -330,7 +330,7 @@ def resetFSL():
 		c = 1
 		sgb_folder = getSettings('fs_game_data_path') + os.sep + 'savegameBackups'
 		os.mkdir(sgb_folder)
-		with TinyDB(pathlib.Path(games_json), storage = BetterJSONStorage) as db_games:
+		with TinyDB(pathlib.Path(games_json)) as db_games:
 			for sga in db_games.all():
 				if len(os.listdir(getSettings('fs_game_data_path') + os.sep + sga['folder'])) != 0:
 					while os.path.exists(getSettings('fs_game_data_path') + os.sep + 'savegame' + str(c)):

@@ -27,7 +27,7 @@ def importAllMods(path, rem = False):
 			pass
 
 def createEmptyModsFolder():
-	with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+", storage = BetterJSONStorage) as db_mods:
+	with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+") as db_mods:
 		db_mods.all()
 		
 def getMods(path):
@@ -83,7 +83,7 @@ def getSaveGames():
 	"""
 	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	q = Query()
-	with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		all = db_games.all()
 	l = []
 	for i in all:
@@ -111,13 +111,13 @@ def updateSGS(sgs, mod, deps):
 		for idx, dep in enumerate(ret):
 			dep_file = ('fsl_' + dep.split(' - ')[1] + '!' + deps[idx] + '.zip')
 			
-			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage=BetterJSONStorage) as db_mods:
+			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 				for datasets in db_mods.all():
 					for files in datasets['files'].keys():
 						if dep_file in files:
 							updateSGS(sgs, dep_file, datasets['files'][files][1])
 		
-	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+", storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+") as db_games:
 		for sg in sgs:
 			add = True
 			dataset = db_games.get((Query().name == sg.split(' : ')[0]))
@@ -171,7 +171,7 @@ def importMods(path, mods, updateSGs, rem = False):
 			if moddesc.find('dependencies') != None:
 				for idx in moddesc.find('dependencies'):
 					not_imported_yet = True
-					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage=BetterJSONStorage) as db_mods:
+					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 						for datasets in db_mods.all():
 							for files in datasets['files'].keys():
 								if '!' + idx.text + '.zip' in files:
@@ -184,13 +184,13 @@ def importMods(path, mods, updateSGs, rem = False):
 			if dep_fullfilled:
 				shutil.copyfile(path + os.sep + i, all_mods + os.sep + new_name)
 				f_hash = hashlib.md5(pathlib.Path(all_mods + os.sep + new_name).read_bytes()).hexdigest()
-				with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+", storage = BetterJSONStorage) as db_mods:
+				with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+") as db_mods:
 					d = db_mods.get(Query().name == name.text)
 					if d == None:
 						db_mods.insert({'name': name.text, 'mod_type': mod_type, 'lang': mod_lang, 'img': img_name, 'files': {new_name: [f_hash, dependencies]}})
 					else:
 						for idx in d['files'].keys():
-							with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+							with TinyDB(pathlib.Path(se.games_json)) as db_games:
 								for game in db_games.all():
 									if idx in game['mods'].values():
 										if not game['name'] in update_possible:
@@ -238,7 +238,7 @@ def importMods(path, mods, updateSGs, rem = False):
 	
 #	for new_depend in all_new_dependencies:
 #		not_imported_yet = True
-#		with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage=BetterJSONStorage) as db_mods:
+#		with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 #			for datasets in db_mods.all():
 #				for files in datasets['files'].keys():
 #					if '!' + new_depend + '.zip' in files:
@@ -255,7 +255,7 @@ def removeMods(mods):
 	all_mods = se.getSettings('all_mods_path')
 	for i, val in enumerate(mods):
 		unused = True
-		with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+		with TinyDB(pathlib.Path(se.games_json)) as db_games:
 			datasets = db_games.all()
 		for i in range(len(datasets)):
 			if existing_mods[val] in list(datasets[i]['mods'].values()) or existing_mods[val] in datasets[i]['map']:
@@ -273,7 +273,7 @@ def removeMods(mods):
 					if name != None:
 						mod_lang = l
 						break
-				with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+", storage = BetterJSONStorage) as db_mods:
+				with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+") as db_mods:
 					d = db_mods.get(Query().name == name.text)
 					d['files'].pop(existing_mods[val])
 					if d['files'] == {}:
@@ -295,7 +295,7 @@ def markUnusedMods(window):
 	maps, mods = ga.getMods(False)
 	mods.update(maps)
 	used = []
-	with TinyDB(pathlib.Path(se.games_json), storage=BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		datasets = db_games.all() 
 	for dataset in datasets:
 		used = used + list(dataset['mods'].values())
@@ -359,7 +359,7 @@ def guiImportMods(updateSGs = True):
 						pass
 			selected_MODS = values['-MODS-']
 		elif event == '-MODS_INST-':
-			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 				a = set(values['-MODS_INST-'])
 				b = set(selected_MODS_INST)
 				c = list(a - b)[0]
@@ -424,7 +424,7 @@ def importSavegame(values):
 		sg.popup(tr.getTrans('ssg_name_empty'), title = tr.getTrans('ssg_title_empty'), location = (50, 50))
 		return False
 	
-	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+", storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+") as db_games:
 		if db_games.get((Query().name == values['-TITLE-'])) or os.path.exists(se.getSettings('fs_game_data_path') + os.sep + values['-TITLE-']):
 			sg.popup(tr.getTrans('ssg_exists'), title = tr.getTrans('ssg_title'), location = (50, 50))
 			return False
@@ -437,7 +437,7 @@ def importSavegame(values):
 		maps.append(map_title)
 	folder_name = hashlib.md5(values['-TITLE-'].encode()).hexdigest()
 	
-	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+", storage=BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+") as db_games:
 		db_games.insert({"name": values['-TITLE-'], "folder": folder_name, "desc": values['-DESC-'], "map": maps[0], "mods": modstoadd})
 
 	os.mkdir(se.getSettings('fs_game_data_path') + os.sep + folder_name)
@@ -496,11 +496,11 @@ def getBackupFolder(path):
 def importSGC(path, title):
 	if path == '':
 		return False
-	with TinyDB(pathlib.Path(path), access_mode = "r+", storage = BetterJSONStorage) as db_fsl_sgc:
+	with TinyDB(pathlib.Path(path), access_mode = "r+") as db_fsl_sgc:
 		new = db_fsl_sgc.all()[0]
 	fdata = {"hash": hashlib.md5(pathlib.Path(path).read_bytes()).hexdigest(), "path": path}
 	
-	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+", storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+") as db_games:
 		if db_games.get(Query().name == title):
 			doc_id = db_games.get(Query().name == new['name']).doc_id
 			db_games.update({"name": title, "folder": new['folder'], "desc": new['desc'], "map": new['map'], "mods": new['mods'], "imported": fdata}, doc_ids = [doc_id])
@@ -580,16 +580,16 @@ def guiImportSG(path = '', rem = False, overwrite = False):
 			if importSGC(values['-SGC_PATH-'], values['-I_TITLE-']):
 				break
 		elif event == '-SGC_PATH-':
-			with TinyDB(pathlib.Path(values['-SGC_PATH-']), storage = BetterJSONStorage) as db_sgc:
+			with TinyDB(pathlib.Path(values['-SGC_PATH-'])) as db_sgc:
 				name = db_sgc.all()[0]['name']
 				window['-I_TITLE-'].update(name)
-				with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+				with TinyDB(pathlib.Path(se.games_json)) as db_games:
 					if db_games.get(Query().name == name):
 						window['-EXISTS-'].update(tr.getTrans('yes'), background_color = 'red')
 					else:
 						window['-EXISTS-'].update(tr.getTrans('no'), background_color = 'green')
 		elif event == '-I_TITLE-':
-			with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+			with TinyDB(pathlib.Path(se.games_json)) as db_games:
 				if db_games.get(Query().name == values['-I_TITLE-']):
 					window['-EXISTS-'].update(tr.getTrans('yes'), background_color = 'red')
 				else:

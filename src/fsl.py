@@ -143,7 +143,7 @@ def validateModsFolder(fs_game_data_folder):
 						name = moddesc.find('title/' + l)
 						if name != None:
 							break
-					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 						d = db_mods.get(Query().name == name.text)
 						hashes =  []
 					if d != None:
@@ -250,7 +250,7 @@ def checkChanges():
 		except PermissionError:
 			pass
 
-	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+", storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json), access_mode = "r+") as db_games:
 		all_games = db_games.all()
 	for i in all_games:
 		try:
@@ -279,7 +279,7 @@ def getSaveGames():
 	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	q = Query()
 	l = ['']
-	with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		for game in db_games.all():
 			if game['map'] not in se.getInternalMaps().values():
 				try:
@@ -289,8 +289,8 @@ def getSaveGames():
 						if t == None:
 							try:
 								with open(all_mods_folder + os.sep + 'mods_db.json', 'rb') as f:
-									json.loads(blosc2.decompress2(f.read()).decode())
-								with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+									json.loads(f.read().decode())
+								with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 									for m in db_mods.search(Query().mod_type == 'map'):
 										if game['map'] in m['files']:
 											t = m['name']
@@ -319,7 +319,7 @@ def startSaveGame(name):
 	all_mods_folder = se.getSettings('all_mods_path') + os.sep
 	os.makedirs(fs_game_data_folder + 'mods' + os.sep)
 	q = Query()
-	with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		sg_map = db_games.get((q.name == name))['map']
 		mods = db_games.get((q.name == name))['mods']
 		savegame = db_games.get((q.name == name))['folder']
@@ -332,7 +332,7 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('maps/map/title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 						for map in db_mods.search(Query().mod_type == 'map'):
 							if sg_map in map['files']:
 								t = map['name']
@@ -351,7 +351,7 @@ def startSaveGame(name):
 				try:
 					t = moddesc.find('title/' + se.getFslSettings('language')).text
 				except AttributeError:
-					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), storage = BetterJSONStorage) as db_mods:
+					with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 						for mod in db_mods.all():
 							if mods[i] in mod['files']:
 								t = mod['name']
@@ -477,7 +477,7 @@ def setBackupAsCurrent(title, backup):
 	for i in os.listdir(src_path):
 		shutil.copy(src_path + os.sep + i, dst_path)
 	# replace mods in games_json to old version
-	with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		db_games.update({'mods': mods}, doc_ids = [data[0].doc_id])
 	if sg.popup_yes_no(tr.getTrans('exportsg')) == 'Yes':
 		ga.exportSGC(title)
@@ -546,7 +546,7 @@ def main():
 				window['-START-'].update(disabled = False, button_color = ('black', 'green'))
 			window['-CHANGE-'].update(disabled = False)
 			window['-REMOVE-'].update(disabled = False)
-			with TinyDB(pathlib.Path(se.games_json), storage = BetterJSONStorage) as db_games:
+			with TinyDB(pathlib.Path(se.games_json)) as db_games:
 				window['-DESC-'].update(value = db_games.search(Query().name == values['-COMBO-'].split(':')[0].rstrip())[0]['desc'])
 			window['-NEW-'].update(tr.getTrans('copy'))
 			window['-BACKUPS-'].update(value = '', values = getBackups(values['-COMBO-']), visible = True)
