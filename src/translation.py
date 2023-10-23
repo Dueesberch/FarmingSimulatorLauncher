@@ -154,7 +154,8 @@ dictionary = {
         "done": "Done",
         "playername": "Playername",
         "broken_map": "The used map \"{}\" seems to be brocken. You can try to create a new savegame inside FS and import afterwards.",
-        "broken_map_title": "Map brocken"
+        "broken_map_title": "Map brocken",
+		"version_dep": "Different versions of dependency {}. Which one to use?"
     },
     "de": {
         "analyze": "Suche Dateien für den Import. Einen Moment bitte.",
@@ -309,7 +310,8 @@ dictionary = {
         "done": "Fertig",
         "playername": "Spielername",
         "broken_map": "Die verwendete Map \"{}\" scheint defekte Dateien zu beinhalten. Du kannst versuchen ein neues Spiel direkt in LS zu erzeugen, und dieses dann importieren.",
-        "broken_map_title": "Map defekt"
+        "broken_map_title": "Map defekt",
+		"version_dep": "Verschiedene Versionen für Abhängigkeit {}. Welche soll benutzt werden?"
     }
 }
 

@@ -32,7 +32,7 @@ import datetime
 import pathlib
 import blosc2
 
-FSL_Version = 'v1.1.3'
+FSL_Version = 'v1.1.4'
 
 logger = None
 def checkFirstRun():

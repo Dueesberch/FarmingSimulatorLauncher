@@ -57,24 +57,12 @@ def getMods(l = True, pdlc = True):
 
 	for m in maps_data:
 		for v in m['files']:
-			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + v) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				title = moddesc.find('maps/map/title/' + se.getFslSettings('language'))
-			if title != None:
-				key = title.text + ' - ' + v.split('!')[0].replace('fsl_', '')
-			else:
-				key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
+			key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
 			maps[key] = v
 	
 	for m in mods_data:
 		for v in m['files']:
-			with zipfile.ZipFile(se.getSettings('all_mods_path') + os.sep + v) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				title = moddesc.find('title/' + se.getFslSettings('language'))
-			if title != None:
-				key = title.text + ' - ' + v.split('!')[0].replace('fsl_', '')
-			else:
-				key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
+			key = m['name'] + ' - ' + v.split('!')[0].replace('fsl_', '')
 			mods[key] = v
 
 	if pdlc:
@@ -84,7 +72,7 @@ def getMods(l = True, pdlc = True):
 		except FileNotFoundError:
 			pass
 		for i in files:
-			if i.endswith('.dlc'):
+			if i.endswith('.dlc') and not i.startswith('extraContent'):
 				key = 'DLC ' + i.replace('.dlc', '')
 				mods[key] = i
 	if l:
@@ -660,7 +648,7 @@ def exportSGC(title):
 	with TinyDB(pathlib.Path(path), access_mode = "r+") as db_fsl_sgc:
 		try:
 			db_fsl_sgc.insert(data)
-		except AssertionError:
+		except (AssertionError, ValueError):
 			db_fsl_sgc.update(data)
 		except TypeError:
 			pass
@@ -715,28 +703,32 @@ def getMoney(title):
 def select_dependencies(values, deps):
 	sel_mods_list = values.copy()
 	for dep_idx in deps:
-		r = re.compile('.*'+dep_idx+'.zip')
+		r = re.compile('.*' + dep_idx + '.zip')
 		m = list(mods.values())
 		hits = list(filter(r.match, m))
 		vers = []
 		for idx in hits:
-			vers.append(idx.split('fsl_')[1].split('!'+dep_idx)[0])
+			vers.append(idx.split('fsl_')[1].split('!' + dep_idx)[0])
 		if len(vers) > 1:
-			layout = [	[sg.Text('version')],
+			layout = [	[sg.Text(tr.getTrans('version_dep').format(dep_idx))],
 						[sg.Listbox(vers, size = (60, 3), key = '-LBOX-')],
 						[sg.Button('Ok', key = '-OK-')]
 			]
 			window = sg.Window('FarmingSimulatorLauncher', layout, finalize = True, location = (50, 50))
-			
+
 			while True:
 				event, values = window.read()
 				if event == '-OK-':
-					vers[0] = values['-LBOX-'][0]
-					break
+					try:
+						vers[0] = values['-LBOX-'][0]
+						break
+					except IndexError:
+						pass
 			window.close()
-		key = list(mods.keys())[list(mods.values()).index('fsl_'+vers[0]+'!'+dep_idx+'.zip')]
+		key = list(mods.keys())[list(mods.values()).index('fsl_' + vers|[0] + '!' + dep_idx + '.zip')]
 		if not key in sel_mods_list:
 			sel_mods_list.append(key)
+
 		
 #		for mods_idx in list(mods.values()):
 #			if '!' + dep_idx + '.zip' in mods_idx:

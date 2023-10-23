@@ -1,2 +1,4 @@
 build*
 hoster_desc.txt
+dist
+.vscode

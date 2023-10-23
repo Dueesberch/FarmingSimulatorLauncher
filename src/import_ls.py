@@ -262,24 +262,13 @@ def removeMods(mods):
 				sg.popup_ok(tr.getTrans('cant_rem_mod').format(existing_mods[val], datasets[i]['name']), title = tr.getTrans('error'))
 				unused = False
 		if unused:
-			with zipfile.ZipFile(all_mods + os.sep + existing_mods[val]) as z:
-				moddesc = ET.fromstring(z.read('modDesc.xml').decode('utf8').strip())
-				icon = moddesc.find('iconFilename').text
-				for idx, l in enumerate(se.getLangs()):
-					if not idx + 1 == len(se.getLangs()):
-						name = moddesc.find('title/' + l)
-					else:
-						name = moddesc.find('title')
-					if name != None:
-						mod_lang = l
-						break
-				with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json'), access_mode = "r+") as db_mods:
-					d = db_mods.get(Query().name == name.text)
-					d['files'].pop(existing_mods[val])
-					if d['files'] == {}:
-						db_mods.remove(doc_ids = [d.doc_id])
-					else:
-						db_mods.update({'files': d['files']}, doc_ids = [d.doc_id])
+			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
+				d = db_mods.get(Query().name == val.split(' - ')[0].rstrip())
+				d['files'].pop(existing_mods[val])
+				if d['files'] == {}:
+					db_mods.remove(doc_ids = [d.doc_id])
+				else:
+					db_mods.update({'files': d['files']}, doc_ids = [d.doc_id])
 			os.remove(all_mods + os.sep + existing_mods[val])
 
 def getAllMods():
@@ -293,7 +282,12 @@ def getAllMods():
 
 def markUnusedMods(window):
 	maps, mods = ga.getMods(False)
-	mods.update(maps)
+	int_maps = se.getInternalMaps().keys()
+	t = {}
+	for key, val in maps.items():
+		if not key in int_maps:
+			t[key] = val
+	mods.update(t)
 	used = []
 	with TinyDB(pathlib.Path(se.games_json)) as db_games:
 		datasets = db_games.all() 
@@ -362,11 +356,14 @@ def guiImportMods(updateSGs = True):
 			with TinyDB(pathlib.Path(se.getSettings('all_mods_path') + os.sep + 'mods_db.json')) as db_mods:
 				a = set(values['-MODS_INST-'])
 				b = set(selected_MODS_INST)
-				c = list(a - b)[0]
-				mod_name = c.split(' - ')[0]
 				try:
-					window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + db_mods.get(Query().name == mod_name)['img'] + '.png', size = (256, 256))
-				except Exception:
+					c = list(b - a)[0]
+					mod_name = c.split(' - ')[0]
+					try:
+						window['-MODS_INST_IMG-'].update(se.getSettings('all_mods_path') + os.sep + 'images' + os.sep + db_mods.get(Query().name == mod_name)['img'] + '.png', size = (256, 256))
+					except Exception:
+						pass
+				except IndexError:
 					pass
 			selected_MODS_INST = values['-MODS_INST-']
 	window.close()
